@@ -17,7 +17,7 @@ public class Subscriber {
             nullable = false)
     private ChatRoom chatRoom;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "id_user",
             foreignKey = @ForeignKey,
             nullable = false)
@@ -28,7 +28,7 @@ public class Subscriber {
     @Temporal(TemporalType.TIMESTAMP)
     private Date enteredChat;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "id_userprivilege",
             foreignKey = @ForeignKey,
             nullable = false)
