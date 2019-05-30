@@ -4,7 +4,9 @@
 
  COMMENT ON SCHEMA "instant-messenger-db-schema" IS 'instant messenger web application - vironit training project ';
 
+
 -- Drop table
+
 -- DROP TABLE "instant-messenger-db-schema".roles;
 
 CREATE TABLE "instant-messenger-db-schema".roles (
@@ -14,6 +16,7 @@ CREATE TABLE "instant-messenger-db-schema".roles (
 );
 
 -- Drop table
+
 -- DROP TABLE "instant-messenger-db-schema".users;
 
 CREATE TABLE "instant-messenger-db-schema".users (
@@ -30,6 +33,7 @@ CREATE TABLE "instant-messenger-db-schema".users (
 CREATE UNIQUE INDEX users_email_idx ON "instant-messenger-db-schema".users USING btree (email);
 
 -- Drop table
+
 -- DROP TABLE "instant-messenger-db-schema".chatroom_privileges;
 
 CREATE TABLE "instant-messenger-db-schema".chatroom_privileges (
@@ -39,6 +43,7 @@ CREATE TABLE "instant-messenger-db-schema".chatroom_privileges (
 );
 
 -- Drop table
+
 -- DROP TABLE "instant-messenger-db-schema".chatrooms;
 
 CREATE TABLE "instant-messenger-db-schema".chatrooms (
@@ -50,6 +55,7 @@ CREATE TABLE "instant-messenger-db-schema".chatrooms (
 );
 
 -- Drop table
+
 -- DROP TABLE "instant-messenger-db-schema".contacts;
 
 CREATE TABLE "instant-messenger-db-schema".contacts (
@@ -65,6 +71,7 @@ CREATE INDEX contacts_id_owner_idx ON "instant-messenger-db-schema".contacts USI
 CREATE INDEX contacts_id_person_idx ON "instant-messenger-db-schema".contacts USING btree (id_person, id_owner);
 
 -- Drop table
+
 -- DROP TABLE "instant-messenger-db-schema".imagemessageresources;
 
 CREATE TABLE "instant-messenger-db-schema".imagemessageresources (
@@ -76,41 +83,28 @@ CREATE TABLE "instant-messenger-db-schema".imagemessageresources (
 );
 
 -- Drop table
--- DROP TABLE "instant-messenger-db-schema".distributed_messages;
 
-CREATE TABLE "instant-messenger-db-schema".distributed_messages (
+-- DROP TABLE "instant-messenger-db-schema".messages;
+
+CREATE TABLE "instant-messenger-db-schema".messages (
 	id bigserial NOT NULL,
 	body varchar(500) NOT NULL,
 	timesent timestamp NOT NULL,
-	id_chatroom int8 NOT NULL,
-	id_author int8 NOT NULL,
-	id_messageresourse int8 NOT NULL,
-	CONSTRAINT distributed_messages_pk PRIMARY KEY (id),
-	CONSTRAINT distributed_messages_fk FOREIGN KEY (id_author) REFERENCES "instant-messenger-db-schema".users(id) ON UPDATE CASCADE,
-	CONSTRAINT distributed_messages_fk1 FOREIGN KEY (id_chatroom) REFERENCES "instant-messenger-db-schema".chatrooms(id) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT distributed_messages_fk3 FOREIGN KEY (id_messageresourse) REFERENCES "instant-messenger-db-schema".imagemessageresources(id) ON UPDATE CASCADE ON DELETE SET DEFAULT
-);
-CREATE INDEX distributed_messages_timesent_idx ON "instant-messenger-db-schema".distributed_messages USING btree (timesent);
-
--- Drop table
--- DROP TABLE "instant-messenger-db-schema".private_messages;
-
-CREATE TABLE "instant-messenger-db-schema".private_messages (
-	id bigserial NOT NULL,
-	body varchar(500) NOT NULL,
-	timesent timestamp NOT NULL,
-	id_contact int8 NOT NULL,
+	id_contact int8 NULL,
 	id_author int8 NOT NULL,
 	id_messageresource int8 NOT NULL DEFAULT 0,
+	id_chatroom int8 NULL,
+	messagetype varchar(45) NOT NULL,
 	CONSTRAINT message_pk PRIMARY KEY (id),
 	CONSTRAINT private_messages_fk FOREIGN KEY (id_contact) REFERENCES "instant-messenger-db-schema".contacts(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT private_messages_fk1 FOREIGN KEY (id_author) REFERENCES "instant-messenger-db-schema".users(id) ON UPDATE CASCADE,
-	CONSTRAINT private_messages_fk3 FOREIGN KEY (id_messageresource) REFERENCES "instant-messenger-db-schema".imagemessageresources(id) ON UPDATE CASCADE ON DELETE SET DEFAULT
+	CONSTRAINT private_messages_fk3 FOREIGN KEY (id_chatroom) REFERENCES "instant-messenger-db-schema".chatrooms(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE INDEX message_timesent_idx ON "instant-messenger-db-schema".private_messages USING btree (timesent);
-CREATE INDEX private_messages_id_author_idx ON "instant-messenger-db-schema".private_messages USING btree (id_author);
+CREATE INDEX message_timesent_idx ON "instant-messenger-db-schema".messages USING btree (timesent);
+CREATE INDEX private_messages_id_author_idx ON "instant-messenger-db-schema".messages USING btree (id_author);
 
 -- Drop table
+
 -- DROP TABLE "instant-messenger-db-schema".subscribers;
 
 CREATE TABLE "instant-messenger-db-schema".subscribers (
@@ -125,4 +119,14 @@ CREATE TABLE "instant-messenger-db-schema".subscribers (
 	CONSTRAINT users_has_chatrooms_fk_3 FOREIGN KEY (id_chatroom) REFERENCES "instant-messenger-db-schema".chatroom_privileges(id) ON UPDATE CASCADE ON DELETE SET DEFAULT
 );
 
+-- Drop table
 
+-- DROP TABLE "instant-messenger-db-schema".messageresource;
+
+CREATE TABLE "instant-messenger-db-schema".messageresource (
+	id bigserial NOT NULL,
+	id_message int8 NOT NULL,
+	CONSTRAINT messageresource_pk PRIMARY KEY (id),
+	CONSTRAINT messageresource_fk FOREIGN KEY (id_message) REFERENCES "instant-messenger-db-schema".messages(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT messageresource_fk1 FOREIGN KEY (id) REFERENCES "instant-messenger-db-schema".imagemessageresources(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
