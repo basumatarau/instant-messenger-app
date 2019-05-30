@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
 
+# inlellijIDEA cfg files
+.idea/*
+
 # Log file
 *.log
 
