@@ -1,13 +1,37 @@
 package org.vironit.basumatarau.imWebApplication.model;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
+@Entity
+@Table(name = "subscriber")
 public class Subscriber {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "id_chatroom",
+            foreignKey = @ForeignKey,
+            nullable = false)
     private ChatRoom chatRoom;
+
+    @OneToMany
+    @JoinColumn(name = "id_user",
+            foreignKey = @ForeignKey,
+            nullable = false)
     private User user;
+
+    @Column(name = "enteredchat",
+            nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date enteredChat;
+
+    @OneToMany
+    @JoinColumn(name = "id_userprivilege",
+            foreignKey = @ForeignKey,
+            nullable = false)
     private ChatRoomPrivilege privilege;
 
     public Long getId() {

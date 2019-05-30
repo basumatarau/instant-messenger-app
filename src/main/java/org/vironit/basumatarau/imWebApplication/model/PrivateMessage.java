@@ -1,8 +1,16 @@
 package org.vironit.basumatarau.imWebApplication.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@DiscriminatorValue(value = "pm")
 public class PrivateMessage extends Message {
+
+    @ManyToOne
+    @JoinColumn(
+            name = "id_contact",
+            foreignKey = @ForeignKey)
     private Contact contact;
 
     public Contact getContact() {

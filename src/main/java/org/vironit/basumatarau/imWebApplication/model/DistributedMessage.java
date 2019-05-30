@@ -1,8 +1,15 @@
 package org.vironit.basumatarau.imWebApplication.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@DiscriminatorValue(value = "dm")
 public class DistributedMessage extends Message {
+    @ManyToOne
+    @JoinColumn(
+            name = "id_chatroom",
+            foreignKey = @ForeignKey)
     private ChatRoom chatRoom;
 
     public ChatRoom getChatRoom() {

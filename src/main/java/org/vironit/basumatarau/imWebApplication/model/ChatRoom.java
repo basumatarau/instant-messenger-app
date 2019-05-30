@@ -1,14 +1,30 @@
 package org.vironit.basumatarau.imWebApplication.model;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
+@Entity
+@Table(name = "chatrooms")
 public class ChatRoom {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "timecreated",
+            nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date timeCreated;
+
+    @OneToMany(mappedBy = "chatRoom",
+            orphanRemoval = true)
     private Set<Subscriber> subscribers;
+
+    @Column(name = "public", nullable = false)
     private Boolean isPublic;
 
     public Long getId() {

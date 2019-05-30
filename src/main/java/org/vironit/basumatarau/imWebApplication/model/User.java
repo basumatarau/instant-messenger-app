@@ -1,17 +1,43 @@
 package org.vironit.basumatarau.imWebApplication.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
 
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(
+            name = "id_role",
+            nullable = false)
     private Role role;
+
+    @Column(name = "firstname")
     private String firstName;
+
+    @Column(name = "lastname")
     private String lastName;
+
+    @Column(name = "nickname", nullable = false)
     private String nickName;
+
+    @Column(name = "email", nullable = false)
     private String email;
+
+    @Column(name = "passwordhash", nullable = false)
     private String passwordHash;
-    private Boolean isActive;
+
+    @Column(name = "enabled", nullable = false)
+    private Boolean isEnabled;
+
+    @OneToMany(mappedBy = "owner",
+            orphanRemoval = true,
+            cascade = {CascadeType.ALL})
     private Set<Contact> contacts;
 
     public Long getId() {
@@ -71,11 +97,11 @@ public class User {
     }
 
     public Boolean getActive() {
-        return isActive;
+        return isEnabled;
     }
 
     public void setActive(Boolean active) {
-        isActive = active;
+        isEnabled = active;
     }
 
     public Set<Contact> getContacts() {

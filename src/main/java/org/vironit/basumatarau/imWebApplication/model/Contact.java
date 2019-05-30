@@ -1,12 +1,25 @@
 package org.vironit.basumatarau.imWebApplication.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "contacts")
 public class Contact {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "id_owner")
     private User owner;
+
+    @ManyToOne
+    @JoinColumn(name = "id_person")
     private User person;
-    private Boolean confirmed;
+
+    @Column(name = "confirmed", nullable = false)
+    private Boolean isConfirmed;
 
     public Long getId() {
         return id;
@@ -32,12 +45,12 @@ public class Contact {
         this.person = person;
     }
 
-    public Boolean getConfirmed() {
-        return confirmed;
+    public Boolean getIsConfirmed() {
+        return isConfirmed;
     }
 
-    public void setConfirmed(Boolean confirmed) {
-        this.confirmed = confirmed;
+    public void setIsConfirmed(Boolean isConfirmed) {
+        this.isConfirmed = isConfirmed;
     }
 
     @Override

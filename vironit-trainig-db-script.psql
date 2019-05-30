@@ -27,8 +27,9 @@ CREATE TABLE "instant-messenger-db-schema".users (
 	email varchar(160) NOT NULL,
 	passwordhash varchar(160) NOT NULL,
 	enabled bool NOT NULL,
+	id_role int4 NOT NULL,
 	CONSTRAINT users_pk PRIMARY KEY (id),
-	CONSTRAINT users_fk FOREIGN KEY (id) REFERENCES "instant-messenger-db-schema".roles(id) ON UPDATE CASCADE
+	CONSTRAINT users_fk1 FOREIGN KEY (id_role) REFERENCES "instant-messenger-db-schema".roles(id) ON UPDATE CASCADE
 );
 CREATE UNIQUE INDEX users_email_idx ON "instant-messenger-db-schema".users USING btree (email);
 
@@ -121,12 +122,14 @@ CREATE TABLE "instant-messenger-db-schema".subscribers (
 
 -- Drop table
 
--- DROP TABLE "instant-messenger-db-schema".messageresource;
+-- DROP TABLE "instant-messenger-db-schema".messageresources;
 
-CREATE TABLE "instant-messenger-db-schema".messageresource (
+CREATE TABLE "instant-messenger-db-schema".messageresources (
 	id bigserial NOT NULL,
 	id_message int8 NOT NULL,
 	CONSTRAINT messageresource_pk PRIMARY KEY (id),
 	CONSTRAINT messageresource_fk FOREIGN KEY (id_message) REFERENCES "instant-messenger-db-schema".messages(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT messageresource_fk1 FOREIGN KEY (id) REFERENCES "instant-messenger-db-schema".imagemessageresources(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
+
+
