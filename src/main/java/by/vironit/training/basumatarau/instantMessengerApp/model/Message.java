@@ -1,4 +1,4 @@
-package org.vironit.basumatarau.imWebApplication.model;
+package by.vironit.training.basumatarau.instantMessengerApp.model;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -7,13 +7,14 @@ import java.util.Objects;
 @Entity
 @Table(name = "messages")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "messagetype")
+@DiscriminatorColumn(name = "messagetype", discriminatorType=DiscriminatorType.STRING)
 public abstract class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "message_identity_generator")
     @SequenceGenerator(name = "message_identity_generator",
             sequenceName = "messages_id_seq",
+            //schema = "instant_messenger_db_schema",
             allocationSize = 1)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;

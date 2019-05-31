@@ -1,4 +1,4 @@
-package org.vironit.basumatarau.imWebApplication.model;
+package by.vironit.training.basumatarau.instantMessengerApp.model;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -8,16 +8,16 @@ import java.util.Objects;
 public class ChatRoomPrivilege {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "name", nullable = false)
     private String name;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

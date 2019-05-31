@@ -1,4 +1,4 @@
-package org.vironit.basumatarau.imWebApplication.model;
+package by.vironit.training.basumatarau.instantMessengerApp.model;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -10,7 +10,7 @@ public abstract class MessageResource {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "messageresource_identity_generator")
     @SequenceGenerator(name = "messageresource_identity_generator",
-            sequenceName = "messageresource_id_seq",
+            sequenceName = "messageresources_id_seq",
             allocationSize = 1)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;

@@ -1,4 +1,4 @@
-package org.vironit.basumatarau.imWebApplication.model;
+package by.vironit.training.basumatarau.instantMessengerApp.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
-@Table(name = "messageresources")
+@Table(name = "imagemessageresources")
 public class ImageResource extends MessageResource {
 
     @Column(name = "width", nullable = false)

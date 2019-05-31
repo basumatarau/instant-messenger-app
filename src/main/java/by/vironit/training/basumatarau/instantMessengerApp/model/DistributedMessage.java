@@ -1,4 +1,4 @@
-package org.vironit.basumatarau.imWebApplication.model;
+package by.vironit.training.basumatarau.instantMessengerApp.model;
 
 import javax.persistence.*;
 import java.util.Objects;

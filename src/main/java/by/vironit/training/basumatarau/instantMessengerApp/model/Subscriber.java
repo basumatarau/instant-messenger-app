@@ -1,14 +1,20 @@
-package org.vironit.basumatarau.imWebApplication.model;
+package by.vironit.training.basumatarau.instantMessengerApp.model;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "subscriber")
+@Table(name = "subscribers")
 public class Subscriber {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "subsriber_identity_generator")
+    @SequenceGenerator(name = "subsriber_identity_generator",
+            sequenceName = "subscribers_id_seq",
+            //schema = "instant_messenger_db_schema",
+            allocationSize = 1)
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
     @ManyToOne

@@ -1,4 +1,4 @@
-package by.vironit.training.basumatarau;
+package by.vironit.training.basumatarau.instantMessengerApp.persistenceTests;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
 
@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class dbinit {
+public class DbInit {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         init();

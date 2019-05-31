@@ -1,4 +1,4 @@
-package org.vironit.basumatarau.imWebApplication.model;
+package by.vironit.training.basumatarau.instantMessengerApp.model;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -9,7 +9,13 @@ import java.util.Set;
 @Table(name = "chatrooms")
 public class ChatRoom {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "chatroom_identity_generator")
+    @SequenceGenerator(name = "chatroom_identity_generator",
+            sequenceName = "chatrooms_id_seq",
+            //schema = "instant_messenger_db_schema",
+            allocationSize = 1)
+    @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
     @Column(name = "name", nullable = false)
