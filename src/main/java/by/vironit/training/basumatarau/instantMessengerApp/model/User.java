@@ -11,7 +11,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "user_identity_generator")
     @SequenceGenerator(name = "user_identity_generator",
-            sequenceName = "messages_id_seq",
+            sequenceName = "users_id_seq",
             //schema = "instant_messenger_db_schema",
             allocationSize = 1)
     @Column(name = "id", nullable = false, updatable = false)
@@ -46,12 +46,11 @@ public class User {
             cascade = {CascadeType.ALL})
     private Set<Contact> contacts;
 
-    public Long getId() {
-        return id;
+    public User() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getId() {
+        return id;
     }
 
     public Role getRole() {
@@ -116,6 +115,92 @@ public class User {
 
     public void setContacts(Set<Contact> contacts) {
         this.contacts = contacts;
+    }
+
+    public static class UserBuilder {
+        private Role role;
+        private String firstName;
+        private String lastName;
+        private String nickName;
+        private String email;
+        private String passwordHash;
+        private Boolean isEnabled;
+        private Set<Contact> contacts;
+
+        public UserBuilder() {}
+
+        public UserBuilder role(Role role) {
+            this.role = role;
+            return this;
+        }
+
+        public UserBuilder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public UserBuilder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+
+        public UserBuilder nickName(String nickName) {
+            this.nickName = nickName;
+            return this;
+        }
+
+
+        public UserBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder passwordHash(String passwordHash) {
+            this.passwordHash = passwordHash;
+            return this;
+        }
+
+        public UserBuilder enabled(Boolean isEnabled) {
+            this.isEnabled = isEnabled;
+            return this;
+        }
+
+        public UserBuilder contacts(Set<Contact> contacts) {
+            this.contacts = contacts;
+            return this;
+        }
+
+        public User build() throws InstantiationException {
+            buildDataIntegrityCheck();
+            User user = new User();
+            if (firstName != null) {
+                user.setFirstName(firstName);
+            }
+            if (lastName != null) {
+                user.setLastName(lastName);
+            }
+            if (nickName != null) {
+                user.setNickName(nickName);
+            }
+            user.setEmail(email);
+            user.setNickName(nickName);
+            user.setRole(role);
+            user.setPasswordHash(passwordHash);
+            user.setActive(isEnabled);
+            return user;
+        }
+
+        private void buildDataIntegrityCheck() throws InstantiationException {
+            if (this.email == null
+                    || this.passwordHash == null
+                    || this.nickName == null
+                    || this.role == null
+                    || this.isEnabled == null) {
+                throw new InstantiationException(
+                        "invalid or not sufficient data for User object instantiation");
+            }
+        }
     }
 
     @Override

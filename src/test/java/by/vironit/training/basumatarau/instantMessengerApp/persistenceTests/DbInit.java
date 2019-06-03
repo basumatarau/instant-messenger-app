@@ -21,7 +21,7 @@ public class DbInit {
                 "jdbc:postgresql://localhost:5432/im-db-training-project",
                 "postgres",
                 "password")) {
-            new ScriptRunner(connection).runScript(new FileReader("vironit-trainig-db-script.psql"));
+            new ScriptRunner(connection).runScript(new FileReader("schema-postgresql.sql"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
