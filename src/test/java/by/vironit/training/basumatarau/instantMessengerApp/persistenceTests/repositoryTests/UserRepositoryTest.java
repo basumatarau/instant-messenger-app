@@ -11,27 +11,13 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.persistence.EntityManager;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
-@TestPropertySource(properties = {
-        "spring.jpa.hibernate.ddl-auto=validate",
-        "spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect",
-        "spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true",
-        "spring.jpa.show-sql=true",
-        "spring.datasource.initialization-mode=always",
-        "spring.datasource.url=jdbc:postgresql://localhost:5432/im-db-training-project",
-        "spring.datasource.username=postgres",
-        "spring.datasource.password=password"
-})
+@TestPropertySource("/test.properties")
 public class UserRepositoryTest {
-    @Autowired
-    private EntityManager entityManager;
-
     @Autowired
     private UserRepository userRepository;
 

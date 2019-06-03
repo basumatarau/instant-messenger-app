@@ -14,6 +14,31 @@ public class Role {
             nullable = false)
     private String name;
 
+    public static class RoleBuilder{
+        private String name;
+
+        public RoleBuilder(){}
+
+        public RoleBuilder name(String name){
+            this.name = name;
+            return this;
+        }
+
+        private void buildDataIntegrityCheck() throws InstantiationException {
+            if(name == null){
+                throw new InstantiationException(
+                        "invalid or not sufficient data for Role object instantiation");
+            }
+        }
+
+        public Role build() throws InstantiationException {
+            buildDataIntegrityCheck();
+            Role role = new Role();
+            role.setName(name);
+            return role;
+        }
+    }
+
     public Integer getId() {
         return id;
     }
