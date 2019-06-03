@@ -14,6 +14,12 @@ public class Role {
             nullable = false)
     private String name;
 
+    public Role(){}
+
+    private Role(RoleBuilder builder){
+        this.name = builder.name;
+    }
+
     public static class RoleBuilder{
         private String name;
 
@@ -33,9 +39,7 @@ public class Role {
 
         public Role build() throws InstantiationException {
             buildDataIntegrityCheck();
-            Role role = new Role();
-            role.setName(name);
-            return role;
+            return new Role(this);
         }
     }
 

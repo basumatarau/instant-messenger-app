@@ -49,6 +49,16 @@ public class User {
     public User() {
     }
 
+    private User(UserBuilder builder){
+        this.role = builder.role;
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
+        this.nickName = builder.nickName;
+        this.email = builder.email;
+        this.passwordHash = builder.passwordHash;
+        this.isEnabled = builder.isEnabled;
+    }
+
     public Long getId() {
         return id;
     }
@@ -144,7 +154,6 @@ public class User {
             return this;
         }
 
-
         public UserBuilder nickName(String nickName) {
             this.nickName = nickName;
             return this;
@@ -173,22 +182,7 @@ public class User {
 
         public User build() throws InstantiationException {
             buildDataIntegrityCheck();
-            User user = new User();
-            if (firstName != null) {
-                user.setFirstName(firstName);
-            }
-            if (lastName != null) {
-                user.setLastName(lastName);
-            }
-            if (nickName != null) {
-                user.setNickName(nickName);
-            }
-            user.setEmail(email);
-            user.setNickName(nickName);
-            user.setRole(role);
-            user.setPasswordHash(passwordHash);
-            user.setActive(isEnabled);
-            return user;
+            return new User(this);
         }
 
         private void buildDataIntegrityCheck() throws InstantiationException {

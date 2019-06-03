@@ -27,6 +27,49 @@ public class Contact {
     @Column(name = "confirmed", nullable = false)
     private Boolean isConfirmed;
 
+    public Contact(){}
+
+    private Contact(ContactBuilder builder){
+        owner = builder.owner;
+        person = builder.person;
+        isConfirmed = builder.isConfirmed;
+    }
+
+    public static class ContactBuilder{
+        private User owner;
+        private User person;
+        private Boolean isConfirmed;
+
+        public ContactBuilder(){}
+
+        public ContactBuilder owner(User owner){
+            this.owner = owner;
+            return this;
+        }
+
+        public ContactBuilder person(User person){
+            this.person = person;
+            return this;
+        }
+
+        public ContactBuilder confirmed(Boolean isConfirmed) {
+            this.isConfirmed = isConfirmed;
+            return this;
+        }
+
+        private void buildDataIntegrityCheck() throws InstantiationException {
+            if(owner == null || person == null || isConfirmed == null){
+                throw new InstantiationException(
+                        "invalid or not sufficient data for Contact object instantiation");
+            }
+        }
+
+        public Contact build() throws InstantiationException {
+            buildDataIntegrityCheck();
+            return new Contact(this);
+        }
+    }
+
     public Long getId() {
         return id;
     }

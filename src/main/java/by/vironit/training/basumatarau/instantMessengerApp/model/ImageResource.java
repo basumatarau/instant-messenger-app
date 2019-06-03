@@ -19,6 +19,56 @@ public class ImageResource extends MessageResource {
     @Column(name = "imagebin", nullable = false)
     private byte[] imageBin;
 
+    public ImageResource(){}
+
+    protected ImageResource(ImageResourceBuilder builder){
+        super();
+        width = builder.width;
+        height = builder.height;
+        imageBin = builder.imageBin;
+    }
+
+    public static class ImageResourceBuilder
+            extends MessageResourceBuilder<ImageResource, ImageResourceBuilder>{
+        public ImageResourceBuilder(){}
+
+        private Integer width;
+        private Integer height;
+        private byte[] imageBin;
+
+        public ImageResourceBuilder width(Integer width){
+            this.width = width;
+            return this;
+        }
+
+        public ImageResourceBuilder height(Integer height){
+            this.height = height;
+            return this;
+        }
+
+        public ImageResourceBuilder imageBin(byte[] imageBin){
+            this.imageBin = imageBin;
+            return this;
+        }
+
+        @Override
+        public ImageResource build() throws InstantiationException {
+            buildDataIntegrityCheck();
+            return new ImageResource(this);
+        }
+
+        @Override
+        protected void buildDataIntegrityCheck() throws InstantiationException {
+            super.buildDataIntegrityCheck();
+            if(width == null || height == null || imageBin == null){
+                throw new InstantiationException(
+                        "invalid or not sufficient data for " +
+                                getClass().getName() +
+                                " object instantiation");
+            }
+        }
+    }
+
     public Integer getWidth() {
         return width;
     }

@@ -33,6 +33,60 @@ public class ChatRoom {
     @Column(name = "public", nullable = false)
     private Boolean isPublic;
 
+    public ChatRoom(){}
+
+    private ChatRoom(ChatRoomBuilder builder){
+        this.name = builder.name;
+        this.timeCreated = builder.timeCreated;
+        this.subscribers = builder.subscribers;
+        this.isPublic = builder.isPublic;
+    }
+
+    private static class ChatRoomBuilder{
+        private String name;
+        private Date timeCreated;
+        private Set<Subscriber> subscribers;
+        private Boolean isPublic;
+
+        public ChatRoomBuilder(){}
+
+        public ChatRoomBuilder name(String name){
+            this.name = name;
+            return this;
+        }
+
+        public ChatRoomBuilder timeCreated(Date timeCreated){
+            this.timeCreated = timeCreated;
+            return this;
+        }
+
+        public ChatRoomBuilder subscribers(Set<Subscriber> subscribers){
+            this.subscribers = subscribers;
+            return this;
+        }
+
+        public ChatRoomBuilder isPublic(Boolean isPublic){
+            this.isPublic = isPublic;
+            return this;
+        }
+
+        public ChatRoom build() throws InstantiationException {
+            buildDataIntegrityCheck();
+            return new ChatRoom(this);
+        }
+
+        private void buildDataIntegrityCheck() throws InstantiationException {
+            if(name == null
+                    || timeCreated == null
+                    || isPublic == null
+                    || subscribers == null
+                    || subscribers.isEmpty()){
+                throw new InstantiationException(
+                        "invalid or not sufficient data for ChatRoom object instantiation");
+            }
+        }
+    }
+
     public Long getId() {
         return id;
     }

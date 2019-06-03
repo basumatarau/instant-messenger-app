@@ -40,6 +40,36 @@ public class Subscriber {
             nullable = false)
     private ChatRoomPrivilege privilege;
 
+    public Subscriber(){}
+
+    private Subscriber(SubscriberBuilder builder){
+        this.user = builder.user;
+        this.chatRoom = builder.chatRoom;
+        this.enteredChat = builder.enteredChat;
+        this.privilege = builder.privilege;
+    }
+
+    public static class SubscriberBuilder{
+        private ChatRoom chatRoom;
+        private User user;
+        private Date enteredChat;
+        private ChatRoomPrivilege privilege;
+
+        public SubscriberBuilder(){}
+
+        public Subscriber build() throws InstantiationException {
+            buildDataIntegrityCheck();
+            return new Subscriber(this);
+        }
+
+        private void buildDataIntegrityCheck() throws InstantiationException{
+            if(user == null || chatRoom == null || enteredChat == null || privilege == null){
+                throw new InstantiationException(
+                        "invalid or not sufficient data for Subscriber object instantiation");
+            }
+        }
+    }
+
     public Long getId() {
         return id;
     }
