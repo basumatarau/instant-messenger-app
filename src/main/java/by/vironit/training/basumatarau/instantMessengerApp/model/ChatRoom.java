@@ -28,7 +28,7 @@ public class ChatRoom {
 
     @OneToMany(mappedBy = "chatRoom",
             orphanRemoval = true)
-    private Set<Subscriber> subscribers;
+    private Set<Subscription> subscribers;
 
     @Column(name = "public", nullable = false)
     private Boolean isPublic;
@@ -42,10 +42,10 @@ public class ChatRoom {
         this.isPublic = builder.isPublic;
     }
 
-    private static class ChatRoomBuilder{
+    public static class ChatRoomBuilder{
         private String name;
         private Date timeCreated;
-        private Set<Subscriber> subscribers;
+        private Set<Subscription> subscribers;
         private Boolean isPublic;
 
         public ChatRoomBuilder(){}
@@ -60,7 +60,7 @@ public class ChatRoom {
             return this;
         }
 
-        public ChatRoomBuilder subscribers(Set<Subscriber> subscribers){
+        public ChatRoomBuilder subscribers(Set<Subscription> subscribers){
             this.subscribers = subscribers;
             return this;
         }
@@ -78,9 +78,7 @@ public class ChatRoom {
         private void buildDataIntegrityCheck() throws InstantiationException {
             if(name == null
                     || timeCreated == null
-                    || isPublic == null
-                    || subscribers == null
-                    || subscribers.isEmpty()){
+                    || isPublic == null){
                 throw new InstantiationException(
                         "invalid or not sufficient data for ChatRoom object instantiation");
             }
@@ -111,11 +109,11 @@ public class ChatRoom {
         this.timeCreated = timeCreated;
     }
 
-    public Set<Subscriber> getSubscribers() {
+    public Set<Subscription> getSubscribers() {
         return subscribers;
     }
 
-    public void setSubscribers(Set<Subscriber> subscribers) {
+    public void setSubscribers(Set<Subscription> subscribers) {
         this.subscribers = subscribers;
     }
 
@@ -133,12 +131,11 @@ public class ChatRoom {
         if (o == null || getClass() != o.getClass()) return false;
         ChatRoom chatRoom = (ChatRoom) o;
         return Objects.equals(name, chatRoom.name) &&
-                Objects.equals(timeCreated, chatRoom.timeCreated) &&
-                Objects.equals(subscribers, chatRoom.subscribers);
+                Objects.equals(timeCreated, chatRoom.timeCreated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, timeCreated, subscribers);
+        return Objects.hash(name, timeCreated);
     }
 }

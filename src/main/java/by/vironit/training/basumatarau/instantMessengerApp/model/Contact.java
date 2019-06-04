@@ -70,6 +70,16 @@ public class Contact {
         }
     }
 
+    public void confirmContact() throws InstantiationException {
+        setIsConfirmed(true);
+        final Contact newContact = new ContactBuilder()
+                .person(owner)
+                .owner(person)
+                .confirmed(true)
+                .build();
+        person.getContacts().add(newContact);
+    }
+
     public Long getId() {
         return id;
     }

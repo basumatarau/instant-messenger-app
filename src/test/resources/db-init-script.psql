@@ -96,8 +96,8 @@ CREATE TABLE instant_messenger_db_schema.contacts (
 	id_person int8 NOT NULL,
 	confirmed bool NOT NULL DEFAULT false,
 	CONSTRAINT contacts_pk PRIMARY KEY (id),
-	CONSTRAINT subscription_fk FOREIGN KEY (id_owner) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT subscription_fk_1 FOREIGN KEY (id_person) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE
+	CONSTRAINT subscriptions_fk FOREIGN KEY (id_owner) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT subscriptions_fk_1 FOREIGN KEY (id_person) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 CREATE INDEX contacts_id_owner_idx ON instant_messenger_db_schema.contacts USING btree (id_owner);
 CREATE INDEX contacts_id_person_idx ON instant_messenger_db_schema.contacts USING btree (id_person, id_owner);
@@ -150,9 +150,9 @@ CREATE INDEX private_messages_id_author_idx ON instant_messenger_db_schema.messa
 
 --## ALTER SEQUENCE messages_id_seq OWNED BY messages.id;
 
--- DROP SEQUENCE instant_messenger_db_schema.subscribers_id_seq;
+-- DROP SEQUENCE instant_messenger_db_schema.subscriptions_id_seq;
 
-CREATE SEQUENCE instant_messenger_db_schema.subscribers_id_seq
+CREATE SEQUENCE instant_messenger_db_schema.subscriptions_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
 	MAXVALUE 9223372036854775807
@@ -161,21 +161,22 @@ CREATE SEQUENCE instant_messenger_db_schema.subscribers_id_seq
 
 -- Drop table
 
--- DROP TABLE instant_messenger_db_schema.subscribers;
+-- DROP TABLE instant_messenger_db_schema.subscriptions;
 
-CREATE TABLE instant_messenger_db_schema.subscribers (
-	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.subscribers_id_seq'),
+CREATE TABLE instant_messenger_db_schema.subscriptions (
+	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.subscriptions_id_seq'),
 	id_user int8 NOT NULL,
 	id_chatroom int8 NOT NULL,
 	enteredchat timestamp NOT NULL,
+	enabled bool NOT NULL,
 	id_userprivilege int4 NOT NULL DEFAULT 0,
-	CONSTRAINT subscribers_pk PRIMARY KEY (id),
+	CONSTRAINT subscriptions_pk PRIMARY KEY (id),
+	CONSTRAINT subscriptions_fk FOREIGN KEY (id_userprivilege) REFERENCES instant_messenger_db_schema.chatroom_privileges(id) ON UPDATE CASCADE,
 	CONSTRAINT users_has_chatrooms_fk FOREIGN KEY (id_user) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT users_has_chatrooms_fk_1 FOREIGN KEY (id_chatroom) REFERENCES instant_messenger_db_schema.chatrooms(id) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT users_has_chatrooms_fk_3 FOREIGN KEY (id_chatroom) REFERENCES instant_messenger_db_schema.chatroom_privileges(id) ON UPDATE CASCADE ON DELETE SET DEFAULT
+	CONSTRAINT users_has_chatrooms_fk_1 FOREIGN KEY (id_chatroom) REFERENCES instant_messenger_db_schema.chatrooms(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
---## ALTER SEQUENCE subscribers_id_seq OWNED BY subscribers.id;
+--## ALTER SEQUENCE subscriptions_id_seq OWNED BY subscriptions.id;
 
 -- DROP SEQUENCE instant_messenger_db_schema.messageresources_id_seq;
 
@@ -235,3 +236,11 @@ VALUES(3, 1, true);
 INSERT INTO instant_messenger_db_schema.messages
 (body, timesent, id_contact, id_author, messagetype, id_messageresource, id_chatroom)
 VALUES('hello message', '2003-01-29 09:23:14.504', 1, 1, 'pm', NULL, NULL);
+
+INSERT INTO instant_messenger_db_schema.chatroom_privileges
+("name")
+VALUES('CHATADMIN');
+INSERT INTO instant_messenger_db_schema.chatroom_privileges
+("name")
+VALUES('COMMONER');
+

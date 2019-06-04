@@ -5,13 +5,13 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "subscribers")
-public class Subscriber {
+@Table(name = "subscriptions")
+public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "subsriber_identity_generator")
-    @SequenceGenerator(name = "subsriber_identity_generator",
-            sequenceName = "subscribers_id_seq",
+            generator = "subsription_identity_generator")
+    @SequenceGenerator(name = "subsription_identity_generator",
+            sequenceName = "subscriptions_id_seq",
             //schema = "instant_messenger_db_schema",
             allocationSize = 1)
     @Column(name = "id", nullable = false, updatable = false)
@@ -40,13 +40,17 @@ public class Subscriber {
             nullable = false)
     private ChatRoomPrivilege privilege;
 
-    public Subscriber(){}
+    @Column(name = "enabled", nullable = false)
+    private Boolean isEnabled;
 
-    private Subscriber(SubscriberBuilder builder){
-        this.user = builder.user;
+    public Subscription(){}
+
+    private Subscription(SubscriberBuilder builder){
+        setUser(builder.user);
         this.chatRoom = builder.chatRoom;
         this.enteredChat = builder.enteredChat;
         this.privilege = builder.privilege;
+        this.isEnabled = builder.isEnabled;
     }
 
     public static class SubscriberBuilder{
@@ -54,18 +58,48 @@ public class Subscriber {
         private User user;
         private Date enteredChat;
         private ChatRoomPrivilege privilege;
+        private Boolean isEnabled;
 
         public SubscriberBuilder(){}
 
-        public Subscriber build() throws InstantiationException {
+        public SubscriberBuilder chatRoom(ChatRoom chatRoom){
+            this.chatRoom = chatRoom;
+            return this;
+        }
+
+        public SubscriberBuilder user(User user){
+            this.user = user;
+            return this;
+        }
+
+        public SubscriberBuilder enteredChat(Date enteredChat){
+            this.enteredChat = enteredChat;
+            return this;
+        }
+
+        public SubscriberBuilder priviledge(ChatRoomPrivilege privilege){
+            this.privilege = privilege;
+            return this;
+        }
+
+        public SubscriberBuilder enabled(Boolean enabled){
+            this.isEnabled = enabled;
+            return this;
+        }
+
+        public Subscription build() throws InstantiationException {
             buildDataIntegrityCheck();
-            return new Subscriber(this);
+            return new Subscription(this);
         }
 
         private void buildDataIntegrityCheck() throws InstantiationException{
-            if(user == null || chatRoom == null || enteredChat == null || privilege == null){
+            if(user == null
+                    || chatRoom == null
+                    || enteredChat == null
+                    || privilege == null
+                    || isEnabled == null){
                 throw new InstantiationException(
-                        "invalid or not sufficient data for Subscriber object instantiation");
+                        "invalid or not sufficient data for Subscription object instantiation");
             }
         }
     }
@@ -91,6 +125,7 @@ public class Subscriber {
     }
 
     public void setUser(User user) {
+        user.getSubscriptions().add(this);
         this.user = user;
     }
 
@@ -110,11 +145,19 @@ public class Subscriber {
         this.privilege = privilege;
     }
 
+    public Boolean getEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        isEnabled = enabled;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Subscriber that = (Subscriber) o;
+        Subscription that = (Subscription) o;
         return Objects.equals(chatRoom, that.chatRoom) &&
                 Objects.equals(user, that.user);
     }

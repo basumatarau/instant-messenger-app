@@ -1,6 +1,7 @@
 package by.vironit.training.basumatarau.instantMessengerApp.model;
 
 import javax.persistence.*;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -44,7 +45,12 @@ public class User {
     @OneToMany(mappedBy = "owner",
             orphanRemoval = true,
             cascade = {CascadeType.ALL})
-    private Set<Contact> contacts;
+    private Set<Contact> contacts = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user",
+            orphanRemoval = true,
+            cascade = {CascadeType.ALL})
+    private Set<Subscription> subscriptions = new LinkedHashSet<>();
 
     public User() {
     }
@@ -125,6 +131,22 @@ public class User {
 
     public void setContacts(Set<Contact> contacts) {
         this.contacts = contacts;
+    }
+
+    public Boolean getEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        isEnabled = enabled;
+    }
+
+    public Set<Subscription> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(Set<Subscription> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 
     public static class UserBuilder {

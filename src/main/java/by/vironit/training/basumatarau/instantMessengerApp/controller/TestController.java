@@ -2,7 +2,7 @@ package by.vironit.training.basumatarau.instantMessengerApp.controller;
 
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.ContactRepository;
-import by.vironit.training.basumatarau.instantMessengerApp.repository.MessageRepository;
+import by.vironit.training.basumatarau.instantMessengerApp.repository.PrivateMessageRepository;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.RoleRepsitory;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class TestController {
 
     @Autowired
-    private MessageRepository messageRepository;
+    private PrivateMessageRepository messageRepository;
 
     @Autowired
     private ContactRepository contactRepository;

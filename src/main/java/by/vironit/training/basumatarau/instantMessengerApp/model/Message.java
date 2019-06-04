@@ -1,7 +1,5 @@
 package by.vironit.training.basumatarau.instantMessengerApp.model;
 
-import org.springframework.boot.jdbc.DataSourceBuilder;
-
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
