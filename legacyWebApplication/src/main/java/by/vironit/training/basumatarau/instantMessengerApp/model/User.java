@@ -14,11 +14,14 @@ public class User {
     private String passwordHash;
     private Boolean isEnabled;
     private Set<Contact> contacts = new LinkedHashSet<>();
+    private byte[] salt;
 
     public User() {
     }
 
     private User(UserBuilder builder){
+        this.id = builder.id;
+        this.salt = builder.salt;
         this.role = builder.role;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
@@ -26,6 +29,18 @@ public class User {
         this.email = builder.email;
         this.passwordHash = builder.passwordHash;
         this.isEnabled = builder.isEnabled;
+    }
+
+    public byte[] getSalt() {
+        return salt;
+    }
+
+    public void setSalt(byte[] salt) {
+        this.salt = salt;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
@@ -105,6 +120,7 @@ public class User {
     }
 
     public static class UserBuilder {
+        private Long id;
         private Role role;
         private String firstName;
         private String lastName;
@@ -113,11 +129,22 @@ public class User {
         private String passwordHash;
         private Boolean isEnabled;
         private Set<Contact> contacts;
+        private byte[] salt;
 
         public UserBuilder() {}
 
+        public UserBuilder salt(byte[] salt){
+            this.salt = salt;
+            return this;
+        }
+
         public UserBuilder role(Role role) {
             this.role = role;
+            return this;
+        }
+
+        public UserBuilder id(Long id){
+            this.id = id;
             return this;
         }
 
@@ -163,7 +190,8 @@ public class User {
         }
 
         private void buildDataIntegrityCheck() throws InstantiationException {
-            if (this.email == null
+            if (this.id == null
+                    || this.email == null
                     || this.passwordHash == null
                     || this.nickName == null
                     || this.role == null

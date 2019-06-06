@@ -9,13 +9,20 @@ public class Role {
     public Role(){}
 
     private Role(RoleBuilder builder){
+        this.id = builder.id;
         this.name = builder.name;
     }
 
     public static class RoleBuilder{
+        private Integer id;
         private String name;
 
         public RoleBuilder(){}
+
+        public RoleBuilder id(Integer id){
+            this.id = id;
+            return this;
+        }
 
         public RoleBuilder name(String name){
             this.name = name;
@@ -23,7 +30,7 @@ public class Role {
         }
 
         private void buildDataIntegrityCheck() throws InstantiationException {
-            if(name == null){
+            if(id == null || name == null){
                 throw new InstantiationException(
                         "invalid or not sufficient data for Role object instantiation");
             }

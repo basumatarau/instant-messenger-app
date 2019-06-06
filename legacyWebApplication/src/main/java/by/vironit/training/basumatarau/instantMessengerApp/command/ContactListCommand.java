@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class ContactListCommand implements Command {
+public class ContactListCommand extends Command {
     @Override
     public Command process(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {

@@ -10,11 +10,12 @@ public enum Action {
     CONTACTLIST(new ContactListCommand()),
     CHAT(new ChatCommand()),
     ERROR(new ErrorCommand()),
+    USERPROFILE(new UserProfileCommand()),
     TEST(new TestCommand());
 
     private Command command;
 
-    Action(Command command){
+    Action(Command command) {
         this.command = command;
     }
 

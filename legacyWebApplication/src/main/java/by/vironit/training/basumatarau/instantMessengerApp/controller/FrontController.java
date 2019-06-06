@@ -11,13 +11,15 @@ import java.io.IOException;
 
 public class FrontController extends HttpServlet {
 
-    private ActionResolver resolver;
+    private ActionResolver actionResolver;
+    private ViewResolver viewResolver;
 
     @Override
     public void init() throws ServletException {
         super.init();
         ConnectionPool.getInstance();
-        resolver = new ActionResolver();
+        actionResolver = ActionResolver.getInstance();
+        viewResolver = ViewResolver.getInstance();
     }
 
     @Override
@@ -29,29 +31,30 @@ public class FrontController extends HttpServlet {
     private void process(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        Action action = resolver.resolve(req);
+        Action action = actionResolver.resolve(req);
         Command command = action.getCommand();
 
-        Command nextCommand = null;
+        Command nextCommand;
         try {
             nextCommand = command.process(req, resp);
         } catch (Exception e) {
-            //todo set error attribute
+            nextCommand = null;
+            req.setAttribute("error", e);
         }
 
         if (nextCommand == null || nextCommand == command) {
-            //todo fix view-model binding
+            final String viewPath
+                    = viewResolver.resolve(command.getViewName());
 
             getServletContext()
-                    .getRequestDispatcher(command.getViewName())
+                    .getRequestDispatcher(viewPath)
                     .forward(req, resp);
         } else {
             resp.sendRedirect("q?command=" + nextCommand);
         }
 
-        //resp.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
-        //resp.setHeader("Pragma", "no-cache");
-
+        resp.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
+        resp.setHeader("Pragma", "no-cache");
     }
 
     @Override
