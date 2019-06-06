@@ -1,7 +1,6 @@
 package by.vironit.training.basumatarau.instantMessengerApp.dao.impl;
 
 import by.vironit.training.basumatarau.instantMessengerApp.dao.CrudDao;
-import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.DaoException;
 import by.vironit.training.basumatarau.instantMessengerApp.model.Role;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
@@ -15,7 +14,6 @@ import java.util.Optional;
 
 public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
 
-    final CrudDao<User, Long> userDao = DaoProvider.DAO.userDao;
 
     private static final String FIND_USER_BY_ID_SQL_STATEMENT
             = "select " +
