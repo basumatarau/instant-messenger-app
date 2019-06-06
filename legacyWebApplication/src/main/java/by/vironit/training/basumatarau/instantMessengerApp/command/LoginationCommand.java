@@ -11,6 +11,8 @@ import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.service.UserService;
 import by.vironit.training.basumatarau.instantMessengerApp.service.impl.UserServiceImpl;
 import by.vironit.training.basumatarau.instantMessengerApp.util.PasswordEncoder;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -51,8 +53,11 @@ public class LoginationCommand extends Command {
                     //logger.log
                     return Action.ERROR.getCommand();
                 }
-                //
-                //PasswordEncoder.getPwdHash()
+                final String passwordHash = retrievedUser.getPasswordHash();
+                final byte[] salt = retrievedUser.getSalt();
+                if(!PasswordEncoder.getPwdHash(login,salt).equals(passwordHash)){
+                    throw new UserNotFound("wrong password or login");
+                }
 
                 SessionHandler.putAuthorizedUser(req, retrievedUser, false);
                 return Action.USERPROFILE.getCommand();

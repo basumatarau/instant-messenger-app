@@ -39,7 +39,7 @@ public class ConnectionPool {
 */
 
         driverName = "org.postgresql.Driver";
-        url = "jdbc:postgresql://localhost:5432/im-db-training-project";
+        url = "jdbc:postgresql://localhost:5432/im-legacy-db-training-project";
         login = "postgres";
         password = "password";
         poolSize = 20;

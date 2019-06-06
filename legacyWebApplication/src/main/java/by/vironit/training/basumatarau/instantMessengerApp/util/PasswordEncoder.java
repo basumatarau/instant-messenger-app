@@ -1,5 +1,8 @@
 package by.vironit.training.basumatarau.instantMessengerApp.util;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;

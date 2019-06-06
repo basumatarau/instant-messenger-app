@@ -5,6 +5,7 @@ import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.DaoException;
 import by.vironit.training.basumatarau.instantMessengerApp.model.Role;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
+import org.apache.commons.codec.binary.Hex;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,17 +17,42 @@ public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
 
     final CrudDao<User, Long> userDao = DaoProvider.DAO.userDao;
 
-    private static final String FIND_USERS_BY_ID_SQL_STATEMENT
-            = "select *, u.id as id_user, r.id as role_id, r.\"name\" as role_name from instant_messenger_db_schema.users as u " +
-            "            left outer join instant_messenger_db_schema.roles as r " +
-            "            on u.id_role = r.id " +
-            "            where u.id=?";
+    private static final String FIND_USER_BY_ID_SQL_STATEMENT
+            = "select " +
+                "u.id as user_id, " +
+                "firstname, " +
+                "lastname, " +
+                "nickname, " +
+                "email, " +
+                "salt, " +
+                "passwordhash, " +
+                "enabled, " +
+                "id_role, " +
+                "r.\"name\" as role_name " +
+            "from legacy_im_db_schema.users as u " +
+                "join legacy_im_db_schema.roles as r " +
+                "on u.id_role=r.id " +
+            "where u.id=?";
     private static final String FIND_USER_BY_EMAIL_SQL_STATEMENT
-            = "select * from instant_messenger_db_schema.users as u where u.email=?";
+            = "select " +
+                "u.id as user_id, " +
+                "firstname, " +
+                "lastname, " +
+                "nickname, " +
+                "email, " +
+                "salt, " +
+                "passwordhash, " +
+                "enabled, " +
+                "id_role, " +
+                "r.\"name\" as role_name " +
+            "from legacy_im_db_schema.users as u " +
+                "join legacy_im_db_schema.roles as r " +
+                "on u.id_role=r.id " +
+            "where u.email=?";
     private static final String INSERT_USER_SQL_STATEMENT
-            = "insert into instant_messenger_db_schema.users " +
-            "            (id, firstname, lastname, nickname, email, passwordhash, enabled, id_role) " +
-            "            values(default, ?, ?, ?, ?, ?, ?, ?);";
+            = "INSERT INTO legacy_im_db_schema.users " +
+            "(firstname, lastname, nickname, email, salt, passwordhash, enabled, id_role) " +
+            "VALUES(?, ?, ?, ?, decode(?, 'hex'), ?, ?, ?); ";
 
     @Override
     public Optional<User> findById(Long aLong) throws DaoException {
@@ -37,22 +63,24 @@ public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
 
         try {
             //todo salt
-            ps = connection.prepareStatement(FIND_USERS_BY_ID_SQL_STATEMENT);
+            ps = connection.prepareStatement(FIND_USER_BY_ID_SQL_STATEMENT);
             ps.setLong(1, aLong);
             resultSet = ps.executeQuery();
 
             if(resultSet.next()){
                 final Role role = new Role.RoleBuilder()
+                        .id(resultSet.getInt("id_role"))
                         .name(resultSet.getString("role_name"))
                         .build();
 
                 user = new User.UserBuilder()
-                        .id(resultSet.getLong("id_user"))
+                        .id(resultSet.getLong("user_id"))
                         .firstName(resultSet.getString("firstName"))
                         .lastName(resultSet.getString("lastName"))
                         .nickName(resultSet.getString("nickName"))
                         .passwordHash(resultSet.getString("passwordHash"))
                         .email(resultSet.getString("email"))
+                        .salt(resultSet.getBytes("salt"))
                         .role(role)
                         .enabled(true)
                         .build();
@@ -80,16 +108,16 @@ public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
         PreparedStatement ps = null;
 
         try {
-
             //todo salt
             ps = connection.prepareStatement(INSERT_USER_SQL_STATEMENT);
             ps.setString(1, user.getFirstName());
             ps.setString(2, user.getLastName());
             ps.setString(3, user.getNickName());
-            ps.setString(4, user.getNickName());
-            ps.setString(5, user.getEmail());
+            ps.setString(4, user.getEmail());
+            ps.setString(5, Hex.encodeHexString(user.getSalt()));
             ps.setString(6, user.getPasswordHash());
             ps.setBoolean(7, user.getEnabled());
+            ps.setInt(8, user.getRole().getId());
 
             connection.commit();
 
@@ -137,17 +165,18 @@ public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
 
             if(resultSet.next()){
                 final Role role = new Role.RoleBuilder()
-                        .id(resultSet.getInt("role_id"))
+                        .id(resultSet.getInt("id_role"))
                         .name(resultSet.getString("role_name"))
                         .build();
 
                 user = new User.UserBuilder()
-                        .id(resultSet.getLong("id_user"))
+                        .id(resultSet.getLong("user_id"))
                         .firstName(resultSet.getString("firstName"))
                         .lastName(resultSet.getString("lastName"))
                         .nickName(resultSet.getString("nickName"))
                         .passwordHash(resultSet.getString("passwordHash"))
                         .email(resultSet.getString("email"))
+                        .salt(resultSet.getBytes("salt"))
                         .role(role)
                         .enabled(true)
                         .build();

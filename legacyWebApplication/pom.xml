@@ -41,6 +41,22 @@
             <artifactId>postgresql</artifactId>
             <version>42.2.5</version>
         </dependency>
+
+        <!-- database init (Test) -->
+        <dependency>
+            <groupId>org.apache.ibatis</groupId>
+            <artifactId>ibatis-sqlmap</artifactId>
+            <version>3.0-beta-10</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.12</version>
+        </dependency>
+
     </dependencies>
 
     <build>
