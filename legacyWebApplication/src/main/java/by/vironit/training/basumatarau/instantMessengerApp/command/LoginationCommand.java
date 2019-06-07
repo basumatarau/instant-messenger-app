@@ -65,4 +65,9 @@ public class LoginationCommand extends Command {
         }
         return null;
     }
+
+    @Override
+    public String getViewName() {
+        return "login-page";
+    }
 }

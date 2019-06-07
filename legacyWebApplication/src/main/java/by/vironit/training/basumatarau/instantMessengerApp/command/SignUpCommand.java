@@ -48,7 +48,6 @@ public class SignUpCommand extends Command {
             final String lastName = RequestHandler.getString(req, "lastName", LNAME_REG_PATTERN);
             final String nickName = RequestHandler.getString(req, "nickName", NICK_REG_PATTERN);
 
-
             try { userService.findUserByEmail(email)
                         .orElseThrow(() -> new UserCredentialsOccupied("email occupied"));
             } catch (ServiceException e) {
@@ -84,5 +83,10 @@ public class SignUpCommand extends Command {
         }
 
         return null;
+    }
+
+    @Override
+    public String getViewName() {
+        return "sign-up";
     }
 }

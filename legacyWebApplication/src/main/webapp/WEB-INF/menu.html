@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="<%=request.getContextPath()%>">Home</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarNav" aria-controls="navbarNav"
+            aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-between"
+         id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <% if (session.getAttribute("user") != null) { %>
+                <li class="nav-item active">
+                    <a class="nav-link" href="<%=request.getContextPath()%>/q?command=Chat">messaging</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<%=request.getContextPath()%>/q?command=ContactList">contacts</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<%=request.getContextPath()%>/q?command=UserProfile">profile</a>
+                </li>
+            <% } %>
+        </ul>
+
+        <ul class="navbar-nav">
+            <li>
+                <span class="navbar-text" class="pull-right">
+			        <% if (session.getAttribute("user") != null) { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<%=request.getContextPath()%>/q?command=Logination">logout</a>
+                        </li>
+                    <% } else {%>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<%=request.getContextPath()%>/q?command=Signup">sign-up</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="<%=request.getContextPath()%>/q?command=Logination">login</a>
+                        </li>
+                    <% } %>
+			    </span>
+            </li>
+        </ul>
+    </div>
+</nav>

@@ -2,7 +2,6 @@ package by.vironit.training.basumatarau.instantMessengerApp.persistenceTests;
 
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.junit.runners.model.InitializationError;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

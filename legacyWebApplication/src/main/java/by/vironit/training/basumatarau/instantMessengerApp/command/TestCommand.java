@@ -26,4 +26,8 @@ public class TestCommand extends Command {
         return null;
     }
 
+    @Override
+    public String getViewName() {
+        return "chat-page";
+    }
 }
