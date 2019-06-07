@@ -11,7 +11,6 @@ public enum Action {
     CHAT(new ChatCommand()),
     ERROR(new ErrorCommand()),
     USERPROFILE(new UserProfileCommand()),
-    TEST(new TestCommand()),
     BADREQUEST(new BadRequestCommand());
 
     private Command command;

@@ -12,8 +12,7 @@
 <%@ include file="menu.html" %>
     <div class="container">
         <p>${error}</p>
-
-        <h2>Profile page</h2>
+        <h2>Contact list</h2>
     </div>
 </body>
 </html>

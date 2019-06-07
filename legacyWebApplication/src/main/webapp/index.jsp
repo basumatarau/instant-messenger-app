@@ -8,8 +8,8 @@
 <div class="frame_container">
 <%@ include file="/WEB-INF/menu.html" %>
     <div class="container">
-        <h2>Hello World!</h2>
-         <a href="q?command=test">test</a>
+        <h2>instant messenger web application</h2>
+        <p>...bla bla bla</p>
     </div>
 </body>
 </html>

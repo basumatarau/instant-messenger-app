@@ -39,7 +39,7 @@ public class FrontController extends HttpServlet {
             nextCommand = command.process(req, resp);
         } catch (Exception e) {
             nextCommand = null;
-            req.setAttribute("error", e.getLocalizedMessage());
+            req.setAttribute("error", getInitCauseLocalizedMessage(e));
         }
 
         if (nextCommand == null || nextCommand == command) {
@@ -55,6 +55,13 @@ public class FrontController extends HttpServlet {
 
         resp.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
         resp.setHeader("Pragma", "no-cache");
+    }
+
+    private Object getInitCauseLocalizedMessage(Throwable e) {
+        while(e.getCause()!=null){
+            e = e.getCause();
+        }
+        return e.getLocalizedMessage();
     }
 
     @Override

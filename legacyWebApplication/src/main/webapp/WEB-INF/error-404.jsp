@@ -11,9 +11,7 @@
 <div class="frame_container">
 <%@ include file="menu.html" %>
     <div class="container">
-        <p>${error}</p>
-
-        <h2>Profile page</h2>
+        <h1>404</h1>
     </div>
 </body>
 </html>

@@ -15,4 +15,14 @@
         <url-pattern>/q</url-pattern>
     </servlet-mapping>
 
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/error-default.jsp</location>
+    </error-page>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/error-404.jsp</location>
+    </error-page>
+
 </web-app>

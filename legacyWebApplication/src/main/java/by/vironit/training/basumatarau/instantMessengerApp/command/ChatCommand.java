@@ -11,4 +11,9 @@ public class ChatCommand extends Command {
             throws ServletException, IOException {
         return null;
     }
+
+    @Override
+    public String getViewName() {
+        return "chat-page";
+    }
 }
