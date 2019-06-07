@@ -6,10 +6,7 @@ import by.vironit.training.basumatarau.instantMessengerApp.model.Role;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import org.apache.commons.codec.binary.Hex;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Optional;
 
 public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
@@ -51,6 +48,11 @@ public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
             = "INSERT INTO legacy_im_db_schema.users " +
             "(firstname, lastname, nickname, email, salt, passwordhash, enabled, id_role) " +
             "VALUES(?, ?, ?, ?, decode(?, 'hex'), ?, ?, ?); ";
+    private static final String INSERT_USER_SQL_AND_GEN_KEY_STATEMENT
+            = "INSERT INTO legacy_im_db_schema.users as u " +
+            "(firstname, lastname, nickname, email, salt, passwordhash, enabled, id_role) " +
+            "VALUES(?, ?, ?, ?, decode(?, 'hex'), ?, ?, ?) " +
+            "RETURNING u.id ";
 
     @Override
     public Optional<User> findById(Long aLong) throws DaoException {
@@ -60,7 +62,6 @@ public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
         User user = null;
 
         try {
-            //todo salt
             ps = connection.prepareStatement(FIND_USER_BY_ID_SQL_STATEMENT);
             ps.setLong(1, aLong);
             resultSet = ps.executeQuery();
@@ -107,7 +108,8 @@ public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
 
         try {
             //todo salt
-            ps = connection.prepareStatement(INSERT_USER_SQL_STATEMENT);
+            ps = connection.prepareStatement(INSERT_USER_SQL_AND_GEN_KEY_STATEMENT,
+                    Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, user.getFirstName());
             ps.setString(2, user.getLastName());
             ps.setString(3, user.getNickName());
@@ -117,12 +119,13 @@ public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
             ps.setBoolean(7, user.getEnabled());
             ps.setInt(8, user.getRole().getId());
 
+            ps.executeUpdate();
             connection.commit();
 
-            final ResultSet generatedKeys = ps.getGeneratedKeys();
-            if(generatedKeys.next()){
-                return generatedKeys.getLong(1) > 0;
-            }
+            final ResultSet set = ps.getGeneratedKeys();
+            set.next();
+            return set.getInt(1) > 0;
+
         } catch (SQLException e) {
 
             try {
@@ -136,7 +139,6 @@ public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
             getConnectionPool()
                     .closeConnection(ps, connection);
         }
-        return false;
     }
 
     @Override

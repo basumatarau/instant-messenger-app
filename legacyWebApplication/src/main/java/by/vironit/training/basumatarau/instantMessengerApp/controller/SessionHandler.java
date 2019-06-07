@@ -24,4 +24,13 @@ public class SessionHandler {
         }
     }
 
+    public static void removeAuthorizedUser(HttpServletRequest req) {
+        if (getAuthorizedUser(req) != null) {
+            synchronized (req.getSession().getId()) {
+                if (getAuthorizedUser(req) == null) {
+                    req.getSession().removeAttribute(AUTHORIZED_USER);
+                }
+            }
+        }
+    }
 }

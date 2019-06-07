@@ -13,4 +13,9 @@ public class UserProfileCommand extends Command {
             throws ServletException, IOException, DaoException {
         return null;
     }
+
+    @Override
+    public String getViewName() {
+        return "user-profile-page";
+    }
 }

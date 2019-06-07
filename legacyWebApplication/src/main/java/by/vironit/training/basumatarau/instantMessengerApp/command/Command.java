@@ -21,4 +21,11 @@ public abstract class Command {
                 .replaceAll("Command$", "")
                 .toLowerCase();
     }
+
+    @Override
+    public String toString() {
+        return getClass().getName()
+                .replaceFirst(".*command[.]","")
+                .replaceAll("Command$", "");
+    }
 }

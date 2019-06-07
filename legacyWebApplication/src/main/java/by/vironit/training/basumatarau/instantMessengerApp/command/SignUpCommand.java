@@ -18,11 +18,11 @@ import java.security.SecureRandom;
 
 public class SignUpCommand extends Command {
     private UserService userService;
-    private static final String EMAIL_REG_PATTERN = "([-_А-Яа-яЁё\\w\\d]{1,40})@([-_А-Яа-яЁё\\w\\d]{1,20}).([-_А-Яа-яЁё\\w\\d]{1,4})";
-    private final static String LOGIN_REG_PATTERN = "(.{1,60})";
-    private final static String FNAME_REG_PATTERN = "([-_А-Яа-яЁё\\w\\d]{1,150})";
-    private final static String LNAME_REG_PATTERN = "([-_А-Яа-яЁё\\w\\d]{1,150})";
+    private static final String EMAIL_REG_PATTERN = "([-_А-Яа-яЁё\\w\\d]{3,40})@([-_А-Яа-яЁё\\w\\d]{1,20}).([-_А-Яа-яЁё\\w\\d]{1,4})";
+    private final static String FNAME_REG_PATTERN = "([-_А-Яа-яЁё\\w\\d]{0,150})";
+    private final static String LNAME_REG_PATTERN = "([-_А-Яа-яЁё\\w\\d]{0,150})";
     private final static String NICK_REG_PATTERN = "([-_А-Яа-яЁё\\w\\d]{1,60})";
+    private final static String PASSWORD_REG_PATTERN = "[-_+\\d\\w]+";
 
     public SignUpCommand(){
         init();
@@ -42,14 +42,18 @@ public class SignUpCommand extends Command {
         }
 
         if(RequestHandler.isPost(req, resp)){
-            final String email = RequestHandler.getString(req, "email", EMAIL_REG_PATTERN);
-            final String login = RequestHandler.getString(req, "login", LOGIN_REG_PATTERN);
-            final String firstName = RequestHandler.getString(req, "firstName", FNAME_REG_PATTERN);
-            final String lastName = RequestHandler.getString(req, "lastName", LNAME_REG_PATTERN);
-            final String nickName = RequestHandler.getString(req, "nickName", NICK_REG_PATTERN);
+            final String email = RequestHandler.getString(req, "emailInput", EMAIL_REG_PATTERN);
+            final String password = RequestHandler.getString(req, "passwordInput", PASSWORD_REG_PATTERN );
+            final String firstName = RequestHandler.getString(req, "firstNameInput", FNAME_REG_PATTERN);
+            final String lastName = RequestHandler.getString(req, "lastNameInput", LNAME_REG_PATTERN);
+            final String nickName = RequestHandler.getString(req, "nickNameInput", NICK_REG_PATTERN);
 
-            try { userService.findUserByEmail(email)
-                        .orElseThrow(() -> new UserCredentialsOccupied("email occupied"));
+            try {
+                if(userService
+                        .findUserByEmail(email)
+                        .isPresent()) {
+                    throw new UserCredentialsOccupied("user credentials occupied");
+                }
             } catch (ServiceException e) {
                 //logger.log
                 return Action.ERROR.getCommand();
@@ -57,7 +61,7 @@ public class SignUpCommand extends Command {
 
             byte[] salt = new byte[16];
             new SecureRandom().nextBytes(salt);
-            final String pwdHash = PasswordEncoder.getPwdHash(login, salt);
+            final String pwdHash = PasswordEncoder.getPwdHash(password, salt);
 
             try {
                 //todo fix the stub

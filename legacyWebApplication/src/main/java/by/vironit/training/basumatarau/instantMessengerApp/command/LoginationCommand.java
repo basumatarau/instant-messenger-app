@@ -11,8 +11,6 @@ import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.service.UserService;
 import by.vironit.training.basumatarau.instantMessengerApp.service.impl.UserServiceImpl;
 import by.vironit.training.basumatarau.instantMessengerApp.util.PasswordEncoder;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,8 +40,8 @@ public class LoginationCommand extends Command {
             if(authorizedUser != null){
                 return Action.USERPROFILE.getCommand();
             }else{
-                final String email = RequestHandler.getString(req, "email", EMAIL_REG_PATTERN);
-                final String login = RequestHandler.getString(req, "login", LOGIN_REG_PATTERN);
+                final String email = RequestHandler.getString(req, "logininput", EMAIL_REG_PATTERN);
+                final String password = RequestHandler.getString(req, "passwordinput", LOGIN_REG_PATTERN);
 
                 final User retrievedUser;
                 try {
@@ -55,13 +53,17 @@ public class LoginationCommand extends Command {
                 }
                 final String passwordHash = retrievedUser.getPasswordHash();
                 final byte[] salt = retrievedUser.getSalt();
-                if(!PasswordEncoder.getPwdHash(login,salt).equals(passwordHash)){
+                if(!PasswordEncoder.getPwdHash(password,salt).equals(passwordHash)){
                     throw new UserNotFound("wrong password or login");
                 }
 
                 SessionHandler.putAuthorizedUser(req, retrievedUser, false);
                 return Action.USERPROFILE.getCommand();
             }
+        }else if(RequestHandler.isGet(req, resp)){
+            SessionHandler.removeAuthorizedUser(req);
+            req.getSession(false).invalidate();
+            return Action.LOGINATION.getCommand();
         }
         return null;
     }

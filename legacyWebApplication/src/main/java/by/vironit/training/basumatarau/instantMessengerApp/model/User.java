@@ -190,8 +190,7 @@ public class User {
         }
 
         private void buildDataIntegrityCheck() throws InstantiationException {
-            if (this.id == null
-                    || this.email == null
+            if (this.email == null
                     || this.passwordHash == null
                     || this.nickName == null
                     || this.role == null

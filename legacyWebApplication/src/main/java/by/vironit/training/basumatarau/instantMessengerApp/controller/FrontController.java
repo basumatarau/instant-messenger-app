@@ -40,7 +40,7 @@ public class FrontController extends HttpServlet {
             nextCommand = command.process(req, resp);
         } catch (Exception e) {
             nextCommand = null;
-            req.setAttribute("error", e);
+            req.setAttribute("error", e.getLocalizedMessage());
         }
 
         if (nextCommand == null || nextCommand == command) {
