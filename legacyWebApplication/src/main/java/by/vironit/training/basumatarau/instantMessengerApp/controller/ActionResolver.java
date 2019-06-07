@@ -24,8 +24,8 @@ public class ActionResolver {
         String command = request.getParameter("command");
 
         if (command == null) {
-            request.setAttribute("printStackTrace", "illegal argument error");
-            return action;
+            request.setAttribute("details", request.getContextPath());
+            return Action.BADREQUEST;
         }
         try {
             action = Action.valueOf(command.toUpperCase());

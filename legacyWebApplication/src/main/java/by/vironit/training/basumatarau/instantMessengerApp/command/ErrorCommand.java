@@ -14,4 +14,10 @@ public class ErrorCommand extends Command {
             throws ServletException, IOException, DaoException {
         return null;
     }
+
+    //todo something about it
+    @Override
+    public String getViewName() {
+        return "bad-request";
+    }
 }

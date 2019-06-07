@@ -28,12 +28,9 @@
         <ul class="navbar-nav">
             <li>
                 <span class="navbar-text" class="pull-right">
-                    <form id="logout-form" action="q?command=Logination" method="GET">
-                        <!--- csrf token --->
-                    </form>
 			        <% if (session.getAttribute("user") != null) { %>
                         <li class="nav-item">
-                            <a class="nav-link" id="logout" href="#">logout</a>
+                            <a class="nav-link" href="<%=request.getContextPath()%>/q?command=Logination">logout</a>
                         </li>
                     <% } else {%>
                         <li class="nav-item">
@@ -48,12 +45,3 @@
         </ul>
     </div>
 </nav>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("#logout").click(function(e) {
-            e.preventDefault();
-            $("#logout-form").submit();
-        });
-    });
-</script>

@@ -20,7 +20,6 @@ public class FrontController extends HttpServlet {
         ConnectionPool.getInstance();
         actionResolver = ActionResolver.getInstance();
         viewResolver = ViewResolver.getInstance();
-
     }
 
     @Override

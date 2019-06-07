@@ -11,4 +11,9 @@ public class BadRequestCommand extends Command {
             throws ServletException, IOException {
         return null;
     }
+
+    @Override
+    public String getViewName() {
+        return "bad-request";
+    }
 }
