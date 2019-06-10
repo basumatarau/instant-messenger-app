@@ -1,7 +1,7 @@
 package by.vironit.training.basumatarau.instantMessengerApp.service.impl;
 
 import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
-import by.vironit.training.basumatarau.instantMessengerApp.dao.impl.UserDaoImpl;
+import by.vironit.training.basumatarau.instantMessengerApp.dao.UserDao;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.DaoException;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.ServiceException;
 import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public class UserServiceImpl implements UserService {
 
-    private final UserDaoImpl userDao = DaoProvider.DAO.userDao;
+    private final UserDao userDao = DaoProvider.DAO.userDao;
 
     @Override
     public Optional<User> findUserByEmail(String email)

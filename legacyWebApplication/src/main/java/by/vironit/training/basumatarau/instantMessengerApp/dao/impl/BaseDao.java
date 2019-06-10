@@ -8,7 +8,8 @@ public abstract class BaseDao {
         cPool = ConnectionPool.getInstance();
     }
 
-    public ConnectionPool getConnectionPool() {
+    protected ConnectionPool getConnectionPool() {
         return cPool;
     }
+
 }

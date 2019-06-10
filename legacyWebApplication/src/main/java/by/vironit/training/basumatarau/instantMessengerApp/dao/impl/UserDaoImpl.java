@@ -1,6 +1,6 @@
 package by.vironit.training.basumatarau.instantMessengerApp.dao.impl;
 
-import by.vironit.training.basumatarau.instantMessengerApp.dao.CrudDao;
+import by.vironit.training.basumatarau.instantMessengerApp.dao.UserDao;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.DaoException;
 import by.vironit.training.basumatarau.instantMessengerApp.model.Role;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
@@ -9,8 +9,7 @@ import org.apache.commons.codec.binary.Hex;
 import java.sql.*;
 import java.util.Optional;
 
-public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
-
+public class UserDaoImpl extends BaseDao implements UserDao {
 
     private static final String FIND_USER_BY_ID_SQL_STATEMENT
             = "select " +
@@ -107,7 +106,6 @@ public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
         PreparedStatement ps = null;
 
         try {
-            //todo salt
             ps = connection.prepareStatement(INSERT_USER_SQL_AND_GEN_KEY_STATEMENT,
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, user.getFirstName());
@@ -124,6 +122,7 @@ public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
 
             final ResultSet set = ps.getGeneratedKeys();
             set.next();
+
             return set.getInt(1) > 0;
 
         } catch (SQLException e) {
@@ -151,6 +150,7 @@ public class UserDaoImpl extends BaseDao implements CrudDao<User, Long> {
         return false;
     }
 
+    @Override
     public Optional<User> findByEmail(String email) throws DaoException{
         final Connection connection = getConnectionPool().takeConnection();
         PreparedStatement ps = null;

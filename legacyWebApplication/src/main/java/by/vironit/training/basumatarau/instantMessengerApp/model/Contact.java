@@ -14,9 +14,11 @@ public class Contact {
         owner = builder.owner;
         person = builder.person;
         isConfirmed = builder.isConfirmed;
+        id = builder.id;
     }
 
     public static class ContactBuilder{
+        private Long id;
         private User owner;
         private User person;
         private Boolean isConfirmed;
@@ -38,6 +40,11 @@ public class Contact {
             return this;
         }
 
+        public ContactBuilder id(Long id){
+            this.id = id;
+            return this;
+        }
+
         private void buildDataIntegrityCheck() throws InstantiationException {
             if(owner == null || person == null || isConfirmed == null){
                 throw new InstantiationException(
@@ -49,16 +56,6 @@ public class Contact {
             buildDataIntegrityCheck();
             return new Contact(this);
         }
-    }
-
-    public void confirmContact() throws InstantiationException {
-        setIsConfirmed(true);
-        final Contact newContact = new ContactBuilder()
-                .person(owner)
-                .owner(person)
-                .confirmed(true)
-                .build();
-        person.getContacts().add(newContact);
     }
 
     public Long getId() {
