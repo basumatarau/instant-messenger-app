@@ -8,7 +8,7 @@ public class ViewResolver {
 
     private ViewResolver(){}
 
-    static ViewResolver getInstance(){
+    public static ViewResolver getInstance(){
         if(instance == null){
             synchronized (ViewResolver.class){
                 if(instance == null){
@@ -19,7 +19,7 @@ public class ViewResolver {
         return instance;
     }
 
-    String resolve(String viewName){
+    public String resolve(String viewName){
         return VIEW_ROOT_FOLDER + viewName + PREFIX;
     }
 }

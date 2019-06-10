@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 public class ContactListCommand extends Command {
     private final static String LIKE_PARAM = "like";
@@ -42,7 +41,8 @@ public class ContactListCommand extends Command {
         List<ContactDto> contactsForUser;
         List<UserDto> users;
 
-        final String likeParam = RequestHandler.getString(req, LIKE_PARAM);
+        final String likeParam = req.getAttribute(LIKE_PARAM) != null ?
+                RequestHandler.getString(req, LIKE_PARAM) : null;
         final Long sendRequestToUserWithId = req.getAttribute(SEND_REQUEST) != null ?
                 RequestHandler.getLong(req, SEND_REQUEST) : null;
         final Long deleteUserContactWithId = req.getAttribute(DELETE_CONTACT) != null ?
