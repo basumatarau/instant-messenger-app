@@ -12,7 +12,12 @@ import java.text.ParseException;
 
 public abstract class Command {
     public abstract Command process(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException, DaoException, ParseException, ControllerException, ValidationException;
+            throws ServletException,
+            IOException,
+            DaoException,
+            ParseException,
+            ControllerException,
+            ValidationException;
 
     public String getViewName() {
         final String className = getClass().getName();

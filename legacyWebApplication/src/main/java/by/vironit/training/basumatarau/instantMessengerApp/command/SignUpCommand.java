@@ -6,6 +6,7 @@ import by.vironit.training.basumatarau.instantMessengerApp.controller.SessionHan
 import by.vironit.training.basumatarau.instantMessengerApp.exception.*;
 import by.vironit.training.basumatarau.instantMessengerApp.model.Role;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
+import by.vironit.training.basumatarau.instantMessengerApp.service.ServiceProvider;
 import by.vironit.training.basumatarau.instantMessengerApp.service.UserService;
 import by.vironit.training.basumatarau.instantMessengerApp.service.impl.UserServiceImpl;
 import by.vironit.training.basumatarau.instantMessengerApp.util.PasswordEncoder;
@@ -29,7 +30,7 @@ public class SignUpCommand extends Command {
     }
 
     private void init(){
-        this.userService = new UserServiceImpl();
+        this.userService = ServiceProvider.SERV.userService;
     }
 
     @Override
@@ -82,7 +83,6 @@ public class SignUpCommand extends Command {
                 //logger.log
                 return Action.ERROR.getCommand();
             }
-
             return Action.LOGINATION.getCommand();
         }
 

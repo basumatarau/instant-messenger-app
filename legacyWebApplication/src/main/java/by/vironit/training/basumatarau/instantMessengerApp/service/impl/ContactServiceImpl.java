@@ -10,6 +10,7 @@ import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.service.ContactService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ContactServiceImpl implements ContactService {
@@ -62,7 +63,6 @@ public class ContactServiceImpl implements ContactService {
                     .confirmed(true)
                     .build();
             contactDao.save(newContactRequest);
-
             contact.setIsConfirmed(true);
             contactDao.update(contact);
         } catch (DaoException | InstantiationException e) {
@@ -76,6 +76,15 @@ public class ContactServiceImpl implements ContactService {
             contactDao.delete(contact);
         } catch (DaoException e) {
             throw new ServiceException("failed to add contact", e);
+        }
+    }
+
+    @Override
+    public Optional<Contact> findContactById(Long id) throws ServiceException {
+        try {
+            return contactDao.findById(id);
+        } catch (DaoException e) {
+            throw new ServiceException("failed to fetch contact with id=" + id, e);
         }
     }
 }

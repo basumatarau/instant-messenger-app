@@ -23,7 +23,7 @@
         <div class="form-group row justify-content-center">
           <label class="col-md-4 control-label" for="logininput">Email</label>
           <div class="col-md-6">
-          <input id="logininput" name="logininput" type="text" placeholder="" value="testLogin" class="form-control input-md" required="">
+          <input id="logininput" name="logininput" type="text" placeholder="" value="testemail@mail.com" class="form-control input-md" required="">
 
           </div>
         </div>
@@ -32,7 +32,7 @@
         <div class="form-group row justify-content-center">
           <label class="col-md-4 control-label" for="passwordinput">Password</label>
           <div class="col-md-6">
-            <input id="passwordinput" name="passwordinput" type="password" placeholder="" value="testpassword" class="form-control input-md" required="">
+            <input id="passwordinput" name="passwordinput" type="password" placeholder="" value="stub" class="form-control input-md" required="">
 
           </div>
         </div>
