@@ -4,6 +4,9 @@
 <html lang="en">
 <head>
     <%@ include file="header.html" %>
+    <style>
+        <%@ include file="css/search-box.css" %>
+    </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
         type="text/css" rel="stylesheet">
 </head>

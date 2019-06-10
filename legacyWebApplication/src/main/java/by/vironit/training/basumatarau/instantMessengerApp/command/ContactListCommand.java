@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class ContactListCommand extends Command {
+    //request attributes
     private final static String LIKE_PARAM = "like";
     private final static String SEND_REQUEST = "sendRequest";
     private final static String DELETE_CONTACT = "deleteContact";

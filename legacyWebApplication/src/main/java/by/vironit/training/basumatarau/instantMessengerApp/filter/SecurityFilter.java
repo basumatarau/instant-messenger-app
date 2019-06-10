@@ -43,7 +43,7 @@ public class SecurityFilter implements Filter {
                 authorizedUser!=null &&
                 authorizedUser.getRole().getName().equals("USER")) {
             filterChain.doFilter(servletRequest, servletResponse);
-        } else if (adminOnlyCmds.contains(command) ||
+        } else if (adminOnlyCmds.contains(command) &&
                 authorizedUser!=null &&
                 authorizedUser.getRole().getName().equals("ADMIN")) {
             filterChain.doFilter(servletRequest, servletResponse);
