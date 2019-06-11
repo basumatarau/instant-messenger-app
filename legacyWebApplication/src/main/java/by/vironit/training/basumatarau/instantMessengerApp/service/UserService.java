@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface UserService {
     Optional<User> findUserByEmail(String email) throws ServiceException;
     boolean registerNewUserAccount(User user) throws ServiceException;
-    List<UserDto> searchUsersWithPattern(String pattern) throws ServiceException;
+    List<UserDto> searchUsersWithPattern(User user, String pattern) throws ServiceException;
     Optional<User> findUserById(Long id) throws ServiceException;
 }

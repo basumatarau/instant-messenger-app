@@ -8,7 +8,7 @@ public class UserDto {
     private final String lName;
     private final String nName;
     private final String email;
-    private final Boolean enabled;
+    private Boolean myFriend;
 
     public UserDto(Long id,
                    String fName,
@@ -21,7 +21,7 @@ public class UserDto {
         this.lName = lName;
         this.nName = nName;
         this.email = email;
-        this.enabled = enabled;
+        this.myFriend = enabled;
     }
 
     public static UserDto getDto(User user){
@@ -30,11 +30,15 @@ public class UserDto {
                 user.getLastName(),
                 user.getNickName(),
                 user.getEmail(),
-                user.getEnabled());
+                false);
     }
 
-    public Boolean getEnabled() {
-        return enabled;
+    public void setMyFriend(Boolean myFriend) {
+        this.myFriend = myFriend;
+    }
+
+    public Boolean getMyFriend() {
+        return myFriend;
     }
 
     public Long getId() {

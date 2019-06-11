@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class ContactListCommand extends Command {
     //request attributes
@@ -42,27 +43,36 @@ public class ContactListCommand extends Command {
         List<ContactDto> contactsForUser;
         List<UserDto> users;
 
-        final String likeParam = req.getAttribute(LIKE_PARAM) != null ?
+        final String likeParam = req.getParameter(LIKE_PARAM) != null ?
                 RequestHandler.getString(req, LIKE_PARAM) : null;
-        final Long sendRequestToUserWithId = req.getAttribute(SEND_REQUEST) != null ?
+        final Long sendRequestToUserWithId = req.getParameter(SEND_REQUEST) != null ?
                 RequestHandler.getLong(req, SEND_REQUEST) : null;
-        final Long deleteUserContactWithId = req.getAttribute(DELETE_CONTACT) != null ?
+        final Long deleteUserContactWithId = req.getParameter(DELETE_CONTACT) != null ?
                 RequestHandler.getLong(req, DELETE_CONTACT) : null;
-        final Long confirmRequestWithId = req.getAttribute(CONFIRM_REQUEST) != null ?
+        final Long confirmRequestWithId = req.getParameter(CONFIRM_REQUEST) != null ?
                 RequestHandler.getLong(req, CONFIRM_REQUEST) : null;
 
         if (likeParam != null) {
             try {
-                users = userService.searchUsersWithPattern(likeParam);
-                req.setAttribute("foundUsers", users);
+
+                users = userService.searchUsersWithPattern(authorizedUser, likeParam);
+                req.setAttribute("userSearchResults", users);
             } catch (ServiceException e) {
                 //logger.log
                 return Action.ERROR.getCommand();
             }
         }else if(sendRequestToUserWithId != null){
             try {
+
                 User owner = userService.findUserById(sendRequestToUserWithId)
                         .orElseThrow(() -> new ControllerException("user not found"));
+
+                final boolean present = contactService.getContactByOwnerAndUser(owner, authorizedUser)
+                        .isPresent();
+                if(present){
+                    throw new ControllerException("contact is already pending");
+                }
+
                 contactService.sendContactRequestToUser(owner, authorizedUser);
             } catch (ServiceException e) {
                 //logger.log
@@ -78,6 +88,14 @@ public class ContactListCommand extends Command {
                     //logger.log + user ban if persisted ?
                 }
                 contactService.removeContact(contact);
+
+                if(contact.getIsConfirmed()) {
+                    final Optional<Contact> cont
+                            = contactService.getContactByOwnerAndUser(authorizedUser, contact.getOwner());
+                    if(cont.isPresent()){
+                        contactService.removeContact(cont.get());
+                    }
+                }
             } catch (ServiceException e) {
                 //logger.log
                 return Action.ERROR.getCommand();
@@ -96,6 +114,16 @@ public class ContactListCommand extends Command {
                 //logger.log
                 return Action.ERROR.getCommand();
             }
+
+            try {
+                contactsForUser = contactService.findAllContactsForUser(authorizedUser);
+                req.setAttribute("userContacts", contactsForUser);
+            } catch (ServiceException e) {
+                //logger.log
+                return Action.ERROR.getCommand();
+            }
+            req.setAttribute("userContacts", contactsForUser);
+
         } else {
             try {
                 contactsForUser = contactService.findAllContactsForUser(authorizedUser);

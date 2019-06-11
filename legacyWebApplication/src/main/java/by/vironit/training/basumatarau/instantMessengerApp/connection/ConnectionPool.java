@@ -169,12 +169,8 @@ public class ConnectionPool {
     }
 
     /**
-     * PooledConnection interface - pooled connection mixin for
-     * close() method invocation on the proxied sql connection,
-     * it is called only when connection the pool that contains the proxied
-     * instance is being destroyed;
-     * (reallyClose() method is prevented to be called on the sql connection
-     * instance directly while proxied, @see ConnectionProperties#PooledConnectionInvocationHandler)
+     * TODO TODO TODO fix the modafaka
+     * doesn't work :((((((((((((((
      */
 
     private interface PooledConnection extends Connection {

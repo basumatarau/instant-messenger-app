@@ -15,4 +15,6 @@ public interface ContactService {
     void confirmContactRequest(Contact contact) throws ServiceException;
     void declineContactRequest(Contact contact) throws ServiceException;
     Optional<Contact> findContactById(Long id) throws ServiceException;
+
+    Optional<Contact> getContactByOwnerAndUser(User owner, User authorizedUser) throws ServiceException;
 }

@@ -1,11 +1,11 @@
 package by.vironit.training.basumatarau.instantMessengerApp.controller;
 
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
-
 import javax.servlet.http.HttpServletRequest;
 
 public class SessionHandler {
     private static final String AUTHORIZED_USER = "user";
+    private static final String AUTHORIZED_USER_CONTACTS = "userContacts";
 
     private SessionHandler() {
     }

@@ -3,13 +3,13 @@ package by.vironit.training.basumatarau.instantMessengerApp.command;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.Action;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.RequestHandler;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.SessionHandler;
-import by.vironit.training.basumatarau.instantMessengerApp.exception.ControllerException;
-import by.vironit.training.basumatarau.instantMessengerApp.exception.ServiceException;
-import by.vironit.training.basumatarau.instantMessengerApp.exception.UserNotFound;
-import by.vironit.training.basumatarau.instantMessengerApp.exception.ValidationException;
+import by.vironit.training.basumatarau.instantMessengerApp.dao.ContactDao;
+import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
+import by.vironit.training.basumatarau.instantMessengerApp.exception.*;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
+import by.vironit.training.basumatarau.instantMessengerApp.service.ContactService;
+import by.vironit.training.basumatarau.instantMessengerApp.service.ServiceProvider;
 import by.vironit.training.basumatarau.instantMessengerApp.service.UserService;
-import by.vironit.training.basumatarau.instantMessengerApp.service.impl.UserServiceImpl;
 import by.vironit.training.basumatarau.instantMessengerApp.util.PasswordEncoder;
 
 import javax.servlet.ServletException;
@@ -19,6 +19,9 @@ import java.io.IOException;
 
 public class LoginationCommand extends Command {
     private UserService userService;
+    private ContactService contactService;
+    private ContactDao contactDao;
+
     private static final String EMAIL_REG_PATTERN = "([-_А-Яа-яЁё\\w\\d]{1,40})@([-_А-Яа-яЁё\\w\\d]{1,20}).([-_А-Яа-яЁё\\w\\d]{1,4})";
     private final static String LOGIN_REG_PATTERN = "([-_А-Яа-яЁё\\w\\d]{1,60})";
 
@@ -27,7 +30,9 @@ public class LoginationCommand extends Command {
     }
 
     private void init(){
-        this.userService = new UserServiceImpl();
+        this.userService = ServiceProvider.SERV.userService;
+        this.contactService = ServiceProvider.SERV.contactService;
+        this.contactDao = DaoProvider.DAO.contactDao;
     }
 
     @Override

@@ -30,8 +30,6 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 "on u.id_role = r.id " +
             "where " +
                 "u.email like ? or " +
-                "u.firstname like ? or " +
-                "u.lastname like ? or " +
                 "u.nickname like ? escape '!' ";
 
     private static final String FIND_USER_BY_ID_SQL_STATEMENT
@@ -236,6 +234,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         try {
             ps = connection.prepareStatement(SEARCH_USERS_WITH_PATTERN);
             ps.setString(1, pattern);
+            ps.setString(2, pattern);
             resultSet = ps.executeQuery();
 
             while(resultSet.next()){
@@ -258,14 +257,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 
                 users.add(user);
             }
-            connection.commit();
         } catch (SQLException | InstantiationException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                //todo logger.log
-                throw new RuntimeException("failed to rollback transaction", ex);
-            }
             throw new DaoException(e);
         } finally {
             getConnectionPool()

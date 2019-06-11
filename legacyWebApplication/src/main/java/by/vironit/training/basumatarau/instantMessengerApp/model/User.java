@@ -206,16 +206,13 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(role, user.role) &&
-                Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName) &&
-                Objects.equals(nickName, user.nickName) &&
+        return Objects.equals(nickName, user.nickName) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(passwordHash, user.passwordHash);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(role, firstName, lastName, nickName, email, passwordHash);
+        return Objects.hash(nickName, email, passwordHash);
     }
 }

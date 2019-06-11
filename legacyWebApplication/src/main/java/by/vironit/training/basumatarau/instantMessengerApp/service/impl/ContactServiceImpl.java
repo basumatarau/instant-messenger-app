@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class ContactServiceImpl implements ContactService {
     private final ContactDao contactDao = DaoProvider.DAO.contactDao;
 
+
     @Override
     public List<ContactDto> findAllContactsForUser(User user) throws ServiceException{
         try {
@@ -32,12 +33,14 @@ public class ContactServiceImpl implements ContactService {
     public void sendContactRequestToUser(User user, User person)
             throws ServiceException {
         try {
+
             final Contact newContactRequest
                     = new Contact.ContactBuilder()
                     .owner(user)
                     .person(person)
                     .confirmed(false)
                     .build();
+
             contactDao.save(newContactRequest);
         } catch (DaoException | InstantiationException e) {
             throw new ServiceException("failed to add contact", e);
@@ -85,6 +88,16 @@ public class ContactServiceImpl implements ContactService {
             return contactDao.findById(id);
         } catch (DaoException e) {
             throw new ServiceException("failed to fetch contact with id=" + id, e);
+        }
+    }
+
+    @Override
+    public Optional<Contact> getContactByOwnerAndUser(User owner, User authorizedUser)
+            throws ServiceException {
+        try {
+            return contactDao.getContactsFoOwnerAndPerson(owner, authorizedUser);
+        } catch (DaoException e) {
+            throw new ServiceException("failed to fetch contact", e);
         }
     }
 }
