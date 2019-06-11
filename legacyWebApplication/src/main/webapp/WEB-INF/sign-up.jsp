@@ -1,7 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
-<%@ page isELIgnored="false" %>
-
 <html lang="en">
 <head>
     <%@ include file="header.html" %>
@@ -11,7 +8,7 @@
 </head>
 <body>
 <div>
-<%@ include file="menu.html" %>
+<%@ include file="menu.jsp" %>
     <div class="container">
             <p>${error}</p>
             <form class="form-horizontal col-lg-6 offset-lg-3" id="singUpForm" action="q?command=Signup" method="post">

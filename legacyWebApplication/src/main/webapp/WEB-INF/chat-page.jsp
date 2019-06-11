@@ -1,6 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-
-<html lang="en">
 <head>
     <%@ include file="header.html" %>
     <style>
@@ -11,7 +9,7 @@
 </head>
 <body>
 <div class="frame_container">
-<%@ include file="menu.html" %>
+<%@ include file="menu.jsp" %>
 <div class="container">
     <div class="messaging">
         <div class="inbox_msg">

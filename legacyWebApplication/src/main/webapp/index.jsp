@@ -6,7 +6,7 @@
 </head>
 <body>
 <div class="frame_container">
-<%@ include file="/WEB-INF/menu.html" %>
+<%@ include file="/WEB-INF/menu.jsp" %>
     <div class="container">
         <h2>instant messenger web application</h2>
         <p>...bla bla bla</p>
