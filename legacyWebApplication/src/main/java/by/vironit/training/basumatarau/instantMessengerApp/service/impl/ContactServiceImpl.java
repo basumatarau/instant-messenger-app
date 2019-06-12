@@ -57,6 +57,23 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
+    public void removeContactForOwnerAndUser(User owner, User person) throws ServiceException {
+        try {
+            final Optional<Contact> contactOne = contactDao.getContactsFoOwnerAndPerson(owner, person);
+            if(contactOne.isPresent()){
+                contactDao.delete(contactOne.get());
+            }
+
+            final Optional<Contact> contactTwo = contactDao.getContactsFoOwnerAndPerson(person, owner);
+            if(contactTwo.isPresent()){
+                contactDao.delete(contactTwo.get());
+            }
+        } catch (DaoException e) {
+            throw new ServiceException("failed to fetch contact", e);
+        }
+    }
+
+    @Override
     public void confirmContactRequest(Contact contact) throws ServiceException {
         try {
             final Contact newContactRequest

@@ -17,4 +17,5 @@ public interface ContactService {
     Optional<Contact> findContactById(Long id) throws ServiceException;
 
     Optional<Contact> getContactByOwnerAndUser(User owner, User authorizedUser) throws ServiceException;
+    void removeContactForOwnerAndUser(User owner, User person) throws ServiceException;
 }

@@ -27,6 +27,9 @@ public class ContactListCommand extends Command {
     private final static String SEND_REQUEST = "sendRequest";
     private final static String DELETE_CONTACT = "deleteContact";
     private final static String CONFIRM_REQUEST = "confirmRequest";
+    private final static String UNFRIEND_REQUEST = "unfriend";
+    private final static String DECLINE_REQUEST = "declineRequest";
+    private final static String CONTACT = "contactId";
 
     private final ContactService contactService;
     private final UserService userService;
@@ -49,92 +52,165 @@ public class ContactListCommand extends Command {
                 RequestHandler.getLong(req, SEND_REQUEST) : null;
         final Long deleteUserContactWithId = req.getParameter(DELETE_CONTACT) != null ?
                 RequestHandler.getLong(req, DELETE_CONTACT) : null;
-        final Long confirmRequestWithId = req.getParameter(CONFIRM_REQUEST) != null ?
-                RequestHandler.getLong(req, CONFIRM_REQUEST) : null;
+        final Long contactId = req.getParameter(CONTACT) != null ?
+                RequestHandler.getLong(req, CONTACT) : null;
+        final Long unfriednUserId = req.getParameter(UNFRIEND_REQUEST) != null ?
+                RequestHandler.getLong(req, UNFRIEND_REQUEST) : null;
 
         if (likeParam != null) {
-            try {
-
-                users = userService.searchUsersWithPattern(authorizedUser, likeParam);
-                req.setAttribute("userSearchResults", users);
-            } catch (ServiceException e) {
-                //logger.log
+            if (searchUsers(req, authorizedUser, likeParam)) {
                 return Action.ERROR.getCommand();
             }
         }else if(sendRequestToUserWithId != null){
-            try {
 
+            try {
                 User owner = userService.findUserById(sendRequestToUserWithId)
                         .orElseThrow(() -> new ControllerException("user not found"));
-
                 final boolean present = contactService.getContactByOwnerAndUser(owner, authorizedUser)
                         .isPresent();
                 if(present){
-                    throw new ControllerException("contact is already pending");
+                    req.setAttribute("message", "contact is already pending");
                 }
-
                 contactService.sendContactRequestToUser(owner, authorizedUser);
             } catch (ServiceException e) {
                 //logger.log
+                return  Action.ERROR.getCommand();
+            }
+
+            if (getAndRenderUserContacts(req, authorizedUser)){
                 return Action.ERROR.getCommand();
             }
         }else if(deleteUserContactWithId != null){
-            try {
-                final Contact contact
-                        = contactService.findContactById(deleteUserContactWithId)
-                        .orElseThrow(() -> new ControllerException("contact not found"));
-                if(!contact.getOwner().equals(authorizedUser)){
-                    throw new ControllerException("contact not found");
-                    //logger.log + user ban if persisted ?
-                }
-                contactService.removeContact(contact);
-
-                if(contact.getIsConfirmed()) {
-                    final Optional<Contact> cont
-                            = contactService.getContactByOwnerAndUser(authorizedUser, contact.getOwner());
-                    if(cont.isPresent()){
-                        contactService.removeContact(cont.get());
-                    }
-                }
-            } catch (ServiceException e) {
-                //logger.log
+            if (deleteContactWithUserId(authorizedUser, deleteUserContactWithId)) {
                 return Action.ERROR.getCommand();
             }
-        }else if(confirmRequestWithId != null){
-            try {
-                final Contact contact
-                        = contactService.findContactById(confirmRequestWithId)
-                        .orElseThrow(() -> new ControllerException("no contact found"));
-                if(!contact.getOwner().equals(authorizedUser)){
-                    throw new ControllerException("no contact found");
-                    //logger.log + user ban if persisted ?
-                }
-                contactService.confirmContactRequest(contact);
-            } catch (ServiceException e) {
-                //logger.log
+            if (getAndRenderUserContacts(req, authorizedUser)){
                 return Action.ERROR.getCommand();
             }
-
-            try {
-                contactsForUser = contactService.findAllContactsForUser(authorizedUser);
-                req.setAttribute("userContacts", contactsForUser);
-            } catch (ServiceException e) {
-                //logger.log
+        }else if(req.getParameter(CONFIRM_REQUEST) != null){
+            if (confirmFriendRequest(authorizedUser, contactId)) {
                 return Action.ERROR.getCommand();
             }
-            req.setAttribute("userContacts", contactsForUser);
-
+            if (getAndRenderUserContacts(req, authorizedUser)) {
+                return Action.ERROR.getCommand();
+            }
+        }else if(unfriednUserId !=null){
+            if (unfriendUser(authorizedUser, unfriednUserId)) {
+                return Action.ERROR.getCommand();
+            }
+            if (getAndRenderUserContacts(req, authorizedUser)){
+                return Action.ERROR.getCommand();
+            }
+        }else if(req.getParameter(DECLINE_REQUEST) != null){
+            if (declineFriendRequestWithId(contactId)) {
+                return Action.ERROR.getCommand();
+            }
+            if (getAndRenderUserContacts(req, authorizedUser)){
+                return Action.ERROR.getCommand();
+            }
         } else {
-            try {
-                contactsForUser = contactService.findAllContactsForUser(authorizedUser);
-                req.setAttribute("userContacts", contactsForUser);
-            } catch (ServiceException e) {
-                //logger.log
+            if (getAndRenderUserContacts(req, authorizedUser)){
                 return Action.ERROR.getCommand();
             }
-            req.setAttribute("userContacts", contactsForUser);
         }
         return null;
+    }
+
+    private boolean declineFriendRequestWithId(Long contactId) throws ControllerException {
+        try {
+            final Contact contact = contactService.findContactById(contactId)
+                    .orElseThrow(() -> new ControllerException("no contact found"));
+            contactService.declineContactRequest(contact);
+        } catch (ServiceException e) {
+            //logger.log
+            return true;
+        }
+        return false;
+    }
+
+    private boolean searchUsers(HttpServletRequest req, User authorizedUser, String likeParam) {
+        List<UserDto> users;
+        try {
+            users = userService.searchUsersWithPattern(authorizedUser, likeParam);
+            req.setAttribute("userSearchResults", users);
+        } catch (ServiceException e) {
+            //logger.log
+            return true;
+        }
+        return false;
+    }
+
+    private boolean sendFriendRequestToUserWithId(User authorizedUser, Long sendRequestToUserWithId) throws ControllerException {
+
+        return false;
+    }
+
+    private boolean deleteContactWithUserId(User authorizedUser, Long deleteUserContactWithId) throws ControllerException {
+        try {
+            final Contact contact
+                    = contactService.findContactById(deleteUserContactWithId)
+                    .orElseThrow(() -> new ControllerException("contact not found"));
+            if(!contact.getOwner().equals(authorizedUser)){
+                throw new ControllerException("contact not found");
+                //logger.log + user ban if persisted ?
+            }
+
+            contactService.removeContact(contact);
+            if(contact.getIsConfirmed()) {
+                final Optional<Contact> cont
+                        = contactService.getContactByOwnerAndUser(authorizedUser, contact.getOwner());
+                if(cont.isPresent()){
+                    contactService.removeContact(cont.get());
+                }
+            }
+        } catch (ServiceException e) {
+            //logger.log
+            return true;
+        }
+        return false;
+    }
+
+    private boolean confirmFriendRequest(User authorizedUser, Long contactId) throws ControllerException {
+        try {
+            final Contact contact
+                    = contactService.findContactById(contactId)
+                    .orElseThrow(() -> new ControllerException("no contact found"));
+            if(!contact.getOwner().equals(authorizedUser)){
+                throw new ControllerException("no contact found");
+                //logger.log + user ban if persisted ?
+            }
+            contactService.confirmContactRequest(contact);
+        } catch (ServiceException e) {
+            //logger.log
+            return true;
+        }
+        return false;
+    }
+
+    private boolean getAndRenderUserContacts(HttpServletRequest req, User authorizedUser) {
+        List<ContactDto> contactsForUser;
+        try {
+            contactsForUser = contactService.findAllContactsForUser(authorizedUser);
+            req.setAttribute("userContacts", contactsForUser);
+        } catch (ServiceException e) {
+            //logger.log
+            return true;
+        }
+        req.setAttribute("userContacts", contactsForUser);
+        return false;
+    }
+
+    private boolean unfriendUser(User authorizedUser, Long unfriednUserId) throws ControllerException {
+        try {
+            final User unfriendedUser = userService.findUserById(unfriednUserId)
+                    .orElseThrow(() -> new ControllerException("no user found"));
+
+            contactService.removeContactForOwnerAndUser(unfriendedUser, authorizedUser);
+        } catch (ServiceException e) {
+            //logger.log
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -61,11 +61,18 @@ public class UserServiceImpl implements UserService {
                 .stream()
                 .map(UserDto::getDto)
                 .map(uDto -> {
-                    final boolean myFriend = contactsForUser
+                    final Optional<Contact> c = contactsForUser
                             .stream()
-                            .anyMatch(contact -> contact.getPerson().getId().equals(uDto.getId()));
-                    if(myFriend){
-                        uDto.setMyFriend(true);
+                            .filter(contact -> contact.getPerson().getId().equals(uDto.getId()))
+                            .findFirst();
+                    if(c.isPresent()){
+                        if(c.get().getIsConfirmed()){
+                            uDto.setStatus(UserDto.Status.MY_FRIEND);
+                        }else{
+                            uDto.setStatus(UserDto.Status.PENDING);
+                        }
+                    }else {
+                        uDto.setStatus(UserDto.Status.STRANGER);
                     }
                     return uDto;
                 })

@@ -12,6 +12,7 @@
         <p>${error}</p>
 
         <h2>Profile page</h2>
+        <p>to be implemented</p>
     </div>
 </body>
 </html>
