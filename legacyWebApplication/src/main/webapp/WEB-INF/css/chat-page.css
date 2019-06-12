@@ -3,13 +3,11 @@ body {
     height: 100%;
     margin: 0
 }
-
 .frame_container{
     display: flex;
     flex-flow: column;
     height: 100%
 }
-
 .container{
     max-width:1170px;
     margin:auto;

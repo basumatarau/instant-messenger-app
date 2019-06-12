@@ -136,7 +136,7 @@ CREATE TABLE legacy_im_db_schema.messages (
 	id bigint NOT NULL DEFAULT nextval('legacy_im_db_schema.messages_id_seq'),
 	messagetype varchar(45) NOT NULL,
 	body varchar(500) NOT NULL,
-	timesent timestamp NOT NULL,
+	timesent int8 NOT NULL,
 	id_contact int8 NULL,
 	id_author int8 NOT NULL,
 	id_messageresource int8 NULL,
@@ -148,6 +148,8 @@ CREATE TABLE legacy_im_db_schema.messages (
 );
 CREATE INDEX message_timesent_idx ON legacy_im_db_schema.messages USING btree (timesent);
 CREATE INDEX private_messages_id_author_idx ON legacy_im_db_schema.messages USING btree (id_author);
+CREATE INDEX messages_id_contact_idx ON legacy_im_db_schema.messages (id_contact);
+CREATE INDEX messages_timesent_idx ON legacy_im_db_schema.messages (timesent);
 
 --## ALTER SEQUENCE messages_id_seq OWNED BY messages.id;
 

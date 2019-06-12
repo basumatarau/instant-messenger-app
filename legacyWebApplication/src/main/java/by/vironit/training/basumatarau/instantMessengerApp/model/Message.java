@@ -5,8 +5,8 @@ import java.util.Objects;
 
 public abstract class Message {
 
-    static final String DISTRIBUTED_MESSAGE_TYPE = "dm";
-    static final String PRIVATE_MESSAGE_TYPE = "pm";
+    public static final String DISTRIBUTED_MESSAGE_TYPE = "dm";
+    public static final String PRIVATE_MESSAGE_TYPE = "pm";
 
     private Long id;
     private String body;
@@ -17,6 +17,7 @@ public abstract class Message {
     public Message(){}
 
     protected Message(MessageBuilder builder){
+        this.id = builder.id;
         this.body = builder.body;
         this.author = builder.author;
         this.timeSent =  builder.timeSent;
@@ -25,6 +26,7 @@ public abstract class Message {
 
     public static abstract class MessageBuilder
             <M extends Message, B extends MessageBuilder<M, B>>{
+        private Long id;
         private String body;
         private User author;
         private Date timeSent;
@@ -51,6 +53,13 @@ public abstract class Message {
         @SuppressWarnings("unchecked")
         public B timeSent(Date timeSent){
             this.timeSent = timeSent;
+            return ((B) this);
+        }
+
+        /**see also {@link #body(String)} */
+        @SuppressWarnings("unchecked")
+        public B id(Long id){
+            this.id = id;
             return ((B) this);
         }
 

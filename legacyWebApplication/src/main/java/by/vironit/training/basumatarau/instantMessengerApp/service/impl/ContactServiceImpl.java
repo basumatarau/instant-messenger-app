@@ -33,15 +33,18 @@ public class ContactServiceImpl implements ContactService {
     public void sendContactRequestToUser(User user, User person)
             throws ServiceException {
         try {
+            final Optional<Contact> contact
+                    = contactDao.getContactsFoOwnerAndPerson(user, person);
 
-            final Contact newContactRequest
-                    = new Contact.ContactBuilder()
-                    .owner(user)
-                    .person(person)
-                    .confirmed(false)
-                    .build();
-
-            contactDao.save(newContactRequest);
+            if(!contact.isPresent()){
+                final Contact newContactRequest
+                        = new Contact.ContactBuilder()
+                        .owner(user)
+                        .person(person)
+                        .confirmed(false)
+                        .build();
+                contactDao.save(newContactRequest);
+            }
         } catch (DaoException | InstantiationException e) {
             throw new ServiceException("failed to add contact", e);
         }

@@ -59,11 +59,11 @@ public class UserServiceImpl implements UserService {
 
         return users
                 .stream()
-                .map(UserDto::getDto)
-                .map(uDto -> {
+                .map(u -> {
+                    final UserDto uDto = UserDto.getDto(u);
                     final Optional<Contact> c = contactsForUser
                             .stream()
-                            .filter(contact -> contact.getPerson().getId().equals(uDto.getId()))
+                            .filter(contact -> contact.getPerson().equals(u))
                             .findFirst();
                     if(c.isPresent()){
                         if(c.get().getIsConfirmed()){
