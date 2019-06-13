@@ -16,8 +16,12 @@ import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao = DaoProvider.DAO.userDao;
-    private final ContactDao contactDao = DaoProvider.DAO.contactDao;
+    private final UserDao userDao;
+    private final ContactDao contactDao;
+    {
+        userDao = DaoProvider.DAO.userDao;
+        contactDao = DaoProvider.DAO.contactDao;
+    }
 
     @Override
     public Optional<User> findUserByEmail(String email)

@@ -104,15 +104,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                         .enabled(true)
                         .build();
             }
-
-            connection.commit();
         } catch (SQLException | InstantiationException e) {
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
-                //todo logger.log
-                throw new RuntimeException("failed to rollback transaction", ex);
-            }
             throw new DaoException(e);
         } finally {
             getConnectionPool()

@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface ContactDao extends CrudDao<Contact, Long>{
     List<Contact> getContactsForUser(User user) throws DaoException;
-
+    List<Contact> getContactsWithConversationsForUser(User user) throws DaoException;
     Optional<Contact> getContactsFoOwnerAndPerson(User owner, User person) throws DaoException;
 }

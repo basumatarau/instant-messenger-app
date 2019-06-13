@@ -158,7 +158,7 @@ public class ContactListCommand extends Command {
             contactService.removeContact(contact);
             if(contact.getIsConfirmed()) {
                 final Optional<Contact> cont
-                        = contactService.getContactByOwnerAndUser(authorizedUser, contact.getOwner());
+                        = contactService.getContactByOwnerAndUser(contact.getPerson(), contact.getOwner());
                 if(cont.isPresent()){
                     contactService.removeContact(cont.get());
                 }

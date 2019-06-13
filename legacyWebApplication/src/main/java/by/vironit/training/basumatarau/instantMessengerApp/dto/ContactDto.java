@@ -2,6 +2,8 @@ package by.vironit.training.basumatarau.instantMessengerApp.dto;
 
 import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
 
+import java.util.Objects;
+
 public class ContactDto {
     private final Long id;
     private final Boolean confirmed;
@@ -40,5 +42,18 @@ public class ContactDto {
 
     public Boolean getConfirmed() {
         return confirmed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContactDto that = (ContactDto) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

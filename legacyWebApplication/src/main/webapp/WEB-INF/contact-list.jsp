@@ -105,7 +105,7 @@
                                                 <form class="contact-form" action="q?command=Chat" method="post">
                                                     <c:choose>
                                                         <c:when test="${contact.confirmed}">
-                                                            <input name="contactId" type="hidden" value="${contact.id}">
+                                                            <input name="messageToContactId" type="hidden" value="${contact.id}">
                                                             <input type="submit" name="startConversation" value="message" class="btn btn-info"/>
                                                         </c:when>
                                                         <c:otherwise>

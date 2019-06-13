@@ -14,7 +14,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ContactServiceImpl implements ContactService {
-    private final ContactDao contactDao = DaoProvider.DAO.contactDao;
+    private final ContactDao contactDao;
+    {
+        contactDao = DaoProvider.DAO.contactDao;
+    }
 
 
     @Override
@@ -118,6 +121,15 @@ public class ContactServiceImpl implements ContactService {
             return contactDao.getContactsFoOwnerAndPerson(owner, authorizedUser);
         } catch (DaoException e) {
             throw new ServiceException("failed to fetch contact", e);
+        }
+    }
+
+    @Override
+    public List<Contact> getContactsWithMessages(User owner) throws ServiceException {
+        try {
+            return contactDao.getContactsWithConversationsForUser(owner);
+        } catch (DaoException e) {
+            throw new ServiceException("failed to fetch contacts with conversations", e);
         }
     }
 }

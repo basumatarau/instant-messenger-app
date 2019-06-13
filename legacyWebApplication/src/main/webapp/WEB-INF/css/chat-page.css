@@ -51,7 +51,7 @@ img{
     solid #c4c4c4;
 }
 .inbox_chat {
-    height: 550px;
+    height: 480px;
     overflow-y: scroll;
 }
 .recent_heading h4 {
@@ -178,6 +178,6 @@ img{
     max-height: 100%;
 }
 .msg_history {
-  height: 516px;
+  height: 446px;
   overflow-y: auto;
 }

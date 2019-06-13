@@ -18,4 +18,5 @@ public interface ContactService {
 
     Optional<Contact> getContactByOwnerAndUser(User owner, User authorizedUser) throws ServiceException;
     void removeContactForOwnerAndUser(User owner, User person) throws ServiceException;
+    List<Contact> getContactsWithMessages(User owner) throws ServiceException;
 }
