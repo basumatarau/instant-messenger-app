@@ -181,3 +181,6 @@ img{
   height: 446px;
   overflow-y: auto;
 }
+#hint-para{
+  text-align: center
+}

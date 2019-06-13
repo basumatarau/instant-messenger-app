@@ -62,6 +62,7 @@ public class ChatCommand extends Command {
                         contactsForUser.remove(contact);
                         contactsForUser.add(0, contact);
                     }
+                    req.setAttribute("currentContact", contactById);
                     req.setAttribute("conversation", messagesForContact);
                 } else {
                     req.setAttribute("message", "contact not found");

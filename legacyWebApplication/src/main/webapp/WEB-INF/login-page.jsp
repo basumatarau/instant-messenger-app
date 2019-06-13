@@ -6,6 +6,7 @@
         type="text/css" rel="stylesheet">
 </head>
 <body>
+
 <div class="frame_container">
 <%@ include file="menu.jsp" %>
 
