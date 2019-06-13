@@ -29,7 +29,7 @@
 
                 <div class="inbox_chat">
                     <c:forEach items="${contactsForUser}" var="contact">
-                        <div class="chat_list <c:if test="${not empty currentContact}"> active_chat</c:if>">
+                        <div class="chat_list <c:if test="${(not empty currentContact) && (currentContact.id == contact.id)}"> active_chat</c:if>">
                             <div class="chat_people">
                                 <form action="q?command=Chat" method="post" hidden>
                                     <input name="messageToContactId" value="${contact.id}" hidden>
@@ -80,7 +80,9 @@
                 <% } else {%>
                     <div class="container">
                         <p id="hint-para">select one of the recent conversations</p>
-                        <p id="hint-para">(or start a new one)</p>
+                        <a href="<%=request.getContextPath()%>/q?command=ContactList">
+                            <p id="hint-para">(or start a new one)</p>
+                        </a>
                     </div>
                 <% } %>
             </div>
