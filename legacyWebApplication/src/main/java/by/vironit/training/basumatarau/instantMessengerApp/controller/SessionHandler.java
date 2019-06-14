@@ -2,12 +2,17 @@ package by.vironit.training.basumatarau.instantMessengerApp.controller;
 
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class SessionHandler {
     private static final String AUTHORIZED_USER = "user";
     private static final String AUTHORIZED_USER_CONTACTS = "userContacts";
 
     private SessionHandler() {
+    }
+
+    public static User getAuthorizedUser(HttpSession session) {
+        return (User) session.getAttribute(AUTHORIZED_USER);
     }
 
     public static User getAuthorizedUser(HttpServletRequest req) {
