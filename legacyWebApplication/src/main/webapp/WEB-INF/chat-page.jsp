@@ -29,7 +29,7 @@
 
                 <div class="inbox_chat">
                     <c:forEach items="${contactsForUser}" var="contactEntry">
-                        <div class="chat_list <c:if test="${(not empty currentContact) && (currentContact.id == contact.id)}"> active_chat</c:if>">
+                        <div class="chat_list <c:if test="${(not empty currentContact) && (currentContact.id == contactEntry.key.id)}"> active_chat</c:if>">
                             <div class="chat_people">
                                 <form action="q?command=Chat" method="post" hidden>
                                     <input name="messageToContactId" value="${contactEntry.key.id}" hidden>
