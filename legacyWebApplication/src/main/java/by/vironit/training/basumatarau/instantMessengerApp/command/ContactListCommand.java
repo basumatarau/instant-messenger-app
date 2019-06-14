@@ -3,7 +3,7 @@ package by.vironit.training.basumatarau.instantMessengerApp.command;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.Action;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.RequestHandler;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.SessionHandler;
-import by.vironit.training.basumatarau.instantMessengerApp.dto.ContactDto;
+import by.vironit.training.basumatarau.instantMessengerApp.dto.ContactVo;
 import by.vironit.training.basumatarau.instantMessengerApp.dto.UserDto;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.ControllerException;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.ServiceException;
@@ -43,7 +43,7 @@ public class ContactListCommand extends Command {
     public Command process(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException, ValidationException, ControllerException {
         final User authorizedUser = SessionHandler.getAuthorizedUser(req);
-        List<ContactDto> contactsForUser;
+        List<ContactVo> contactsForUser;
         List<UserDto> users;
 
         final String likeParam = req.getParameter(LIKE_PARAM) != null ?
@@ -188,7 +188,7 @@ public class ContactListCommand extends Command {
     }
 
     private boolean getAndRenderUserContacts(HttpServletRequest req, User authorizedUser) {
-        List<ContactDto> contactsForUser;
+        List<ContactVo> contactsForUser;
         try {
             contactsForUser = contactService.findAllContactsForUser(authorizedUser);
             req.setAttribute("userContacts", contactsForUser);

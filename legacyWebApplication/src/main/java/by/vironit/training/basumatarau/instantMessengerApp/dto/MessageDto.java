@@ -9,13 +9,13 @@ public class MessageDto {
     private final UserDto author;
     private final String body;
     private final Date timesent;
-    private final ContactDto contact;
+    private final ContactVo contact;
 
     public MessageDto(Long id,
                       UserDto author,
                       String body,
                       Date timesent,
-                      ContactDto contact) {
+                      ContactVo contact) {
         this.id = id;
         this.author = author;
         this.body = body;
@@ -29,7 +29,7 @@ public class MessageDto {
             UserDto.getDto(message.getAuthor()),
             message.getBody(),
             message.getTimeSent(),
-            ContactDto.getDto(message.getContact())
+            ContactVo.getDto(message.getContact())
         );
     }
 
@@ -49,7 +49,7 @@ public class MessageDto {
         return timesent;
     }
 
-    public ContactDto getContact() {
+    public ContactVo getContact() {
         return contact;
     }
 }

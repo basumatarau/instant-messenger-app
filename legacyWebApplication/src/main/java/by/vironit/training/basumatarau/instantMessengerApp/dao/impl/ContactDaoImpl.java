@@ -2,40 +2,43 @@ package by.vironit.training.basumatarau.instantMessengerApp.dao.impl;
 
 import by.vironit.training.basumatarau.instantMessengerApp.dao.ContactDao;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
-import by.vironit.training.basumatarau.instantMessengerApp.dao.RoleDao;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.DaoException;
-import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
-import by.vironit.training.basumatarau.instantMessengerApp.model.Role;
-import by.vironit.training.basumatarau.instantMessengerApp.model.User;
+import by.vironit.training.basumatarau.instantMessengerApp.model.*;
 
 import java.sql.*;
+import java.util.*;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
 
 public class ContactDaoImpl extends BaseDao implements ContactDao {
 
     private static final String FIND_ALL_CONTACTS_WITH_CONVERSATIONS_FOR_USER_SQL_STATEMENT =
-            "explain analyse select distinct on (id_contact) * from ( " +
+            "select distinct on (id_contact) * from (" +
                     "select " +
-                    "c.id as id_contact, " +
-                    "c.confirmed as confirmed, " +
-                    "per.id as per_id, " +
-                    "per.id_role as person_id_role, " +
-                    "per.enabled as person_enabled, " +
-                    "per.email as person_email, " +
-                    "per.firstname as person_firstname, " +
-                    "per.lastname as person_lastname, " +
-                    "per.nickname as person_nickname, " +
-                    "per.passwordhash as person_pwd_hash, " +
-                    "per.salt as person_salt " +
-                    "from legacy_im_db_schema.contacts as c " +
-                    "inner join legacy_im_db_schema.users as per on " +
-                    "c.id_person=per.id " +
-                    "inner join legacy_im_db_schema.messages as m " +
-                    "on c.id=m.id_contact " +
-                    "where c.id_owner=13) as foo";
+                        "c.id as id_contact, " +
+                        "c.confirmed as confirmed, " +
+                        "c.id_owner as own_id, " +
+                        "per.id as per_id, " +
+                        "per.id_role as pwerson_id_role, " +
+                        " per.enabled as person_enabled, " +
+                        "per.email as person_email, " +
+                        "per.firstname as person_firstname, " +
+                        "per.lastname as person_lastname, " +
+                        "per.nickname as person_nickname, " +
+                        "per.passwordhash as person_pwd_hash, " +
+                        "per.salt as person_salt, " +
+                        "m.id as message_id, " +
+                        "m.body as message_body, " +
+                        "m.timesent as message_times_sent, " +
+                        "m.id_author as message_author_id " +
+                    "from legacy_im_db_schema.contacts as con " +
+                        "right join legacy_im_db_schema.contacts as c on " +
+                            "con.id_owner=c.id_person and con.id_person=c.id_owner or " +
+                            "con.id_owner=c.id_owner and con.id_person=c.id_person " +
+                        "inner join legacy_im_db_schema.users as per on " +
+                            "c.id_person=per.id " +
+                        "inner join legacy_im_db_schema.messages as m " +
+                            "on c.id=m.id_contact " +
+                        "where con.id_owner=?) as foo ";
 
     private static final String SELECT_CONTACT_BY_OWNER_AND_PERSON =
             "select " +
@@ -398,11 +401,11 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
     }
 
     @Override
-    public List<Contact> getContactsWithConversationsForUser(User user) throws DaoException {
+    public Map<Contact, PrivateMessage> getContactsWithLastMessageForUser(User user) throws DaoException {
         final Connection connection = getConnectionPool().takeConnection();
         PreparedStatement ps = null;
         ResultSet resultSet = null;
-        List<Contact> contacts = new LinkedList<>();
+        Map<Contact, PrivateMessage> cantactsAndLastMessages = new LinkedHashMap<>();
 
         try {
             ps = connection.prepareStatement(FIND_ALL_CONTACTS_WITH_CONVERSATIONS_FOR_USER_SQL_STATEMENT);
@@ -414,17 +417,22 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                 final Optional<Role> personRole
                         = DaoProvider.DAO.roleDao.findById(resultSet.getInt("person_id_role"));
 
-                final User person = new User.UserBuilder()
-                        .id(resultSet.getLong("per_id"))
-                        .firstName(resultSet.getString("person_firstname"))
-                        .lastName(resultSet.getString("person_lastname"))
-                        .nickName(resultSet.getString("person_nickname"))
-                        .email(resultSet.getString("person_email"))
-                        .enabled(resultSet.getBoolean("person_enabled"))
-                        .passwordHash(resultSet.getString("person_pwd_hash"))
-                        .salt(resultSet.getBytes("person_salt"))
-                        .role(personRole.orElseThrow(()-> new InstantiationException("cant fetch Role instance")))
-                        .build();
+                User person;
+                if (user.getId().equals(resultSet.getLong("per_id"))) {
+                    person = new User.UserBuilder()
+                            .id(resultSet.getLong("per_id"))
+                            .firstName(resultSet.getString("person_firstname"))
+                            .lastName(resultSet.getString("person_lastname"))
+                            .nickName(resultSet.getString("person_nickname"))
+                            .email(resultSet.getString("person_email"))
+                            .enabled(resultSet.getBoolean("person_enabled"))
+                            .passwordHash(resultSet.getString("person_pwd_hash"))
+                            .salt(resultSet.getBytes("person_salt"))
+                            .role(personRole.orElseThrow(()-> new InstantiationException("cant fetch Role instance")))
+                            .build();
+                }else{
+                    person = user;
+                }
 
                 final Contact contact = new Contact.ContactBuilder()
                         .id(resultSet.getLong("contact_id"))
@@ -432,7 +440,16 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                         .owner(user)
                         .person(person)
                         .build();
-                contacts.add(contact);
+
+                final PrivateMessage lastMessage = new PrivateMessage.PrivateMessageBuilder()
+                        .author(person)
+                        .contact(contact)
+                        .body(resultSet.getString("message_body"))
+                        .timeSent(new Date(resultSet.getLong("message_times_sent")))
+                        .id(resultSet.getLong("message_id"))
+                        .build();
+
+                cantactsAndLastMessages.put(contact, lastMessage);
             }
 
         } catch (SQLException | InstantiationException e) {
@@ -441,6 +458,6 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
             getConnectionPool()
                     .closeConnection(resultSet, ps, connection);
         }
-        return contacts;
+        return cantactsAndLastMessages;
     }
 }

@@ -3,7 +3,7 @@ package by.vironit.training.basumatarau.instantMessengerApp.command;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.Action;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.RequestHandler;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.SessionHandler;
-import by.vironit.training.basumatarau.instantMessengerApp.dto.ContactDto;
+import by.vironit.training.basumatarau.instantMessengerApp.dto.ContactVo;
 import by.vironit.training.basumatarau.instantMessengerApp.dto.MessageDto;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.ServiceException;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.ValidationException;
@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ChatCommand extends Command {
@@ -31,10 +32,10 @@ public class ChatCommand extends Command {
         final Long messageParamId = req.getParameter(MESSAGE_TO_CONTACT_WITH_ID) != null ?
                 RequestHandler.getLong(req, MESSAGE_TO_CONTACT_WITH_ID) : null;
 
-        List<ContactDto> contactsForUser;
+        Map<ContactVo, MessageDto> contactsForUser;
         try {
-            contactsForUser =
-                    contactService.findAllContactsForUser(SessionHandler.getAuthorizedUser(req));
+            contactsForUser
+                    = contactService.getContactsAndLastMessages(SessionHandler.getAuthorizedUser(req));
         } catch (ServiceException e) {
             //logger.log
             return Action.ERROR.getCommand();
@@ -51,21 +52,17 @@ public class ChatCommand extends Command {
             }
             try {
                 if (contactById.isPresent()) {
-                    final ContactDto contact = contactById.map(ContactDto::getDto).get();
+                    final ContactVo contact = contactById.map(ContactVo::getDto).get();
                     final List<MessageDto> messagesForContact
                             = messageService
                             .getMessagesForContact(contact);
 
-                    if(!contactsForUser.contains(contact)) {
-                        contactsForUser.add(0, contact);
-                    }else{
-                        contactsForUser.remove(contact);
-                        contactsForUser.add(0, contact);
+                    if(!contactsForUser.containsKey(contact)) {
+                        contactsForUser.put(contact, null);
                     }
                     req.setAttribute("currentContact", contactById.get());
                     req.setAttribute("conversation", messagesForContact);
                     //
-
                 } else {
                     req.setAttribute("message", "contact not found");
                 }

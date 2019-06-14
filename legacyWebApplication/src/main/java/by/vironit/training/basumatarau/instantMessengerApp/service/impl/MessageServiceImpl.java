@@ -3,7 +3,7 @@ package by.vironit.training.basumatarau.instantMessengerApp.service.impl;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.ContactDao;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.MessageDao;
-import by.vironit.training.basumatarau.instantMessengerApp.dto.ContactDto;
+import by.vironit.training.basumatarau.instantMessengerApp.dto.ContactVo;
 import by.vironit.training.basumatarau.instantMessengerApp.dto.MessageDto;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.DaoException;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.ServiceException;
@@ -26,7 +26,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<MessageDto> getMessagesForContact(ContactDto contactDto)
+    public List<MessageDto> getMessagesForContact(ContactVo contactDto)
             throws ServiceException {
         List<PrivateMessage> messages = new LinkedList<>();
         final Optional<Contact> ownerContact;

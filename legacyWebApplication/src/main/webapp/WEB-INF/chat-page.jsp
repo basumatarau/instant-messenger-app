@@ -28,16 +28,16 @@
                 </div>
 
                 <div class="inbox_chat">
-                    <c:forEach items="${contactsForUser}" var="contact">
+                    <c:forEach items="${contactsForUser}" var="contactEntry">
                         <div class="chat_list <c:if test="${(not empty currentContact) && (currentContact.id == contact.id)}"> active_chat</c:if>">
                             <div class="chat_people">
                                 <form action="q?command=Chat" method="post" hidden>
-                                    <input name="messageToContactId" value="${contact.id}" hidden>
+                                    <input name="messageToContactId" value="${contactEntry.key.id}" hidden>
                                 </form>
-                                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="${contact.person.nName}"> </div>
+                                <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="${contactEntry.key.person.nName}"> </div>
                                 <div class="chat_ib">
-                                    <h5>${contact.person.fName} ${contact.person.lName}<span class="chat_date">[date last msg]</span></h5>
-                                    <p> test (last sent message) </p>
+                                    <h5>${contactEntry.key.person.fName} ${contactEntry.key.person.lName} <span class="chat_date">${contactEntry.value.timesent}</span></h5>
+                                    <p> ${contactEntry.value.body} </p>
                                 </div>
                             </div>
                         </div>

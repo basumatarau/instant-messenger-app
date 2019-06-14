@@ -2,14 +2,18 @@ package by.vironit.training.basumatarau.instantMessengerApp.service.impl;
 
 import by.vironit.training.basumatarau.instantMessengerApp.dao.ContactDao;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
-import by.vironit.training.basumatarau.instantMessengerApp.dto.ContactDto;
+import by.vironit.training.basumatarau.instantMessengerApp.dto.ContactVo;
+import by.vironit.training.basumatarau.instantMessengerApp.dto.MessageDto;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.DaoException;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.ServiceException;
 import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
+import by.vironit.training.basumatarau.instantMessengerApp.model.PrivateMessage;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.service.ContactService;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -21,11 +25,11 @@ public class ContactServiceImpl implements ContactService {
 
 
     @Override
-    public List<ContactDto> findAllContactsForUser(User user) throws ServiceException{
+    public List<ContactVo> findAllContactsForUser(User user) throws ServiceException{
         try {
             return contactDao.getContactsForUser(user)
                     .stream()
-                    .map((ContactDto::getDto))
+                    .map((ContactVo::getDto))
                     .collect(Collectors.toList());
         } catch (DaoException e) {
             throw new ServiceException("failed to retrieve user contacts", e);
@@ -125,9 +129,16 @@ public class ContactServiceImpl implements ContactService {
     }
 
     @Override
-    public List<Contact> getContactsWithMessages(User owner) throws ServiceException {
+    public Map<ContactVo, MessageDto> getContactsAndLastMessages(User owner) throws ServiceException {
         try {
-            return contactDao.getContactsWithConversationsForUser(owner);
+            final LinkedHashMap<ContactVo, MessageDto> contactVosAndLastMessageDto = new LinkedHashMap<>();
+            for (Map.Entry<Contact, PrivateMessage> entry :
+                    contactDao.getContactsWithLastMessageForUser(owner).entrySet()) {
+                contactVosAndLastMessageDto.put(
+                        ContactVo.getDto(entry.getKey()),
+                        MessageDto.getDto(entry.getValue()));
+            }
+            return contactVosAndLastMessageDto;
         } catch (DaoException e) {
             throw new ServiceException("failed to fetch contacts with conversations", e);
         }

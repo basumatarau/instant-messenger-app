@@ -4,24 +4,24 @@ import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
 
 import java.util.Objects;
 
-public class ContactDto {
+public class ContactVo {
     private final Long id;
     private final Boolean confirmed;
     private final UserDto owner;
     private final UserDto person;
 
-    public ContactDto(Long id,
-                      Boolean confirmed,
-                      UserDto owner,
-                      UserDto person) {
+    public ContactVo(Long id,
+                     Boolean confirmed,
+                     UserDto owner,
+                     UserDto person) {
         this.id = id;
         this.confirmed = confirmed;
         this.owner = owner;
         this.person = person;
     }
 
-    public static ContactDto getDto(Contact contact){
-        return new ContactDto(contact.getId(),
+    public static ContactVo getDto(Contact contact){
+        return new ContactVo(contact.getId(),
                 contact.getIsConfirmed(),
                 UserDto.getDto(contact.getOwner()),
                 UserDto.getDto(contact.getPerson())
@@ -48,7 +48,7 @@ public class ContactDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ContactDto that = (ContactDto) o;
+        ContactVo that = (ContactVo) o;
         return Objects.equals(id, that.id);
     }
 
