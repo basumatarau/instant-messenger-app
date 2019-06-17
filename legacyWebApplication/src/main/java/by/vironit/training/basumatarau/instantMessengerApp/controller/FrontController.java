@@ -2,15 +2,20 @@ package by.vironit.training.basumatarau.instantMessengerApp.controller;
 
 import by.vironit.training.basumatarau.instantMessengerApp.command.Command;
 import by.vironit.training.basumatarau.instantMessengerApp.connection.ConnectionPool;
+import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.websocket.Session;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public class FrontController extends HttpServlet {
-
+    public static final String ACTIVE_WSSESSIONS_ATTR_NAME = "wssessions";
     private ActionResolver actionResolver;
     private ViewResolver viewResolver;
 
@@ -20,6 +25,9 @@ public class FrontController extends HttpServlet {
         ConnectionPool.getInstance();
         actionResolver = ActionResolver.getInstance();
         viewResolver = ViewResolver.getInstance();
+
+        Map<User, Session> sessions = Collections.synchronizedMap(new WeakHashMap<>());
+        getServletContext().setAttribute(ACTIVE_WSSESSIONS_ATTR_NAME, sessions);
     }
 
     @Override

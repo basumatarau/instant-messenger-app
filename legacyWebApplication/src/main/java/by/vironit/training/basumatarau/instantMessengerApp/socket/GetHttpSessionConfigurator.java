@@ -10,7 +10,7 @@ import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;
 
 public class GetHttpSessionConfigurator extends ServerEndpointConfig.Configurator{
-    public static final String IS_VALID = "isValid";
+    public static final String AUTHORIZED_USER_ATTR_NAME = "isValid";
 
     @Override
     public void modifyHandshake(ServerEndpointConfig config,
@@ -21,10 +21,7 @@ public class GetHttpSessionConfigurator extends ServerEndpointConfig.Configurato
 
         final User authorizedUser = SessionHandler.getAuthorizedUser(httpSession);
         if(authorizedUser!=null){
-            config.getUserProperties().put(IS_VALID, Boolean.TRUE);
+            config.getUserProperties().put(AUTHORIZED_USER_ATTR_NAME, authorizedUser);
         }
-
-        final ServletContext servletContext = httpSession.getServletContext();
-        config.getUserProperties().put(ServletContext.class.getName(), servletContext);
     }
 }

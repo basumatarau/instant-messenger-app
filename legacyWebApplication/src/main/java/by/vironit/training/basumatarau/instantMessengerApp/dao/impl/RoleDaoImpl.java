@@ -97,7 +97,7 @@ public class RoleDaoImpl extends BaseDao implements RoleDao {
                                     .filter(r -> r.getId().equals(args[0]))
                                     .findAny();
                 if(cashedRole.isPresent()){
-                    return cashedRole.get();
+                    return Optional.of(cashedRole.get());
                 }else{
                     @SuppressWarnings("unchecked")
                     // findById method erasure has been strictly defined

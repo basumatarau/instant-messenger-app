@@ -55,7 +55,7 @@
         </init-param>
         <init-param>
             <param-name>userAccess</param-name>
-            <param-value>Chat,ContactList,UserProfile</param-value>
+            <param-value>Chat,ContactList,UserProfile,WsTest</param-value>
         </init-param>
     </filter>
 

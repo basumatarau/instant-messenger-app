@@ -4,6 +4,7 @@ import by.vironit.training.basumatarau.instantMessengerApp.dao.ContactDao;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.MessageDao;
 import by.vironit.training.basumatarau.instantMessengerApp.dto.ContactVo;
+import by.vironit.training.basumatarau.instantMessengerApp.dto.IncomingMessageDto;
 import by.vironit.training.basumatarau.instantMessengerApp.dto.MessageDto;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.DaoException;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.ServiceException;
@@ -11,10 +12,7 @@ import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
 import by.vironit.training.basumatarau.instantMessengerApp.model.PrivateMessage;
 import by.vironit.training.basumatarau.instantMessengerApp.service.MessageService;
 
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MessageServiceImpl implements MessageService {
@@ -23,6 +21,30 @@ public class MessageServiceImpl implements MessageService {
     {
         contactDao = DaoProvider.DAO.contactDao;
         messageDao = DaoProvider.DAO.messageDao;
+    }
+
+    @Override
+    public MessageDto persistMessage(IncomingMessageDto incomingMessage, Contact contact) throws ServiceException {
+
+        final PrivateMessage message;
+        try {
+            message = new PrivateMessage.PrivateMessageBuilder()
+                    .contact(contact)
+                    .author(contact.getOwner())
+                    .body(incomingMessage.getBody())
+                    .timeSent(new Date())
+                    .build();
+        } catch (InstantiationException e) {
+            throw new ServiceException("failed to compose a message", e);
+        }
+
+        try {
+            messageDao.save(message);
+        } catch (DaoException e) {
+            throw new ServiceException("failed to send a message", e);
+        }
+
+        return MessageDto.getDto(message);
     }
 
     @Override

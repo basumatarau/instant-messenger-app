@@ -16,6 +16,7 @@
          id="navbarNav">
         <ul class="navbar-nav mr-auto">
             <% if (session.getAttribute("user") != null) { %>
+                <imtags:navbartile command="WsTest" label="test"/>
                 <imtags:navbartile command="Chat" label="messaging"/>
                 <imtags:navbartile command="ContactList" label="contacts"/>
                 <imtags:navbartile command="UserProfile" label="profile"/>

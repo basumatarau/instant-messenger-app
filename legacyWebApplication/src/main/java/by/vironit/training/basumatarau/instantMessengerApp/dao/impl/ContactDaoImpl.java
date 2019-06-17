@@ -18,8 +18,8 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                         "c.confirmed as confirmed, " +
                         "c.id_owner as own_id, " +
                         "per.id as per_id, " +
-                        "per.id_role as pwerson_id_role, " +
-                        " per.enabled as person_enabled, " +
+                        "per.id_role as person_id_role, " +
+                        "per.enabled as person_enabled, " +
                         "per.email as person_email, " +
                         "per.firstname as person_firstname, " +
                         "per.lastname as person_lastname, " +
@@ -435,7 +435,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                 }
 
                 final Contact contact = new Contact.ContactBuilder()
-                        .id(resultSet.getLong("contact_id"))
+                        .id(resultSet.getLong("id_contact"))
                         .confirmed(resultSet.getBoolean("confirmed"))
                         .owner(user)
                         .person(person)
