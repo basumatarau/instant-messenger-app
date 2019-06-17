@@ -136,7 +136,7 @@ CREATE TABLE legacy_im_db_schema.messages (
 	id bigint NOT NULL DEFAULT nextval('legacy_im_db_schema.messages_id_seq'),
 	messagetype varchar(45) NOT NULL,
 	body varchar(500) NOT NULL,
-	timesent int8 NOT NULL,
+	timesent bigint NOT NULL,
 	id_contact int8 NULL,
 	id_author int8 NOT NULL,
 	id_messageresource int8 NULL,

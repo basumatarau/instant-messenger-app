@@ -73,7 +73,7 @@ public class PrivateMessageDaoImpl extends BaseDao implements MessageDao {
 
             ps.setString(1, Message.PRIVATE_MESSAGE_TYPE);
             ps.setString(2, message.getBody());
-            ps.setLong(3, message.getTimeSent().toInstant().getEpochSecond());
+            ps.setLong(3, message.getTimeSent().getTime());
             ps.setLong(4, message.getContact().getId());
             ps.setLong(5, message.getAuthor().getId());
 

@@ -34,6 +34,7 @@ public class MessageServiceImpl implements MessageService {
                     .body(incomingMessage.getBody())
                     .timeSent(new Date())
                     .build();
+
         } catch (InstantiationException e) {
             throw new ServiceException("failed to compose a message", e);
         }

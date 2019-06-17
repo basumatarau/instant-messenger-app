@@ -8,10 +8,13 @@
         type="text/css" rel="stylesheet">
 </head>
 <body>
+    <script type="text/javascript">
+        <%@include file="js/chatPageContactSwitch.js" %>
+    </script>
 
-<script type="text/javascript">
-    <%@include file="js/chatPageContactSwitch.js" %>
-</script>
+    <script type="text/javascript">
+        <%@include file="js/wsmessengerclient.js" %>
+    </script>
 
 <div class="frame_container">
 <%@ include file="menu.jsp" %>
@@ -73,8 +76,9 @@
                     </div>
                     <div class="type_msg">
                         <div class="input_msg_write">
-                            <input type="text" class="write_msg" placeholder="Type a message" />
-                            <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
+                            <input id="message_input" type="text" class="write_msg" placeholder="Type a message" />
+                            <input id="contactId" type="text" value=${currentContact.id} hidden/>
+                            <button id="send_message" name="send_message" class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
                         </div>
                     </div>
                 <% } else {%>
