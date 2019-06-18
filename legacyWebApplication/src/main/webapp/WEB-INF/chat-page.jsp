@@ -40,7 +40,15 @@
                                 <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="${contactEntry.key.person.nName}"> </div>
                                 <div class="chat_ib">
                                     <h5>${contactEntry.key.person.fName} ${contactEntry.key.person.lName} <span class="chat_date">${contactEntry.value.timesent}</span></h5>
-                                    <p> ${contactEntry.value.body} </p>
+                                    <c:choose>
+                                        <c:when test="${sessionScope.user.id != contactEntry.value.author.id}">
+                                            <p> <span class="you_wrote_para">you wrote: </span>${contactEntry.value.body}</p>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <p> <span class="you_wrote_para">${contactEntry.value.author.nName} wrote: </span>${contactEntry.value.body}</p>
+                                        </c:otherwise>
+                                    </c:choose>
+
                                 </div>
                             </div>
                         </div>
@@ -51,7 +59,7 @@
 
             <div class="mesgs">
                 <% if (request.getAttribute("currentContact") != null) { %>
-                    <div class="msg_history">
+                    <div id="messages" class="msg_history">
                         <c:forEach items="${conversation}" var="message">
                             <c:choose>
                                 <c:when test="${message.author.id != sessionScope.user.id}">
@@ -76,7 +84,7 @@
                     </div>
                     <div class="type_msg">
                         <div class="input_msg_write">
-                            <input id="message_input" type="text" class="write_msg" placeholder="Type a message" />
+                            <input id="message_input" name="message_input" type="text" class="write_msg" placeholder="Type a message" />
                             <input id="contactId" type="text" value=${currentContact.id} hidden/>
                             <button id="send_message" name="send_message" class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></button>
                         </div>
