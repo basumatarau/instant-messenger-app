@@ -54,7 +54,7 @@
                     <div class="msg_history">
                         <c:forEach items="${conversation}" var="message">
                             <c:choose>
-                                <c:when test="${message.author.id == sessionScope.user.id}">
+                                <c:when test="${message.author.id != sessionScope.user.id}">
                                     <div class="incoming_msg">
                                         <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="${message.author.nName}"> </div>
                                         <div class="received_msg">
