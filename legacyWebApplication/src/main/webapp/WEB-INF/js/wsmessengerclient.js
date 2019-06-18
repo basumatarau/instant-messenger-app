@@ -1,9 +1,11 @@
-$.when().then(
+$.when(
+
+).then(
     function() {
         establishWsConnection.apply(
             null,
             ["ws",
-            "localhost",
+            "192.168.0.86",
             8080,
             "/legacyWebApplication/messaging/${currentContact.owner.id}",
             ${sessionScope.user.id}]
@@ -13,7 +15,27 @@ $.when().then(
     function() {
         $("#send_message").click(onSendClick);
     }
-);
+).then(
+    function() {
+        $("#message_input").keypress(
+            function (event){
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if(keycode == '13'){
+                    onSendClick();
+                }
+                event.stopPropagation();
+            }
+        );
+    }
+).then(
+    function() {
+        let messages_div = $("#messages");
+        messages_div.scrollTop(messages_div.prop("scrollHeight"));
+    }
+ );
+
+
+
 
 var webSocket = null;
 var ws_protocol = null;
@@ -129,5 +151,7 @@ function onSendClick() {
     webSocket.send(JSON.stringify(newMessage));
 
     $("#message_input").val("");
+    var messages_div = $("#messages");
+    messages_div.scrollTop(messages_div.prop("scrollHeight"));
 }
 

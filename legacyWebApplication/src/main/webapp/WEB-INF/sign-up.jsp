@@ -21,7 +21,7 @@
                     <div class="form-group row justify-content-center">
                       <label class="col-md-4 control-label" for="nickNameInput">Login*</label>
                       <div class="col-md-6">
-                      <input id="nickNameInput" name="nickNameInput" type="text" value="testNickName" class="form-control input-md" required="">
+                      <input id="nickNameInput" name="nickNameInput" type="text" value="" class="form-control input-md" required="">
                       </div>
                     </div>
 
@@ -29,7 +29,7 @@
                     <div class="form-group row justify-content-center">
                       <label class="col-md-4 control-label" for="emailInput">Email*</label>
                       <div class="col-md-6">
-                      <input id="emailInput" name="emailInput" type="text" placeholder="" value="testemail@mail.com" class="form-control input-md" required="">
+                      <input id="emailInput" name="emailInput" type="text" placeholder="" value="" class="form-control input-md" required="">
                       </div>
                     </div>
 
@@ -37,7 +37,7 @@
                     <div class="form-group row justify-content-center">
                       <label class="col-md-4 control-label" for="passwordInput">Password*</label>
                       <div class="col-md-6">
-                        <input id="passwordInput" name="passwordInput" type="password" placeholder="" value="stub" class="form-control input-md" required="">
+                        <input id="passwordInput" name="passwordInput" type="password" placeholder="" value="" class="form-control input-md" required="">
                       </div>
                     </div>
 
@@ -45,7 +45,7 @@
                     <div class="form-group row justify-content-center">
                       <label class="col-md-4 control-label" for="firstNameInput">First name (optional)</label>
                       <div class="col-md-6">
-                      <input id="firstNameInput" name="firstNameInput" type="text" placeholder="" value="testFirstNameInput" class="form-control input-md" >
+                      <input id="firstNameInput" name="firstNameInput" type="text" placeholder="" value="" class="form-control input-md" >
                       </div>
                     </div>
 
@@ -53,7 +53,7 @@
                     <div class="form-group row justify-content-center">
                       <label class="col-md-4 control-label" for="lastNameInput">Last name (optional)</label>
                       <div class="col-md-6">
-                      <input id="lastNameInput" name="lastNameInput" type="text" placeholder="" value="testLastNameInput" class="form-control input-md" >
+                      <input id="lastNameInput" name="lastNameInput" type="text" placeholder="" value="" class="form-control input-md" >
                       </div>
                     </div>
 
