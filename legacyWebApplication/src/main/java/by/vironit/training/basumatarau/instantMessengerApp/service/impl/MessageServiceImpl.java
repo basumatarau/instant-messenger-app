@@ -11,11 +11,16 @@ import by.vironit.training.basumatarau.instantMessengerApp.exception.ServiceExce
 import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
 import by.vironit.training.basumatarau.instantMessengerApp.model.PrivateMessage;
 import by.vironit.training.basumatarau.instantMessengerApp.service.MessageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class MessageServiceImpl implements MessageService {
+
+    private static final Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
+
     private final ContactDao contactDao;
     private final MessageDao messageDao;
     {
@@ -36,12 +41,14 @@ public class MessageServiceImpl implements MessageService {
                     .build();
 
         } catch (InstantiationException e) {
+            logger.warn("failed to convert incoming message to pojo: " + incomingMessage);
             throw new ServiceException("failed to compose a message", e);
         }
 
         try {
             messageDao.save(message);
         } catch (DaoException e) {
+            logger.error("failed to save message: " + message);
             throw new ServiceException("failed to send a message", e);
         }
 
@@ -62,6 +69,8 @@ public class MessageServiceImpl implements MessageService {
                         ownerContact.get().getOwner());
             }else throw new DaoException("failed to fetch contacts");
         } catch (DaoException e) {
+
+            logger.error("failed to fetch contact by id: " + contactDto.getId());
             throw new ServiceException("failed to fetch contact", e);
         }
 
@@ -72,6 +81,8 @@ public class MessageServiceImpl implements MessageService {
                 messages = messageDao.getMessagesForContact(ownContact);
                 messages.addAll(messageDao.getMessagesForContact(perContact));
             } catch (DaoException e) {
+
+                logger.error("failed to fetch messages for contact: " + ownContact);
                 throw new ServiceException("failed to fetch messgaes for contact", e);
             }
         }

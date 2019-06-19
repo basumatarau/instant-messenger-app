@@ -11,6 +11,8 @@ import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
 import by.vironit.training.basumatarau.instantMessengerApp.service.ContactService;
 import by.vironit.training.basumatarau.instantMessengerApp.service.MessageService;
 import by.vironit.training.basumatarau.instantMessengerApp.service.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,8 @@ import java.util.Map;
 import java.util.Optional;
 
 public class ChatCommand extends Command {
+
+    private static final Logger logger = LoggerFactory.getLogger(ChatCommand.class);
 
     private final ContactService contactService = ServiceProvider.SERV.contactService;
     private final MessageService messageService = ServiceProvider.SERV.messageService;
@@ -37,7 +41,7 @@ public class ChatCommand extends Command {
             contactsForUser
                     = contactService.getContactsAndLastMessages(SessionHandler.getAuthorizedUser(req));
         } catch (ServiceException e) {
-            //logger.log
+            logger.warn("failed to get contacts for authorized user");
             return Action.ERROR.getCommand();
         }
         req.setAttribute("contactsForUser", contactsForUser);
@@ -47,7 +51,7 @@ public class ChatCommand extends Command {
             try {
                 contactById = contactService.findContactById(messageParamId);
             } catch (ServiceException e) {
-                //logger.log
+                logger.warn("failed to find contact by id: " + messageParamId);
                 return Action.ERROR.getCommand();
             }
             try {
@@ -67,7 +71,7 @@ public class ChatCommand extends Command {
                     req.setAttribute("message", "contact not found");
                 }
             } catch (ServiceException e) {
-                //logger.log
+                logger.warn("failed to fetch contacts for authorized user");
                 return Action.ERROR.getCommand();
             }
         }

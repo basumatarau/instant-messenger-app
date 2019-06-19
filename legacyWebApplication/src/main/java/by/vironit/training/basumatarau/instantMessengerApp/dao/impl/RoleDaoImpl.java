@@ -3,6 +3,8 @@ package by.vironit.training.basumatarau.instantMessengerApp.dao.impl;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.RoleDao;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.DaoException;
 import by.vironit.training.basumatarau.instantMessengerApp.model.Role;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -16,6 +18,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public class RoleDaoImpl extends BaseDao implements RoleDao {
+
+    private static final Logger logger = LoggerFactory.getLogger(RoleDaoImpl.class);
 
     private static final String GET_ROLE_BY_ID_STATEMENT =
             "select " +
@@ -61,6 +65,7 @@ public class RoleDaoImpl extends BaseDao implements RoleDao {
                         .build();
             }
         } catch (SQLException | InstantiationException e) {
+            logger.error("failed to fetch role by id" + integer);
             throw new DaoException(e);
         } finally {
             getConnectionPool()
@@ -103,6 +108,7 @@ public class RoleDaoImpl extends BaseDao implements RoleDao {
                         .build();
             }
         } catch (SQLException | InstantiationException e) {
+            logger.error("failed to fetch role by name" + name);
             throw new DaoException(e);
         } finally {
             getConnectionPool()

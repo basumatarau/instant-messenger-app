@@ -9,12 +9,16 @@ import by.vironit.training.basumatarau.instantMessengerApp.exception.ServiceExce
 import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserDao userDao;
     private final ContactDao contactDao;
@@ -29,6 +33,7 @@ public class UserServiceImpl implements UserService {
         try {
             return userDao.findByEmail(email);
         } catch (DaoException e) {
+            logger.warn("failed to find user by email: " + email);
             throw new ServiceException(e);
         }
     }
@@ -39,6 +44,7 @@ public class UserServiceImpl implements UserService {
         try {
             return userDao.save(user);
         } catch (DaoException e) {
+            logger.warn("failed to register user: " + user);
             throw new ServiceException(e);
         }
     }
@@ -52,12 +58,14 @@ public class UserServiceImpl implements UserService {
         try {
             users = userDao.searchUsersWithPattern(trimmed);
         } catch (DaoException e) {
+            logger.warn("failed to search for users with look up pattern: " + pattern);
             throw new ServiceException("failed to fetch users for pattern " + pattern, e);
         }
 
         try {
             contactsForUser = contactDao.getContactsForUser(user);
         } catch (DaoException e) {
+            logger.warn("failed to fetch contacts for user: " + user);
             throw new ServiceException("failed to fetch users for pattern " + pattern, e);
         }
 
@@ -89,6 +97,7 @@ public class UserServiceImpl implements UserService {
         try {
             return userDao.findById(id);
         } catch (DaoException e) {
+            logger.warn("failed to find user by id: " + id);
             throw new ServiceException(e);
         }
     }

@@ -11,6 +11,8 @@ import by.vironit.training.basumatarau.instantMessengerApp.service.ServiceProvid
 import by.vironit.training.basumatarau.instantMessengerApp.service.UserService;
 import by.vironit.training.basumatarau.instantMessengerApp.service.impl.UserServiceImpl;
 import by.vironit.training.basumatarau.instantMessengerApp.util.PasswordEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +22,9 @@ import java.security.SecureRandom;
 import java.util.Optional;
 
 public class SignUpCommand extends Command {
+
+    private static final Logger logger = LoggerFactory.getLogger(SignUpCommand.class);
+
     private UserService userService;
     private static final String EMAIL_REG_PATTERN = "([-_А-Яа-яЁё\\w\\d]{3,40})@([-_А-Яа-яЁё\\w\\d]{1,20}).([-_А-Яа-яЁё\\w\\d]{1,4})";
     private final static String FNAME_REG_PATTERN = "([-_А-Яа-яЁё\\w\\d]{0,150})";
@@ -58,7 +63,7 @@ public class SignUpCommand extends Command {
                     throw new UserCredentialsOccupied("user credentials occupied");
                 }
             } catch (ServiceException e) {
-                //logger.log
+                logger.warn("registered credentials appeared to be used for a sign-up: " + email);
                 return Action.ERROR.getCommand();
             }
 
@@ -72,6 +77,7 @@ public class SignUpCommand extends Command {
                     final Optional<Role> optRole = DaoProvider.DAO.roleDao.findByName("USER");
                     freshUserRole = optRole.orElseThrow(() -> new DaoException("no USER role present in db"));
                 } catch (DaoException e) {
+                    logger.error("sign-up failure for: " + email);
                     throw new ServiceException("failed to fetch roles", e);
                 }
 
@@ -87,7 +93,7 @@ public class SignUpCommand extends Command {
                         .build();
                 userService.registerNewUserAccount(newUser);
             } catch (ServiceException | InstantiationException e) {
-                //logger.log
+                logger.error("persistence failure at sign-up for user with email: " + email);
                 return Action.ERROR.getCommand();
             }
             return Action.LOGINATION.getCommand();

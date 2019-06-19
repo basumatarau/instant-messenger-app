@@ -3,13 +3,18 @@
 <html lang="en">
 <head>
     <%@ include file="/WEB-INF/header.html" %>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 </head>
 <body>
 <div class="frame_container">
 <%@ include file="/WEB-INF/menu.jsp" %>
     <div class="container">
         <h2>instant messenger web application</h2>
-        <p>...bla bla bla</p>
+        <br/>
+        <br/>
+        <p>find contacts, send friend requests, chat:</p>
+        <br/>
+        <img alt="howto" src="${pageContext.request.contextPath}/resources/screen.jpg" width="100%" height="75%"/>
     </div>
 </body>
 </html>

@@ -103,4 +103,13 @@ public class Contact {
     public int hashCode() {
         return Objects.hash(owner, person);
     }
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "owner=" + owner +
+                ", person=" + person +
+                ", isConfirmed=" + isConfirmed +
+                '}';
+    }
 }

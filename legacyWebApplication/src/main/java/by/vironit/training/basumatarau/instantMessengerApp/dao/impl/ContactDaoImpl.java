@@ -4,12 +4,15 @@ import by.vironit.training.basumatarau.instantMessengerApp.dao.ContactDao;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.DaoException;
 import by.vironit.training.basumatarau.instantMessengerApp.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
 public class ContactDaoImpl extends BaseDao implements ContactDao {
+    private static final Logger logger = LoggerFactory.getLogger(ContactDaoImpl.class);
 
     private static final String FIND_ALL_CONTACTS_WITH_CONVERSATIONS_FOR_USER_SQL_STATEMENT =
             "  select    " +
@@ -208,6 +211,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
             }
 
         } catch (SQLException | InstantiationException e) {
+            logger.error("failed to fetch contacts for user: " + user);
             throw new DaoException(e);
         } finally {
             getConnectionPool()
@@ -265,6 +269,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                         .build();
             }
         } catch (SQLException | InstantiationException e) {
+            logger.error("failed to fetch contact by id: " + aLong);
             throw new DaoException(e);
         } finally {
             getConnectionPool()
@@ -297,7 +302,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
             try {
                 connection.rollback();
             } catch (SQLException ex) {
-                //todo logger.log
+                logger.error("failed to save contact: " + contact);
                 throw new RuntimeException("failed to rollback transaction", ex);
             }
             throw new DaoException(e);
@@ -327,7 +332,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
             try {
                 connection.rollback();
             } catch (SQLException ex) {
-                //todo logger.log
+                logger.error("failed to update contact: " + contact);
                 throw new RuntimeException("failed to rollback transaction", ex);
             }
             throw new DaoException(e);
@@ -352,7 +357,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
             try {
                 connection.rollback();
             } catch (SQLException ex) {
-                //todo logger.log
+                logger.error("failed to delete contact: " + contact);
                 throw new RuntimeException("failed to rollback transaction", ex);
             }
             throw new DaoException(e);
@@ -413,6 +418,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                         .build();
             }
         } catch (SQLException | InstantiationException e) {
+            logger.error("failed to fetch contact for owner: " + own + ", and person:" + per);
             throw new DaoException(e);
         } finally {
             getConnectionPool()
@@ -487,6 +493,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
             }
 
         } catch (SQLException | InstantiationException e) {
+            logger.error("failed to fetch contacts with last message in conversation for user: " + owner);
             throw new DaoException(e);
         } finally {
             getConnectionPool()

@@ -11,6 +11,8 @@ import by.vironit.training.basumatarau.instantMessengerApp.service.ContactServic
 import by.vironit.training.basumatarau.instantMessengerApp.service.ServiceProvider;
 import by.vironit.training.basumatarau.instantMessengerApp.service.UserService;
 import by.vironit.training.basumatarau.instantMessengerApp.util.PasswordEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class LoginationCommand extends Command {
+
+    private static final Logger logger = LoggerFactory.getLogger(LoginationCommand.class);
+
     private UserService userService;
     private ContactService contactService;
     private ContactDao contactDao;
@@ -53,12 +58,13 @@ public class LoginationCommand extends Command {
                     retrievedUser = userService.findUserByEmail(email)
                             .orElseThrow(() -> new UserNotFound("wrong password or login"));
                 } catch (ServiceException e) {
-                    //logger.log
+                    logger.warn("failed to fetch user with login: " + email);
                     return Action.ERROR.getCommand();
                 }
                 final String passwordHash = retrievedUser.getPasswordHash();
                 final byte[] salt = retrievedUser.getSalt();
                 if(!PasswordEncoder.getPwdHash(password,salt).equals(passwordHash)){
+                    logger.warn("unsuccessful login attempt with login: " + email);
                     throw new UserNotFound("wrong password or login");
                 }
 

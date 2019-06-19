@@ -10,6 +10,8 @@ import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
 import by.vironit.training.basumatarau.instantMessengerApp.model.PrivateMessage;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.service.ContactService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,6 +20,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ContactServiceImpl implements ContactService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ContactServiceImpl.class);
+
     private final ContactDao contactDao;
     {
         contactDao = DaoProvider.DAO.contactDao;
@@ -32,6 +37,7 @@ public class ContactServiceImpl implements ContactService {
                     .map((ContactVo::getDto))
                     .collect(Collectors.toList());
         } catch (DaoException e) {
+            logger.error("failed to find all contacts for user: " + user);
             throw new ServiceException("failed to retrieve user contacts", e);
         }
     }
@@ -53,6 +59,8 @@ public class ContactServiceImpl implements ContactService {
                 contactDao.save(newContactRequest);
             }
         } catch (DaoException | InstantiationException e) {
+            logger.error("failed to send contact request to user: " +
+                    person + ", from: " + user);
             throw new ServiceException("failed to add contact", e);
         }
     }
@@ -62,6 +70,7 @@ public class ContactServiceImpl implements ContactService {
         try {
             contactDao.delete(contact);
         } catch (DaoException e) {
+            logger.error("failed to remove contact: " + contact);
             throw new ServiceException("failed to remove contact", e);
         }
     }
@@ -79,6 +88,8 @@ public class ContactServiceImpl implements ContactService {
                 contactDao.delete(contactTwo.get());
             }
         } catch (DaoException e) {
+            logger.error("failed to remove contact belonging to owner: " +
+                    person + ", for contact person: " + person);
             throw new ServiceException("failed to fetch contact", e);
         }
     }
@@ -96,6 +107,7 @@ public class ContactServiceImpl implements ContactService {
             contact.setIsConfirmed(true);
             contactDao.update(contact);
         } catch (DaoException | InstantiationException e) {
+            logger.error("failed to confirm contact request: " + contact);
             throw new ServiceException("failed to add contact", e);
         }
     }
@@ -105,6 +117,7 @@ public class ContactServiceImpl implements ContactService {
         try {
             contactDao.delete(contact);
         } catch (DaoException e) {
+            logger.error("failed to decline contact request: " + contact);
             throw new ServiceException("failed to add contact", e);
         }
     }
@@ -114,16 +127,19 @@ public class ContactServiceImpl implements ContactService {
         try {
             return contactDao.findById(id);
         } catch (DaoException e) {
+            logger.error("failed to find contact by id: " + id);
             throw new ServiceException("failed to fetch contact with id=" + id, e);
         }
     }
 
     @Override
-    public Optional<Contact> getContactByOwnerAndUser(User owner, User authorizedUser)
+    public Optional<Contact> getContactByOwnerAndUser(User owner, User person)
             throws ServiceException {
         try {
-            return contactDao.getContactsFoOwnerAndPerson(owner, authorizedUser);
+            return contactDao.getContactsFoOwnerAndPerson(owner, person);
         } catch (DaoException e) {
+            logger.error("failed to fetch contact by the owner: " +
+                    owner + ", and contact person: " + person);
             throw new ServiceException("failed to fetch contact", e);
         }
     }
@@ -140,6 +156,7 @@ public class ContactServiceImpl implements ContactService {
             }
             return contactVosAndLastMessageDto;
         } catch (DaoException e) {
+            logger.error("failed to get contacts with last last messages for them for user: " + owner);
             throw new ServiceException("failed to fetch contacts with conversations", e);
         }
     }

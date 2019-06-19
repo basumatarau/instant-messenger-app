@@ -5,6 +5,8 @@ import by.vironit.training.basumatarau.instantMessengerApp.exception.DaoExceptio
 import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
 import by.vironit.training.basumatarau.instantMessengerApp.model.Message;
 import by.vironit.training.basumatarau.instantMessengerApp.model.PrivateMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.LinkedList;
@@ -12,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class PrivateMessageDaoImpl extends BaseDao implements MessageDao {
+
+    private static final Logger logger = LoggerFactory.getLogger(PrivateMessageDaoImpl.class);
 
     private static final String SAVE_MESSAGE =
             "INSERT INTO legacy_im_db_schema.messages " +
@@ -49,6 +53,7 @@ public class PrivateMessageDaoImpl extends BaseDao implements MessageDao {
                 messages.add(message);
             }
         } catch (SQLException | InstantiationException e) {
+            logger.error("failed to fetch messages for contact:" + contact);
             throw new DaoException(e);
         } finally {
             getConnectionPool()
@@ -87,7 +92,7 @@ public class PrivateMessageDaoImpl extends BaseDao implements MessageDao {
             try {
                 connection.rollback();
             } catch (SQLException ex) {
-                //todo logger.log
+                logger.error("failed to persist message:" + message);
                 throw new RuntimeException("failed to rollback transaction", ex);
             }
             throw new DaoException(e);

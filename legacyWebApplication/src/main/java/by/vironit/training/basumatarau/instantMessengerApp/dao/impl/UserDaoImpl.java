@@ -5,6 +5,8 @@ import by.vironit.training.basumatarau.instantMessengerApp.exception.DaoExceptio
 import by.vironit.training.basumatarau.instantMessengerApp.model.Role;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.LinkedList;
@@ -13,65 +15,67 @@ import java.util.Optional;
 
 public class UserDaoImpl extends BaseDao implements UserDao {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
+
     private static final String SEARCH_USERS_WITH_PATTERN
             = "select " +
-                "r.id as role_id, " +
-                "r.\"name\" as role_name, " +
-                "u.email as user_email, " +
-                "u.id as user_id, " +
-                "u.firstname as user_fname, " +
-                "u.lastname as user_lname, " +
-                "u.nickname as user_nname, " +
-                "u.enabled as user_enabled, " +
-                "u.passwordhash as user_pwd_hash, " +
-                "u.enabled as user_enabled, " +
-                "u.salt as user_salt " +
+            "r.id as role_id, " +
+            "r.\"name\" as role_name, " +
+            "u.email as user_email, " +
+            "u.id as user_id, " +
+            "u.firstname as user_fname, " +
+            "u.lastname as user_lname, " +
+            "u.nickname as user_nname, " +
+            "u.enabled as user_enabled, " +
+            "u.passwordhash as user_pwd_hash, " +
+            "u.enabled as user_enabled, " +
+            "u.salt as user_salt " +
             "from legacy_im_db_schema.users as u join legacy_im_db_schema.roles as r " +
-                "on u.id_role = r.id " +
+            "on u.id_role = r.id " +
             "where " +
-                "u.email like ? or " +
-                "u.nickname like ? escape '!' ";
+            "u.email like ? or " +
+            "u.nickname like ? escape '!' ";
 
     private static final String FIND_USER_BY_ID_SQL_STATEMENT
             = "select " +
-                "u.id as user_id, " +
-                "firstname, " +
-                "lastname, " +
-                "nickname, " +
-                "email, " +
-                "salt, " +
-                "passwordhash, " +
-                "enabled, " +
-                "id_role, " +
-                "r.\"name\" as role_name " +
+            "u.id as user_id, " +
+            "firstname, " +
+            "lastname, " +
+            "nickname, " +
+            "email, " +
+            "salt, " +
+            "passwordhash, " +
+            "enabled, " +
+            "id_role, " +
+            "r.\"name\" as role_name " +
             "from legacy_im_db_schema.users as u " +
-                "join legacy_im_db_schema.roles as r " +
-                "on u.id_role=r.id " +
+            "join legacy_im_db_schema.roles as r " +
+            "on u.id_role=r.id " +
             "where u.id=?";
     private static final String FIND_USER_BY_EMAIL_SQL_STATEMENT
             = "select " +
-                "u.id as user_id, " +
-                "firstname, " +
-                "lastname, " +
-                "nickname, " +
-                "email, " +
-                "salt, " +
-                "passwordhash, " +
-                "enabled, " +
-                "id_role, " +
-                "r.\"name\" as role_name " +
+            "u.id as user_id, " +
+            "firstname, " +
+            "lastname, " +
+            "nickname, " +
+            "email, " +
+            "salt, " +
+            "passwordhash, " +
+            "enabled, " +
+            "id_role, " +
+            "r.\"name\" as role_name " +
             "from legacy_im_db_schema.users as u " +
-                "join legacy_im_db_schema.roles as r " +
-                "on u.id_role=r.id " +
+            "join legacy_im_db_schema.roles as r " +
+            "on u.id_role=r.id " +
             "where u.email=?";
     private static final String INSERT_USER_SQL_STATEMENT
             = "INSERT INTO legacy_im_db_schema.users " +
-                "(firstname, lastname, nickname, email, salt, passwordhash, enabled, id_role) " +
-                "VALUES(?, ?, ?, ?, decode(?, 'hex'), ?, ?, ?); ";
+            "(firstname, lastname, nickname, email, salt, passwordhash, enabled, id_role) " +
+            "VALUES(?, ?, ?, ?, decode(?, 'hex'), ?, ?, ?); ";
     private static final String INSERT_USER_SQL_AND_GEN_KEY_STATEMENT
             = "INSERT INTO legacy_im_db_schema.users as u " +
-                "(firstname, lastname, nickname, email, salt, passwordhash, enabled, id_role) " +
-                "VALUES(?, ?, ?, ?, decode(?, 'hex'), ?, ?, ?) " +
+            "(firstname, lastname, nickname, email, salt, passwordhash, enabled, id_role) " +
+            "VALUES(?, ?, ?, ?, decode(?, 'hex'), ?, ?, ?) " +
             "RETURNING u.id ";
 
     @Override
@@ -86,7 +90,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             ps.setLong(1, aLong);
             resultSet = ps.executeQuery();
 
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 final Role role = new Role.RoleBuilder()
                         .id(resultSet.getInt("id_role"))
                         .name(resultSet.getString("role_name"))
@@ -105,6 +109,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                         .build();
             }
         } catch (SQLException | InstantiationException e) {
+            logger.error("failed to find user by id: " + aLong);
             throw new DaoException(e);
         } finally {
             getConnectionPool()
@@ -143,7 +148,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             try {
                 connection.rollback();
             } catch (SQLException ex) {
-                //todo logger.log
+                logger.error("failed to persist user: " + user);
                 throw new RuntimeException("failed to rollback transaction", ex);
             }
             throw new DaoException(e);
@@ -164,7 +169,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     }
 
     @Override
-    public Optional<User> findByEmail(String email) throws DaoException{
+    public Optional<User> findByEmail(String email) throws DaoException {
         final Connection connection = getConnectionPool().takeConnection();
         PreparedStatement ps = null;
         ResultSet resultSet = null;
@@ -175,7 +180,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             ps.setString(1, email);
             resultSet = ps.executeQuery();
 
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 final Role role = new Role.RoleBuilder()
                         .id(resultSet.getInt("id_role"))
                         .name(resultSet.getString("role_name"))
@@ -199,7 +204,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             try {
                 connection.rollback();
             } catch (SQLException ex) {
-                //todo logger.log
+                logger.error("failed to fetch user by email: " + email);
                 throw new RuntimeException("failed to rollback transaction", ex);
             }
             throw new DaoException(e);
@@ -217,7 +222,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
         PreparedStatement ps = null;
         ResultSet resultSet = null;
         List<User> users = new LinkedList<>();
-        pattern = String.format("%%%s%%",pattern
+        pattern = String.format("%%%s%%", pattern
                 .replace("!", "!!")
                 .replace("%", "!%")
                 .replace("_", "!_")
@@ -229,7 +234,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             ps.setString(2, pattern);
             resultSet = ps.executeQuery();
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 final Role role = new Role.RoleBuilder()
                         .id(resultSet.getInt("role_id"))
                         .name(resultSet.getString("role_name"))
@@ -250,6 +255,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
                 users.add(user);
             }
         } catch (SQLException | InstantiationException e) {
+            logger.error("failed to look up a user by pattern: " + pattern);
             throw new DaoException(e);
         } finally {
             getConnectionPool()

@@ -215,4 +215,14 @@ public class User {
     public int hashCode() {
         return Objects.hash(nickName, email, passwordHash);
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", nickName='" + nickName + '\'' +
+                ", email='" + email + '\'' +
+                ", isEnabled=" + isEnabled +
+                '}';
+    }
 }
