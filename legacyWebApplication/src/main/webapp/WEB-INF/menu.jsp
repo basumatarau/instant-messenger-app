@@ -27,6 +27,7 @@
             <li>
                 <span class="navbar-text">
 			        <% if (session.getAttribute("user") != null) { %>
+                        <span>hello, ${sessionScope.user.nickName}! </span>
                         <imtags:navbartile command="Logination" label="logout"/>
                     <% } else {%>
                         <imtags:navbartile command="Signup" label="sign-up"/>
