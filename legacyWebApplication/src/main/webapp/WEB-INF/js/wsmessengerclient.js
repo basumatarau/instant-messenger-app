@@ -1,11 +1,11 @@
 $.when(
-
+    $.ready
 ).then(
     function() {
         establishWsConnection.apply(
             null,
             ["ws",
-            "192.168.0.86",
+            "192.168.0.54",
             8080,
             "/legacyWebApplication/messaging/${currentContact.owner.id}",
             ${sessionScope.user.id}]
@@ -33,8 +33,6 @@ $.when(
         messages_div.scrollTop(messages_div.prop("scrollHeight"));
     }
  );
-
-
 
 
 var webSocket = null;
@@ -73,7 +71,16 @@ function establishWsConnection() {
                 console.log("WebSocket MESSAGE: " + wsMsg);
                 if (wsMsg.indexOf("error") > 0) {
 
-                    document.getElementById("incomingMsgOutput").value += "error: " + wsMsg.error + "\r\n";
+                    var err_para = document.createElement('p');
+                    err_para.setAttribute('class','item-fixed');
+                    err_para.innerHTML = 'error: ' + wsMsg.error + "\r\n" + 'network issues (try reloading the page)';
+                    var util_div = document.getElementById('util_message_div');
+
+                    while(util_div.firstChild){
+                        util_div.removeChild(util_div.firstChild);
+                    }
+                    util_div.appendChild(err_para);
+
                 } else {
 
                     var msg = JSON.parse(messageEvent.data);
@@ -131,6 +138,9 @@ function establishWsConnection() {
 
                         document.getElementById("messages").appendChild(outgoing_div);
                     }
+
+                    var messages_div = $("#messages");
+                    messages_div.scrollTop(messages_div.prop("scrollHeight"));
                 }
             };
 
@@ -151,7 +161,5 @@ function onSendClick() {
     webSocket.send(JSON.stringify(newMessage));
 
     $("#message_input").val("");
-    var messages_div = $("#messages");
-    messages_div.scrollTop(messages_div.prop("scrollHeight"));
 }
 

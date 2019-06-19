@@ -12,35 +12,45 @@ import java.util.Date;
 public class ContactDaoImpl extends BaseDao implements ContactDao {
 
     private static final String FIND_ALL_CONTACTS_WITH_CONVERSATIONS_FOR_USER_SQL_STATEMENT =
-            "select distinct on (util_id) * from(    " +
-                    "  select   " +
-                    "    c.id as util_id,  " +
-                    "    con.id as id_contact,   " +
-                    "    con.confirmed as confirmed,   " +
-                    "    con.id_owner as own_id,   " +
-                    "    con.id_person as per_id,   " +
-                    "    per.email as person_email,  " +
-                    "    per.enabled as person_enabled,  " +
-                    "    per.firstname as person_fName,  " +
-                    "    per.lastname as person_lName,  " +
-                    "    per.id_role as person_role_id,  " +
-                    "    per.nickname as person_nName,  " +
-                    "    per.passwordhash as person_pwdHash,  " +
-                    "    per.salt as person_salt,  " +
-                    "    m.id as message_id,   " +
-                    "    m.body as message_body,   " +
-                    "    m.timesent as message_times_sent,   " +
-                    "    m.id_author as message_author_id,   " +
-                    "    m.id_contact as message_contact_id   " +
-                    "  from legacy_im_db_schema.contacts as con   " +
-                    "     join legacy_im_db_schema.contacts as c on   " +
-                    "      con.id_owner=c.id_person and con.id_person=c.id_owner or   " +
-                    "      con.id_owner=c.id_owner and con.id_person=c.id_person   " +
-                    "    inner join legacy_im_db_schema.messages as m   " +
-                    "      on c.id=m.id_contact   " +
-                    "    join legacy_im_db_schema.users as per    " +
-                    "      on per.id=con.id_person  " +
-                    "  where con.id_owner=?) foo ";
+            "  select    " +
+                    "    c.id as util_id,   " +
+                    "    con.id as id_contact,    " +
+                    "    con.confirmed as confirmed, " +
+                    "    own.id as owner_id,    " +
+                    "    own.email as owner_email,   " +
+                    "    own.enabled as owner_enabled,   " +
+                    "    own.firstname as owner_fName,   " +
+                    "    own.lastname as owner_lName,   " +
+                    "    own.id_role as owner_role_id,   " +
+                    "    own.nickname as owner_nName,   " +
+                    "    own.passwordhash as owner_pwdHash,   " +
+                    "    own.salt as owner_salt,   " +
+                    "    per.id as per_id,    " +
+                    "    per.email as person_email,   " +
+                    "    per.enabled as person_enabled,   " +
+                    "    per.firstname as person_fName,   " +
+                    "    per.lastname as person_lName,   " +
+                    "    per.id_role as person_role_id,   " +
+                    "    per.nickname as person_nName,   " +
+                    "    per.passwordhash as person_pwdHash,   " +
+                    "    per.salt as person_salt,   " +
+                    "    m.id as message_id,    " +
+                    "    m.body as message_body,    " +
+                    "    m.timesent as message_times_sent,    " +
+                    "    m.id_author as message_author_id,    " +
+                    "    m.id_contact as message_contact_id    " +
+                    "  from legacy_im_db_schema.contacts as con    " +
+                    "    join legacy_im_db_schema.contacts as c on    " +
+                    "      con.id_owner=c.id_person and con.id_person=c.id_owner or    " +
+                    "      con.id_owner=c.id_owner and con.id_person=c.id_person    " +
+                    "    inner join legacy_im_db_schema.messages as m    " +
+                    "      on m.id=(select max(msg.id) from legacy_im_db_schema.messages as msg where msg.id_contact=c.id)    " +
+                    "    join legacy_im_db_schema.users as per     " +
+                    "      on per.id=c.id_person " +
+                    "    join legacy_im_db_schema.users as own  " +
+                    "      on own.id=c.id_owner " +
+                    "  where con.id_owner=? " +
+                    " order by message_id asc ";
 
     private static final String SELECT_CONTACT_BY_OWNER_AND_PERSON =
             "select " +
@@ -161,6 +171,9 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
             ps.setLong(1, user.getId());
             resultSet = ps.executeQuery();
             while(resultSet.next()){
+                final Role defaultUserStub = DaoProvider.DAO.roleDao.findByName("USER")
+                        .orElseThrow(() -> new DaoException("failed to fetch USER role"));
+
                 final User owner = new User.UserBuilder()
                         .id(resultSet.getLong("id_owner"))
                         .firstName(resultSet.getString("owner_firstname"))
@@ -170,7 +183,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                         .enabled(resultSet.getBoolean("owner_enabled"))
                         .passwordHash(resultSet.getString("owner_pwd_hash"))
                         .salt(resultSet.getBytes("owner_salt"))
-                        .role(new Role.RoleBuilder().id(1).name("USER").build()) //fixme
+                        .role(defaultUserStub)
                         .build();
 
                 final User person = new User.UserBuilder()
@@ -182,7 +195,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                         .enabled(resultSet.getBoolean("person_enabled"))
                         .passwordHash(resultSet.getString("person_pwd_hash"))
                         .salt(resultSet.getBytes("person_salt"))
-                        .role(new Role.RoleBuilder().id(1).name("USER").build()) //fixme
+                        .role(defaultUserStub)
                         .build();
 
                 final Contact contact = new Contact.ContactBuilder()
@@ -205,7 +218,6 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
 
     @Override
     public Optional<Contact> findById(Long aLong) throws DaoException {
-
         final Connection connection = getConnectionPool().takeConnection();
         PreparedStatement ps = null;
         ResultSet resultSet = null;
@@ -217,6 +229,10 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
             resultSet = ps.executeQuery();
 
             if(resultSet.next()){
+
+                final Role defaultUserStub = DaoProvider.DAO.roleDao.findByName("USER")
+                        .orElseThrow(() -> new DaoException("failed to fetch USER role"));
+
                 final User owner = new User.UserBuilder()
                         .id(resultSet.getLong("id_owner"))
                         .firstName(resultSet.getString("owner_firstname"))
@@ -225,7 +241,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                         .email(resultSet.getString("owner_email"))
                         .enabled(resultSet.getBoolean("owner_enabled"))
                         .passwordHash(resultSet.getString("owner_pwd_hash"))
-                        .role(new Role.RoleBuilder().id(1).name("USER").build()) //fixme
+                        .role(defaultUserStub)
                         .salt(resultSet.getBytes("owner_salt"))
                         .build();
 
@@ -237,7 +253,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                         .email(resultSet.getString("person_email"))
                         .enabled(resultSet.getBoolean("person_enabled"))
                         .passwordHash(resultSet.getString("person_pwd_hash"))
-                        .role(new Role.RoleBuilder().id(1).name("USER").build()) //fixme
+                        .role(defaultUserStub)
                         .salt(resultSet.getBytes("person_salt"))
                         .build();
 
@@ -362,6 +378,9 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
             resultSet = ps.executeQuery();
 
             if(resultSet.next()){
+
+                final Role defaultUserStub = DaoProvider.DAO.roleDao.findByName("USER")
+                        .orElseThrow(() -> new DaoException("failed to fetch USER role"));
                 final User owner = new User.UserBuilder()
                         .id(resultSet.getLong("id_owner"))
                         .firstName(resultSet.getString("owner_firstname"))
@@ -371,7 +390,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                         .enabled(resultSet.getBoolean("owner_enabled"))
                         .passwordHash(resultSet.getString("owner_pwd_hash"))
                         .salt(resultSet.getBytes("owner_salt"))
-                        .role(new Role.RoleBuilder().id(1).name("USER").build()) //fixme
+                        .role(defaultUserStub)
                         .build();
 
                 final User person = new User.UserBuilder()
@@ -382,7 +401,7 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                         .email(resultSet.getString("person_email"))
                         .enabled(resultSet.getBoolean("person_enabled"))
                         .passwordHash(resultSet.getString("person_pwd_hash"))
-                        .role(new Role.RoleBuilder().id(1).name("USER").build()) //fixme
+                        .role(defaultUserStub)
                         .salt(resultSet.getBytes("person_salt"))
                         .build();
 
@@ -415,7 +434,6 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
             resultSet = ps.executeQuery();
             while(resultSet.next()){
 
-                //todo something about this...
                 final Optional<Role> personRole
                         = DaoProvider.DAO.roleDao.findById(resultSet.getInt("person_role_id"));
 
@@ -431,33 +449,41 @@ public class ContactDaoImpl extends BaseDao implements ContactDao {
                             .role(personRole.orElseThrow(() -> new InstantiationException("cant fetch Role instance")))
                             .build();
 
+                User own = new User.UserBuilder()
+                        .id(resultSet.getLong("owner_id"))
+                        .firstName(resultSet.getString("owner_fName"))
+                        .lastName(resultSet.getString("owner_lName"))
+                        .nickName(resultSet.getString("owner_nName"))
+                        .email(resultSet.getString("owner_email"))
+                        .enabled(resultSet.getBoolean("owner_enabled"))
+                        .passwordHash(resultSet.getString("owner_pwdHash"))
+                        .salt(resultSet.getBytes("owner_salt"))
+                        .role(personRole.orElseThrow(() -> new InstantiationException("cant fetch Role instance")))
+                        .build();
+
                 final Contact contact = new Contact.ContactBuilder()
-                        .id(resultSet.getLong("id_contact"))
+                        .id(resultSet.getLong("util_id"))
                         .confirmed(resultSet.getBoolean("confirmed"))
-                        .owner(owner)
+                        .owner(own)
                         .person(person)
                         .build();
 
-                PrivateMessage lastMessage;
-                if(owner.equals(person)) {
-                    lastMessage = new PrivateMessage.PrivateMessageBuilder()
-                            .author(person)
-                            .contact(contact) //dummy
-                            .body(resultSet.getString("message_body"))
-                            .timeSent(new Date(resultSet.getLong("message_times_sent")))
-                            .id(resultSet.getLong("message_id"))
-                            .build();
-                }else{
-                    lastMessage = new PrivateMessage.PrivateMessageBuilder()
-                            .author(owner)
-                            .contact(contact) //dummy
-                            .body(resultSet.getString("message_body"))
-                            .timeSent(new Date(resultSet.getLong("message_times_sent")))
-                            .id(resultSet.getLong("message_id"))
-                            .build();
-                }
+                PrivateMessage lastMessage = new PrivateMessage.PrivateMessageBuilder()
+                        .author(own)
+                        .contact(contact) //dummy
+                        .body(resultSet.getString("message_body"))
+                        .timeSent(new Date(resultSet.getLong("message_times_sent")))
+                        .id(resultSet.getLong("message_id"))
+                        .build();
 
-                cantactsAndLastMessages.put(contact, lastMessage);
+                final Contact ownedContact = new Contact.ContactBuilder()
+                        .id(resultSet.getLong("id_contact"))
+                        .confirmed(resultSet.getBoolean("confirmed"))
+                        .owner(owner)
+                        .person(person.getId().equals(owner.getId()) ? own : person)
+                        .build();
+
+                cantactsAndLastMessages.put(ownedContact, lastMessage);
             }
 
         } catch (SQLException | InstantiationException e) {

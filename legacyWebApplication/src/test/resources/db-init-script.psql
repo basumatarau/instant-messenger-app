@@ -93,8 +93,8 @@ CREATE SEQUENCE legacy_im_db_schema.contacts_id_seq
 
 CREATE TABLE legacy_im_db_schema.contacts (
 	id bigint NOT NULL DEFAULT nextval('legacy_im_db_schema.contacts_id_seq'),
-	id_owner int8 NOT NULL,
-	id_person int8 NOT NULL,
+	id_owner bigint NOT NULL,
+	id_person bigint NOT NULL,
 	confirmed bool NOT NULL DEFAULT false,
 	CONSTRAINT contacts_pk PRIMARY KEY (id),
 	CONSTRAINT subscriptions_fk FOREIGN KEY (id_owner) REFERENCES legacy_im_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -137,10 +137,10 @@ CREATE TABLE legacy_im_db_schema.messages (
 	messagetype varchar(45) NOT NULL,
 	body varchar(500) NOT NULL,
 	timesent bigint NOT NULL,
-	id_contact int8 NULL,
-	id_author int8 NOT NULL,
-	id_messageresource int8 NULL,
-	id_chatroom int8 NULL,
+	id_contact bigint NULL,
+	id_author bigint NOT NULL,
+	id_messageresource bigint NULL,
+	id_chatroom bigint NULL,
 	CONSTRAINT message_pk PRIMARY KEY (id),
 	CONSTRAINT private_messages_fk FOREIGN KEY (id_contact) REFERENCES legacy_im_db_schema.contacts(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT private_messages_fk1 FOREIGN KEY (id_author) REFERENCES legacy_im_db_schema.users(id) ON UPDATE CASCADE,
@@ -168,8 +168,8 @@ CREATE SEQUENCE legacy_im_db_schema.subscriptions_id_seq
 
 CREATE TABLE legacy_im_db_schema.subscriptions (
 	id bigint NOT NULL DEFAULT nextval('legacy_im_db_schema.subscriptions_id_seq'),
-	id_user int8 NOT NULL,
-	id_chatroom int8 NOT NULL,
+	id_user bigint NOT NULL,
+	id_chatroom bigint NOT NULL,
 	enteredchat timestamp NOT NULL,
 	enabled bool NOT NULL,
 	id_userprivilege int4 NOT NULL DEFAULT 0,
@@ -196,7 +196,7 @@ CREATE SEQUENCE legacy_im_db_schema.messageresources_id_seq
 
 CREATE TABLE legacy_im_db_schema.messageresources (
 	id bigint NOT NULL DEFAULT nextval('legacy_im_db_schema.messageresources_id_seq'),
-	id_message int8 NOT NULL,
+	id_message bigint NOT NULL,
 	"name" varchar(150) NOT NULL,
 	CONSTRAINT messageresource_pk PRIMARY KEY (id),
 	CONSTRAINT messageresource_fk FOREIGN KEY (id_message) REFERENCES legacy_im_db_schema.messages(id) ON UPDATE CASCADE ON DELETE CASCADE,

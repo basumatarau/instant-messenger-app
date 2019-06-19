@@ -25,7 +25,7 @@ public class Conversation {
 
     private HttpSession httpSession;
     private User authorizedUser;
-    private Map<User, Session> activeSessions;
+    private Map<Long, Session> activeSessions;
 
     private ContactService contactService = ServiceProvider.SERV.contactService;
     private MessageService messageService = ServiceProvider.SERV.messageService;
@@ -44,10 +44,10 @@ public class Conversation {
         }
 
         this.activeSessions
-                = (Map<User, Session>) httpSession.getServletContext()
+                = (Map<Long, Session>) httpSession.getServletContext()
                 .getAttribute(FrontController.ACTIVE_WSSESSIONS_ATTR_NAME);
 
-        activeSessions.put(authorizedUser, session);
+        activeSessions.put(authorizedUser.getId(), session);
     }
 
     @OnMessage
@@ -58,12 +58,12 @@ public class Conversation {
 
             final MessageDto messageDto = messageService.persistMessage(message, contact);
 
-            final Session ownerSession = activeSessions.get(contact.getOwner());
+            final Session ownerSession = activeSessions.get(contact.getOwner().getId());
             if(ownerSession!=null){
                 ownerSession.getBasicRemote().sendObject(messageDto);
             }
 
-            final Session personSession = activeSessions.get(contact.getPerson());
+            final Session personSession = activeSessions.get(contact.getPerson().getId());
             if(personSession!=null){
                 personSession.getBasicRemote().sendObject(messageDto);
             }
@@ -75,7 +75,7 @@ public class Conversation {
 
     @OnClose
     public void onClose(Session session) throws IOException {
-        activeSessions.remove(authorizedUser);
+        activeSessions.remove(authorizedUser.getId());
         // WebSocket connection closes
     }
 

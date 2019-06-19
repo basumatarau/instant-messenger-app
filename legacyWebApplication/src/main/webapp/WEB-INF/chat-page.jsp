@@ -18,7 +18,8 @@
 
 <div class="frame_container">
 <%@ include file="menu.jsp" %>
-
+<div id="util_message_div" class="container">
+</div>
 <div class="container">
 
     <div class="messaging">
@@ -39,9 +40,9 @@
                                 </form>
                                 <div class="chat_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="${contactEntry.key.person.nName}"> </div>
                                 <div class="chat_ib">
-                                    <h5>${contactEntry.key.person.fName} ${contactEntry.key.person.lName} <span class="chat_date">${contactEntry.value.timesent}</span></h5>
+                                    <h5> ${contactEntry.key.person.nName} <span class="chat_date">${contactEntry.value.timesent}</span></h5>
                                     <c:choose>
-                                        <c:when test="${sessionScope.user.id != contactEntry.value.author.id}">
+                                        <c:when test="${sessionScope.user.id == contactEntry.value.author.id}">
                                             <p> <span class="you_wrote_para">you wrote: </span>${contactEntry.value.body}</p>
                                         </c:when>
                                         <c:otherwise>

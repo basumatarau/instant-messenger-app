@@ -3,6 +3,7 @@ package by.vironit.training.basumatarau.instantMessengerApp.command;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.Action;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.RequestHandler;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.SessionHandler;
+import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.*;
 import by.vironit.training.basumatarau.instantMessengerApp.model.Role;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.Optional;
 
 public class SignUpCommand extends Command {
     private UserService userService;
@@ -65,8 +67,13 @@ public class SignUpCommand extends Command {
             final String pwdHash = PasswordEncoder.getPwdHash(password, salt);
 
             try {
-                //todo fix the stub
-                final Role stub = new Role.RoleBuilder().id(1).name("stub").build();
+                final Role freshUserRole;
+                try {
+                    final Optional<Role> optRole = DaoProvider.DAO.roleDao.findByName("USER");
+                    freshUserRole = optRole.orElseThrow(() -> new DaoException("no USER role present in db"));
+                } catch (DaoException e) {
+                    throw new ServiceException("failed to fetch roles", e);
+                }
 
                 final User newUser = new User.UserBuilder()
                         .enabled(true)
@@ -74,7 +81,7 @@ public class SignUpCommand extends Command {
                         .firstName(firstName)
                         .lastName(lastName)
                         .nickName(nickName)
-                        .role(stub)
+                        .role(freshUserRole)
                         .passwordHash(pwdHash)
                         .salt(salt)
                         .build();

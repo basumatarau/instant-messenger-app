@@ -15,7 +15,6 @@ public class ErrorCommand extends Command {
         return null;
     }
 
-    //todo something about it
     @Override
     public String getViewName() {
         return "bad-request";

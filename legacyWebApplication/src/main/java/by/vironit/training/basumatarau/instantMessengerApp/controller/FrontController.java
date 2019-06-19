@@ -26,7 +26,7 @@ public class FrontController extends HttpServlet {
         actionResolver = ActionResolver.getInstance();
         viewResolver = ViewResolver.getInstance();
 
-        Map<User, Session> sessions = Collections.synchronizedMap(new WeakHashMap<>());
+        Map<Long, Session> sessions = Collections.synchronizedMap(new WeakHashMap<>());
         getServletContext().setAttribute(ACTIVE_WSSESSIONS_ATTR_NAME, sessions);
     }
 
