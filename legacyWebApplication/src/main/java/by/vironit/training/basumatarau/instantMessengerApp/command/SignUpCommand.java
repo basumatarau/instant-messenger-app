@@ -60,10 +60,10 @@ public class SignUpCommand extends Command {
                 if(userService
                         .findUserByEmail(email)
                         .isPresent()) {
-                    throw new UserCredentialsOccupied("user credentials occupied");
+                    throw new UserCredentialsOccupied("user credentials occupied for email: " + email);
                 }
             } catch (ServiceException e) {
-                logger.warn("registered credentials appeared to be used for a sign-up: " + email);
+                logger.warn("email look up failure during sign-up for email: " + email);
                 return Action.ERROR.getCommand();
             }
 

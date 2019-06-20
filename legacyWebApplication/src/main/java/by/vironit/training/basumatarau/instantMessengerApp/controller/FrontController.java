@@ -3,6 +3,8 @@ package by.vironit.training.basumatarau.instantMessengerApp.controller;
 import by.vironit.training.basumatarau.instantMessengerApp.command.Command;
 import by.vironit.training.basumatarau.instantMessengerApp.connection.ConnectionPool;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +17,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 public class FrontController extends HttpServlet {
+
+    private static final Logger logger = LoggerFactory.getLogger(FrontController.class);
     public static final String ACTIVE_WSSESSIONS_ATTR_NAME = "wssessions";
     private ActionResolver actionResolver;
     private ViewResolver viewResolver;
@@ -47,6 +51,7 @@ public class FrontController extends HttpServlet {
             nextCommand = command.process(req, resp);
         } catch (Exception e) {
             nextCommand = null;
+            logger.info("controller exception: " + e.getLocalizedMessage());
             req.setAttribute("error", getInitCauseLocalizedMessage(e));
         }
 

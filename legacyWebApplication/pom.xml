@@ -27,6 +27,7 @@
         <ibatis-sqlmap.version>3.0-beta-10</ibatis-sqlmap.version>
         <commons-codec.version>1.12</commons-codec.version>
         <slf4j-api.version>1.7.26</slf4j-api.version>
+        <logback-classic.version>1.2.3</logback-classic.version>
         <logback-core.version>1.2.3</logback-core.version>
     </properties>
 
@@ -45,13 +46,19 @@
             <version>${slf4j-api.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback-classic.version}</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
             <version>${logback-core.version}</version>
         </dependency>
-
 
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
