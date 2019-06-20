@@ -151,8 +151,6 @@ var webSocketHandler = new function() {
                                         }else{
                                             contacts[contact].getElementsByClassName("message_para")[0].textContent = msg.author.nName + ' wrote: ' + msg.body;
                                         }
-                                        var cloned = contacts[contact].getElementsByClassName("you_wrote_para")[0].clone;
-
                                     break;
                                 }
                             }
