@@ -18,6 +18,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -75,6 +77,13 @@ public class ChatCommand extends Command {
                 return Action.ERROR.getCommand();
             }
         }
+
+        final String hostAddress;
+        try(final DatagramSocket socket = new DatagramSocket()){
+            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+            hostAddress = socket.getLocalAddress().getHostAddress();
+        }
+        req.setAttribute("hostIpAddress", hostAddress);
         return null;
     }
 

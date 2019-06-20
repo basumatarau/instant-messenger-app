@@ -5,9 +5,9 @@ $.when(
         webSocketHandler.establishWsConnection.apply(
             null,
             ["ws",
-            "192.168.1.203",
+            "${hostIpAddress}",
             8080,
-            "/legacyWebApplication/messaging/${currentContact.owner.id}",
+            "<%=request.getContextPath()%>/messaging/${currentContact.owner.id}",
             ${sessionScope.user.id}]
         );
     }
