@@ -31,10 +31,10 @@
                     </div>
                 </div>
 
-                <div class="inbox_chat">
+                <div id="inbox_contacts" class="inbox_chat">
                     <c:forEach items="${contactsForUser}" var="contactEntry">
                         <div class="chat_list <c:if test="${(not empty currentContact) && (currentContact.id == contactEntry.key.id)}"> active_chat</c:if>">
-                            <div class="chat_people">
+                            <div id="${contactEntry.key.person.id}" class="chat_people">
                                 <form action="q?command=Chat" method="post" hidden>
                                     <input name="messageToContactId" value="${contactEntry.key.id}" hidden>
                                 </form>
@@ -43,13 +43,12 @@
                                     <h5> ${contactEntry.key.person.nName} <span class="chat_date">${contactEntry.value.timesent}</span></h5>
                                     <c:choose>
                                         <c:when test="${sessionScope.user.id == contactEntry.value.author.id}">
-                                            <p> <span class="you_wrote_para">you wrote: </span>${contactEntry.value.body}</p>
+                                            <p class="message_para"> <span class="you_wrote_para">you wrote: </span>${contactEntry.value.body}</p>
                                         </c:when>
                                         <c:otherwise>
-                                            <p> <span class="you_wrote_para">${contactEntry.value.author.nName} wrote: </span>${contactEntry.value.body}</p>
+                                            <p class="message_para"> <span class="you_wrote_para">${contactEntry.value.author.nName} wrote: </span>${contactEntry.value.body}</p>
                                         </c:otherwise>
                                     </c:choose>
-
                                 </div>
                             </div>
                         </div>

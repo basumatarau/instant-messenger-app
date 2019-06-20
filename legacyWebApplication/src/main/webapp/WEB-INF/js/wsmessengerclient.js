@@ -8,7 +8,8 @@ $.when(
             "${hostIpAddress}",
             8080,
             "<%=request.getContextPath()%>/messaging/${currentContact.owner.id}",
-            ${sessionScope.user.id}]
+            ${sessionScope.user.id},
+            ${currentContact.person.id}]
         );
     }
 ).then(
@@ -43,12 +44,14 @@ var webSocketHandler = new function() {
         var ws_port = null;
         var ws_endpoint = null;
         var userId = null;
+        var interlocutorId = null;
 
         ws_protocol = arguments[0];
         ws_hostname = arguments[1];
         ws_port     = arguments[2];
         ws_endpoint = arguments[3];
         userId = arguments[4];
+        interlocutorId = arguments[5];
 
         openWSConnection(ws_protocol, ws_hostname, ws_port, ws_endpoint);
 
@@ -86,7 +89,7 @@ var webSocketHandler = new function() {
 
                         var msg = JSON.parse(messageEvent.data);
 
-                        if(userId != msg.author.id){
+                        if(interlocutorId == msg.author.id){
                             var incoming_div = document.createElement('div');
                             incoming_div.setAttribute('class', "incoming_msg");
 
@@ -118,7 +121,7 @@ var webSocketHandler = new function() {
 
                             incoming_div.appendChild(received_div_msg);
                             document.getElementById("messages").appendChild(incoming_div);
-                        }else{
+                        }else if(userId == msg.author.id){
                             var outgoing_div = document.createElement('div');
                             outgoing_div.setAttribute('class', "outgoing_msg");
 
@@ -138,6 +141,24 @@ var webSocketHandler = new function() {
                             sent_message.appendChild(msg_span);
 
                             document.getElementById("messages").appendChild(outgoing_div);
+                        }else{
+                            var contacts = document.getElementsByClassName("chat_people");
+                            for (contact in contacts){
+                                  if(contacts[contact].id == '' + msg.author.id){
+                                        contacts[contact].getElementsByClassName("chat_date")[0].innerHTML = msg.timesent;
+                                        if(msg.author.id == userId){
+                                            contacts[contact].getElementsByClassName("message_para")[0].textContent = 'you wrote: ' + msg.body;
+                                        }else{
+                                            contacts[contact].getElementsByClassName("message_para")[0].textContent = msg.author.nName + ' wrote: ' + msg.body;
+                                        }
+                                        var cloned = contacts[contact].getElementsByClassName("you_wrote_para")[0].clone;
+
+                                    break;
+                                }
+                            }
+
+                            console.log('new contact has sent a message...');
+                            var inbox_contacts = document.getElementById("inbox_contacts");
                         }
 
                         var messages_div = $("#messages");
