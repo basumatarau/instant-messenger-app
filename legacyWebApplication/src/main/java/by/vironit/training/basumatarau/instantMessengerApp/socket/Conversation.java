@@ -10,6 +10,8 @@ import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.service.ContactService;
 import by.vironit.training.basumatarau.instantMessengerApp.service.MessageService;
 import by.vironit.training.basumatarau.instantMessengerApp.service.ServiceProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpSession;
 import javax.websocket.*;
@@ -22,6 +24,8 @@ import java.util.Map;
         decoders = MessageDecoder.class,
         encoders = MessageEncoder.class )
 public class Conversation {
+
+    private static final Logger logger = LoggerFactory.getLogger(Conversation.class);
 
     private HttpSession httpSession;
     private User authorizedUser;
@@ -69,7 +73,7 @@ public class Conversation {
             }
 
         } catch (EncodeException | ServiceException | ControllerException e) {
-            //todo something about it...
+            logger.error("ws error thrown from within webSocket session opened for user {}", authorizedUser);
         }
     }
 
