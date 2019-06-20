@@ -11,11 +11,11 @@
     <script type="text/javascript">
         <%@include file="js/chatPageContactSwitch.js" %>
     </script>
-
-    <script type="text/javascript">
-        <%@include file="js/wsmessengerclient.js" %>
-    </script>
-
+    <% if (request.getAttribute("currentContact") != null) { %>
+        <script type="text/javascript">
+            <%@include file="js/wsmessengerclient.js" %>
+        </script>
+    <% } %>
 <div class="frame_container">
 <%@ include file="menu.jsp" %>
 <div id="util_message_div" class="container">
