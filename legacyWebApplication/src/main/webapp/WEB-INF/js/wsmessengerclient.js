@@ -121,6 +121,13 @@ var webSocketHandler = new function() {
 
                             incoming_div.appendChild(received_div_msg);
                             document.getElementById("messages").appendChild(incoming_div);
+
+                            var contact = document.getElementById(interlocutorId);
+                            contact.getElementsByClassName("chat_date")[0].innerHTML = msg.timesent;
+                            contact.getElementsByClassName("you_wrote_para")[0].nextSibling.nodeValue = msg.body;
+                            contact.getElementsByClassName("you_wrote_para")[0].childNodes[0].nodeValue =
+                            msg.author.id == userId ? 'you wrote: ' : msg.author.nName + ' wrote: ';
+
                         }else if(userId == msg.author.id){
                             var outgoing_div = document.createElement('div');
                             outgoing_div.setAttribute('class', "outgoing_msg");
@@ -141,21 +148,72 @@ var webSocketHandler = new function() {
                             sent_message.appendChild(msg_span);
 
                             document.getElementById("messages").appendChild(outgoing_div);
+
+                            var contact = document.getElementById(interlocutorId);
+                            contact.getElementsByClassName("chat_date")[0].innerHTML = msg.timesent;
+                            contact.getElementsByClassName("you_wrote_para")[0].nextSibling.nodeValue = msg.body;
+                            contact.getElementsByClassName("you_wrote_para")[0].childNodes[0].nodeValue =
+                                msg.author.id == userId ? 'you wrote: ' : msg.author.nName + ' wrote: ';
+
                         }else{
                             var contacts = document.getElementsByClassName("chat_people");
+                            var presentInRecent = false;
                             for (contact in contacts){
                                   if(contacts[contact].id == '' + msg.author.id){
                                         contacts[contact].getElementsByClassName("chat_date")[0].innerHTML = msg.timesent;
-                                        if(msg.author.id == userId){
-                                            contacts[contact].getElementsByClassName("message_para")[0].textContent = 'you wrote: ' + msg.body;
-                                        }else{
-                                            contacts[contact].getElementsByClassName("message_para")[0].textContent = msg.author.nName + ' wrote: ' + msg.body;
-                                        }
+                                        contacts[contact].getElementsByClassName("you_wrote_para")[0].nextSibling.nodeValue = msg.body;
+                                        contacts[contact].getElementsByClassName("you_wrote_para")[0].childNodes[0].nodeValue =
+                                        msg.author.id == userId ? 'you wrote: ' : msg.author.nName + ' wrote: ';
+                                        presentInRecent = true;
                                     break;
-                                }
+                                    }
                             }
+                            if(!presentInRecent){
+                                var chat_list_div = document.createElement('div');
+                                chat_list_div.setAttribute('class', 'chat_list');
 
-                            console.log('new contact has sent a message...');
+                                var contact_entry_div = document.createElement('div');
+                                contact_entry_div.setAttribute('class', 'chat_people');
+                                contact_entry_div.setAttribute('id', msg.contact.owner.id);
+                                chat_list_div.appendChild(contact_entry_div);
+
+                                var action_form = document.createElement('form');
+                                action_form.setAttribute('action', 'q?command=Chat');
+                                action_form.setAttribute('method', 'post');
+                                action_form.setAttribute('hidden', 'true');
+                                contact_entry_div.appendChild(action_form);
+
+                                var img_div = document.createElement('div');
+                                img_div.setAttribute('class', 'chat_img');
+                                var img = document.createElement('img');
+                                img.setAttribute('src', 'https://ptetutorials.com/images/user-profile.png');
+                                img.setAttribute('alt', msg.contact.person.nName);
+                                img_div.appendChild(img);
+                                contact_entry_div.appendChild(img_div);
+
+                                var chat_ib_div = document.createElement('div');
+                                chat_ib_div.setAttribute('class', 'chat_ib');
+                                var h5 = document.createElement('h5');
+                                h5.innerHTML = msg.contact.owner.nName;
+                                var chat_date_span = document.createElement('span');
+                                chat_date_span.setAttribute('class', 'chat_date');
+                                chat_date_span.innerHTML = msg.timesent;
+                                h5.childNodes[0].parentNode.insertBefore(chat_date_span,h5.childNodes[0].nextSibling);
+                                chat_ib_div.appendChild(h5);
+
+                                var message_para = document.createElement('p');
+                                message_para.innerHTML = msg.contact.owner.nName + ' wrote: ';
+                                var you_wrote_span = document.createElement('span');
+                                you_wrote_span.setAttribute('class', 'you_wrote_para');
+                                you_wrote_span.innerHTML = msg.author.nName;
+                                message_para.innerHTML = msg.body.innerHTML;
+                                message_para.childNodes[0].parentNode.insertBefore(you_wrote_span,message_para.childNodes[0].nextSibling);
+                                chat_ib_div.appendChild(message_para);
+                                contact_entry_div.appendChild(chat_ib_div);
+
+                                document.getElementById('inbox_contacts').appendChild(chat_list_div);
+                                console.log('new contact has sent a message...');
+                            }
                             var inbox_contacts = document.getElementById("inbox_contacts");
                         }
 
