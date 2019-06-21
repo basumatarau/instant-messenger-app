@@ -23,8 +23,7 @@ public class ActionResolver {
         Action action = Action.ERROR;
         String command = request.getParameter("command");
 
-        if (command == null) {
-            request.setAttribute("details", request.getContextPath());
+        if (command == null || request.getAttribute("badRequest") != null) {
             return Action.BADREQUEST;
         }
         try {

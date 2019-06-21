@@ -9,6 +9,24 @@ public class BadRequestCommand extends Command {
     @Override
     public Command process(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+
+        String queryString = req.getQueryString();
+        if(queryString == null){
+            req.setAttribute(
+                    "details" ,
+                    req.getRequestURL()
+                            .toString());
+
+        }else{
+            req.setAttribute(
+                    "details" ,
+                    req.getRequestURL()
+                            .append('?')
+                            .append(queryString)
+                            .toString());
+
+        }
+
         return null;
     }
 

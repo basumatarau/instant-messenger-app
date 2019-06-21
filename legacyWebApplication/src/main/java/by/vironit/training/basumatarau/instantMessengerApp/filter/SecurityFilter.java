@@ -15,6 +15,7 @@ public class SecurityFilter implements Filter {
     private Set<String> adminOnlyCmds = new HashSet<>();
     private Set<String> unsecuredCmds = new HashSet<>();
     private Set<String> authUserOnly = new HashSet<>();
+    private Set<String> securedServlets = new HashSet<>();
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -36,6 +37,16 @@ public class SecurityFilter implements Filter {
                 .getAuthorizedUser(request);
 
         final String command = servletRequest.getParameter("command");
+        final String servletPath = ((HttpServletRequest) servletRequest).getServletPath();
+        //ws upgrade GET request check
+        if((servletPath.matches("^/q/messaging/.*") &&
+                !servletPath.matches("/q/messaging/\\d{1,19}") ||
+                request.getQueryString().matches(".*\\\\.*")
+        )
+        ){
+            request.setAttribute("badRequest", Boolean.TRUE);
+            filterChain.doFilter(servletRequest, servletResponse);
+        }
 
         if (command == null || unsecuredCmds.contains(command)) {
             filterChain.doFilter(servletRequest, servletResponse);
@@ -48,7 +59,12 @@ public class SecurityFilter implements Filter {
                 authorizedUser.getRole().getName().equals("ADMIN")) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
-            response.sendRedirect("q?command=Logination");
+            if(authorizedUser == null) {
+                response.sendRedirect("q?command=Logination");
+            }else{
+                request.setAttribute("badRequest", Boolean.TRUE);
+                filterChain.doFilter(servletRequest, servletResponse);
+            }
         }
     }
 
