@@ -18,7 +18,7 @@ public class MessageDecoder implements Decoder.Text<IncomingMessageDto> {
 
     @Override
     public boolean willDecode(String s) {
-        return s.trim().length() > 0;
+        return s.trim().length() > 0 && s.trim().length() < 1000;
     }
 
     @Override

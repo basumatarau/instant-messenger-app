@@ -68,7 +68,7 @@
                                         <div class="received_msg">
                                             <div class="received_withd_msg">
                                                 <p>${message.body}</p>
-                                                <span class="time_date"> ${message.timesent} </span></div>
+                                                <span class="time_date"> ${message.timesent.toLocaleString()} </span></div>
                                         </div>
                                     </div>
                                 </c:when>
@@ -76,7 +76,7 @@
                                     <div class="outgoing_msg">
                                         <div class="sent_msg">
                                             <p>${message.body}</p>
-                                            <span class="time_date"> ${message.timesent} </span> </div>
+                                            <span class="time_date"> ${message.timesent.toLocaleString()} </span> </div>
                                     </div>
                                 </c:otherwise>
                             </c:choose>

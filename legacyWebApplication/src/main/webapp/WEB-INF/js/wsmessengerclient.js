@@ -243,12 +243,30 @@ var webSocketHandler = new function() {
             console.error("webSocket is not open: " + webSocket.readyState);
             return;
         }
+
         var newMessage = {};
         newMessage.body = document.getElementById("message_input").value || "";
         newMessage.contactId = document.getElementById("contactId").value;
-        webSocket.send(JSON.stringify(newMessage));
 
-        $("#message_input").val("");
+        if(newMessage.body.length <= 500){
+            webSocket.send(JSON.stringify(newMessage));
+            $("#message_input").val("");
+        }else{
+            var err_para = document.createElement('p');
+            err_para.setAttribute('class','err_para');
+            err_para.innerHTML = "the message is to big...";
+            var err_div = document.createElement('div');
+            err_div.setAttribute('class', 'err_div');
+            err_div.appendChild(err_para);
+
+            document.getElementById("messages").appendChild(err_div);
+            var messages_div = $("#messages");
+            messages_div.scrollTop(messages_div.prop("scrollHeight"));
+
+            setTimeout(function(){
+                err_div.remove();
+            }, 2000);
+        }
     }
 };
 
