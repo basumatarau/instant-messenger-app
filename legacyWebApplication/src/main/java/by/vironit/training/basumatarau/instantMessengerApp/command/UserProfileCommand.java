@@ -82,7 +82,7 @@ public class UserProfileCommand extends Command {
             } else {
                 final byte[] newSalt = new byte[16];
                 new SecureRandom().nextBytes(salt);
-                final String newPwdHash = PasswordEncoder.getPwdHash(newpassword, salt);
+                final String newPwdHash = PasswordEncoder.getPwdHash(newpassword, newSalt);
 
                 try {
                     toBeUpdated = new User.UserBuilder()
