@@ -3,7 +3,6 @@ package by.vironit.training.basumatarau.instantMessengerApp.socket;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.SessionHandler;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;

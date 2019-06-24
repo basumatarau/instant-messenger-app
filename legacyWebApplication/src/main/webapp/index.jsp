@@ -14,7 +14,7 @@
         <br/>
         <p>find contacts, send friend requests, chat:</p>
         <br/>
-        <img alt="howto" src="${pageContext.request.contextPath}/resources/screen.jpg" width="100%" height="75%"/>
+        <img alt="howto" src="resources/screen.jpg" width="100%" height="75%"/>
     </div>
 </body>
 </html>

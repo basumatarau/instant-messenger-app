@@ -3,13 +3,17 @@ package by.vironit.training.basumatarau.instantMessengerApp.socket;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.FrontController;
 import by.vironit.training.basumatarau.instantMessengerApp.dto.IncomingMessageDto;
 import by.vironit.training.basumatarau.instantMessengerApp.dto.MessageDto;
+import by.vironit.training.basumatarau.instantMessengerApp.dto.WsErrorDto;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.ControllerException;
 import by.vironit.training.basumatarau.instantMessengerApp.exception.ServiceException;
+import by.vironit.training.basumatarau.instantMessengerApp.exception.ValidationException;
 import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.service.ContactService;
 import by.vironit.training.basumatarau.instantMessengerApp.service.MessageService;
 import by.vironit.training.basumatarau.instantMessengerApp.service.ServiceProvider;
+import by.vironit.training.basumatarau.instantMessengerApp.validator.IncomingMessageValidator;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +30,7 @@ import java.util.Map;
 public class Conversation {
 
     private static final Logger logger = LoggerFactory.getLogger(Conversation.class);
+    private static Gson gson = new Gson();
 
     private HttpSession httpSession;
     private User authorizedUser;
@@ -60,20 +65,29 @@ public class Conversation {
             final Contact contact = contactService.findContactById(message.getContactId())
                     .orElseThrow(() -> new ControllerException("failed to retrieve contact"));
 
+
+            IncomingMessageValidator.validate(message);
+
             final MessageDto messageDto = messageService.persistMessage(message, contact);
 
             final Session ownerSession = activeSessions.get(contact.getOwner().getId());
             if(ownerSession!=null){
                 ownerSession.getBasicRemote().sendObject(messageDto);
             }
-
             final Session personSession = activeSessions.get(contact.getPerson().getId());
             if(personSession!=null){
                 personSession.getBasicRemote().sendObject(messageDto);
             }
 
         } catch (EncodeException | ServiceException | ControllerException e) {
-            logger.error("ws error thrown from within webSocket session opened for user {}", authorizedUser);
+            logger.error("ws error thrown from within webSocket session opened for user {} : {}", authorizedUser, e);
+        } catch (ValidationException e) {
+            logger.info("incoming message from {} is to big to be handled", authorizedUser);
+            final WsErrorDto vsErrorDto = new WsErrorDto("invalid message: " + e.getLocalizedMessage());
+            activeSessions
+                    .get(authorizedUser.getId())
+                    .getBasicRemote()
+                    .sendText(gson.toJson(vsErrorDto));
         }
     }
 

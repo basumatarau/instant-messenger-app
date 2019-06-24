@@ -1,4 +1,4 @@
-package by.vironit.training.basumatarau.instantMessengerApp.controller;
+package by.vironit.training.basumatarau.instantMessengerApp.validator;
 
 import by.vironit.training.basumatarau.instantMessengerApp.exception.ValidationException;
 

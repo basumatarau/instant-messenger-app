@@ -37,13 +37,13 @@ public class SecurityFilter implements Filter {
                 .getAuthorizedUser(request);
 
         final String command = servletRequest.getParameter("command");
-        final String servletPath = ((HttpServletRequest) servletRequest).getServletPath();
+        final String requestPath = ((HttpServletRequest) servletRequest).getServletPath();
+
         //ws upgrade GET request check
-        if((servletPath.matches("^/q/messaging/.*") &&
-                !servletPath.matches("/q/messaging/\\d{1,19}") ||
-                request.getQueryString().matches(".*\\\\.*")
-        )
-        ){
+        if (requestPath.matches("^/q/messaging/.*") &&
+                !requestPath.matches("/q/messaging/\\d{1,19}") ||
+                request.getQueryString() != null &&
+                        request.getQueryString().matches(".*\\\\.*")) {
             request.setAttribute("badRequest", Boolean.TRUE);
             filterChain.doFilter(servletRequest, servletResponse);
         }
@@ -51,17 +51,17 @@ public class SecurityFilter implements Filter {
         if (command == null || unsecuredCmds.contains(command)) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else if (authUserOnly.contains(command) &&
-                authorizedUser!=null &&
+                authorizedUser != null &&
                 authorizedUser.getRole().getName().equals("USER")) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else if (adminOnlyCmds.contains(command) &&
-                authorizedUser!=null &&
+                authorizedUser != null &&
                 authorizedUser.getRole().getName().equals("ADMIN")) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
-            if(authorizedUser == null) {
+            if (authorizedUser == null) {
                 response.sendRedirect("q?command=Logination");
-            }else{
+            } else {
                 request.setAttribute("badRequest", Boolean.TRUE);
                 filterChain.doFilter(servletRequest, servletResponse);
             }

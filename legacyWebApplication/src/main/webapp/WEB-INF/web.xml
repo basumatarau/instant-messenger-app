@@ -78,4 +78,15 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.js</url-pattern>
+        <url-pattern>*.css</url-pattern>
+        <url-pattern>*.ico</url-pattern>
+        <url-pattern>*.png</url-pattern>
+        <url-pattern>*.jpg</url-pattern>
+        <url-pattern>*.htc</url-pattern>
+        <url-pattern>*.gif</url-pattern>
+    </servlet-mapping>
+
 </web-app>

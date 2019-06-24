@@ -1,7 +1,7 @@
 package by.vironit.training.basumatarau.instantMessengerApp.command;
 
 import by.vironit.training.basumatarau.instantMessengerApp.controller.Action;
-import by.vironit.training.basumatarau.instantMessengerApp.controller.RequestHandler;
+import by.vironit.training.basumatarau.instantMessengerApp.validator.RequestHandler;
 import by.vironit.training.basumatarau.instantMessengerApp.controller.SessionHandler;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.ContactDao;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
