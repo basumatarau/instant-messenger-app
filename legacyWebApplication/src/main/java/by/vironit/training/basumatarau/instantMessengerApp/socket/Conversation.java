@@ -82,7 +82,7 @@ public class Conversation {
         } catch (EncodeException | ServiceException | ControllerException e) {
             logger.error("ws error thrown from within webSocket session opened for user {} : {}", authorizedUser, e);
         } catch (ValidationException e) {
-            logger.info("incoming message from {} is to big to be handled", authorizedUser);
+            logger.info("incoming message from {} is too big to be handled...", authorizedUser);
             final WsErrorDto vsErrorDto = new WsErrorDto("invalid message: " + e.getLocalizedMessage());
             activeSessions
                     .get(authorizedUser.getId())

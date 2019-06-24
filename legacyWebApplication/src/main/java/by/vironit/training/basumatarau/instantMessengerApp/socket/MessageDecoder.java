@@ -18,7 +18,7 @@ public class MessageDecoder implements Decoder.Text<IncomingMessageDto> {
 
     @Override
     public boolean willDecode(String s) {
-        return s != null;
+        return s.trim().length() > 0;
     }
 
     @Override

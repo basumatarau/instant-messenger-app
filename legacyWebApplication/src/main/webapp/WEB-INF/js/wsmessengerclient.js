@@ -33,10 +33,15 @@ $.when(
         let messages_div = $("#messages");
         messages_div.scrollTop(messages_div.prop("scrollHeight"));
     }
- );
+);
 
 var webSocketHandler = new function() {
     this.webSocket = null;
+
+    this.frameScroller = function() {
+        let messages_div = $("#messages");
+        messages_div.scrollTop(messages_div.prop("scrollHeight"));
+    }
 
     this.establishWsConnection = function() {
         var ws_protocol = null;
@@ -73,22 +78,29 @@ var webSocketHandler = new function() {
                 webSocket.onmessage = function (messageEvent) {
                     var wsMsg = messageEvent.data;
                     console.log("WebSocket MESSAGE: " + wsMsg);
+
+                    var msg = JSON.parse(messageEvent.data);
+
                     if (wsMsg.indexOf("error") > 0) {
 
+                        console.log("WebSocket MESSAGE: " + wsMsg);
+
                         var err_para = document.createElement('p');
-                        err_para.setAttribute('class','item-fixed');
-                        err_para.innerHTML = 'error: ' + wsMsg.error + "\r\n" + 'network issues (try reloading the page)';
-                        var util_div = document.getElementById('util_message_div');
+                        err_para.setAttribute('class','err_para');
+                        err_para.innerHTML = msg.error;
+                        var err_div = document.createElement('div');
+                        err_div.setAttribute('class', 'err_div');
+                        err_div.appendChild(err_para);
 
-                        while(util_div.firstChild){
-                            util_div.removeChild(util_div.firstChild);
-                        }
-                        util_div.appendChild(err_para);
+                        document.getElementById("messages").appendChild(err_div);
 
+                        setTimeout(function(){
+                          err_div.remove();
+                        }, 2000);
+
+                        var messages_div = $("#messages");
+                        messages_div.scrollTop(messages_div.prop("scrollHeight"));
                     } else {
-
-                        var msg = JSON.parse(messageEvent.data);
-
                         if(interlocutorId == msg.author.id){
                             var incoming_div = document.createElement('div');
                             incoming_div.setAttribute('class', "incoming_msg");

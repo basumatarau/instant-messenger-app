@@ -161,7 +161,10 @@ img{
   padding: 5px 10px 5px 12px;
   width:100%;
 }
-.outgoing_msg{ overflow:hidden; margin:26px 0 26px;}
+.outgoing_msg{
+  overflow:hidden;
+  margin:26px 0 26px;
+}
 .sent_msg {
   float: right;
   width: 46%;
@@ -199,4 +202,14 @@ img{
 }
 #hint-para{
   text-align: center
+}
+
+.err_div p{
+  background: #fe8b8b none repeat scroll 0 0;
+  border-radius: 3px;
+  color: #000000;
+  font-size: 14px;
+  margin: 0;
+  padding: 5px 10px 5px 12px;
+  width: 100%;
 }
