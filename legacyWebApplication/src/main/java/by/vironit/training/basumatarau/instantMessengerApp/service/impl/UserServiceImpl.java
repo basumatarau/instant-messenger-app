@@ -1,6 +1,5 @@
 package by.vironit.training.basumatarau.instantMessengerApp.service.impl;
 
-import by.vironit.training.basumatarau.instantMessengerApp.controller.SessionHandler;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.ContactDao;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.UserDao;
@@ -26,6 +25,16 @@ public class UserServiceImpl implements UserService {
     {
         userDao = DaoProvider.DAO.userDao;
         contactDao = DaoProvider.DAO.contactDao;
+    }
+
+    @Override
+    public void updateUser(User toBeUpdated) throws ServiceException {
+        try{
+            userDao.update(toBeUpdated);
+        } catch (DaoException e) {
+            logger.warn("failed to update user: " + toBeUpdated);
+            throw new ServiceException(e);
+        }
     }
 
     @Override

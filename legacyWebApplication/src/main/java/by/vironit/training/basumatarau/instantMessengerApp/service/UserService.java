@@ -12,4 +12,6 @@ public interface UserService {
     boolean registerNewUserAccount(User user) throws ServiceException;
     List<UserDto> searchUsersWithPattern(User user, String pattern) throws ServiceException;
     Optional<User> findUserById(Long id) throws ServiceException;
+
+    void updateUser(User toBeUpdated) throws ServiceException;
 }

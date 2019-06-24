@@ -17,6 +17,11 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 
     private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 
+    private static final String UPDATE_USER =
+            "UPDATE legacy_im_db_schema.users " +
+                    "SET firstname=?, lastname=?, nickname=?, email=?, salt=decode(?, 'hex'), passwordhash=?, enabled=?, id_role=? " +
+                    "WHERE id=? ";
+
     private static final String SEARCH_USERS_WITH_PATTERN
             = "select " +
             "r.id as role_id, " +
@@ -72,6 +77,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             = "INSERT INTO legacy_im_db_schema.users " +
             "(firstname, lastname, nickname, email, salt, passwordhash, enabled, id_role) " +
             "VALUES(?, ?, ?, ?, decode(?, 'hex'), ?, ?, ?); ";
+
     private static final String INSERT_USER_SQL_AND_GEN_KEY_STATEMENT
             = "INSERT INTO legacy_im_db_schema.users as u " +
             "(firstname, lastname, nickname, email, salt, passwordhash, enabled, id_role) " +
@@ -141,7 +147,7 @@ public class UserDaoImpl extends BaseDao implements UserDao {
             final ResultSet set = ps.getGeneratedKeys();
             set.next();
 
-            return set.getInt(1) > 0;
+            return set.getLong(1) > 0;
 
         } catch (SQLException e) {
 
@@ -159,8 +165,45 @@ public class UserDaoImpl extends BaseDao implements UserDao {
     }
 
     @Override
-    public boolean update(User bean) throws DaoException {
-        return false;
+    public boolean update(User user) throws DaoException {
+        final Connection connection = getConnectionPool().takeConnection();
+        PreparedStatement ps = null;
+
+        try {
+            ps = connection.prepareStatement(UPDATE_USER,
+                    Statement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, user.getFirstName());
+            ps.setString(2, user.getLastName());
+            ps.setString(3, user.getNickName());
+            ps.setString(4, user.getEmail());
+            ps.setString(5, Hex.encodeHexString(user.getSalt()));
+            ps.setString(6, user.getPasswordHash());
+            ps.setBoolean(7, user.getEnabled());
+            ps.setInt(8, user.getRole().getId());
+            ps.setLong(9, user.getId());
+
+            ps.executeUpdate();
+            connection.commit();
+
+            final ResultSet set = ps.getGeneratedKeys();
+            set.next();
+
+            return set.getLong(1) > 0;
+
+        } catch (SQLException e) {
+
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                logger.error("failed to update user: " + user);
+                throw new RuntimeException("failed to rollback transaction", ex);
+            }
+            throw new DaoException(e);
+        } finally {
+            getConnectionPool()
+                    .closeConnection(ps, connection);
+        }
     }
 
     @Override

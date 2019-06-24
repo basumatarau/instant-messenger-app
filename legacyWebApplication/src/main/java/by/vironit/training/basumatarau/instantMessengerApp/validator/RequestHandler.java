@@ -15,6 +15,10 @@ public class RequestHandler {
         return request.getMethod().equalsIgnoreCase("get");
     }
 
+    public static boolean isUpdate(HttpServletRequest request, HttpServletResponse response) {
+        return request.getMethod().equalsIgnoreCase("update");
+    }
+
     public static boolean isPost(HttpServletRequest request, HttpServletResponse response) {
         return request.getMethod().equalsIgnoreCase("post");
     }
