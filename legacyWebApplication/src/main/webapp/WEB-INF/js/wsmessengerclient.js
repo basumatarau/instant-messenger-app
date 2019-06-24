@@ -83,8 +83,6 @@ var webSocketHandler = new function() {
 
                     if (wsMsg.indexOf("error") > 0) {
 
-                        console.log("WebSocket MESSAGE: " + wsMsg);
-
                         var err_para = document.createElement('p');
                         err_para.setAttribute('class','err_para');
                         err_para.innerHTML = msg.error;

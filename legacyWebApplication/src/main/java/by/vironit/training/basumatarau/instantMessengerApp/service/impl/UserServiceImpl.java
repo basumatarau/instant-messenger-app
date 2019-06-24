@@ -1,5 +1,6 @@
 package by.vironit.training.basumatarau.instantMessengerApp.service.impl;
 
+import by.vironit.training.basumatarau.instantMessengerApp.controller.SessionHandler;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.ContactDao;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.DaoProvider;
 import by.vironit.training.basumatarau.instantMessengerApp.dao.UserDao;
@@ -61,7 +62,7 @@ public class UserServiceImpl implements UserService {
             logger.warn("failed to search for users with look up pattern: " + pattern);
             throw new ServiceException("failed to fetch users for pattern " + pattern, e);
         }
-
+        users.remove(user);
         try {
             contactsForUser = contactDao.getContactsForUser(user);
         } catch (DaoException e) {

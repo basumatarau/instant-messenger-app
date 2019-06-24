@@ -65,18 +65,19 @@ public class Conversation {
             final Contact contact = contactService.findContactById(message.getContactId())
                     .orElseThrow(() -> new ControllerException("failed to retrieve contact"));
 
-
             IncomingMessageValidator.validate(message);
 
-            final MessageDto messageDto = messageService.persistMessage(message, contact);
+            if(message.getBody().trim().length() > 0){
+                final MessageDto messageDto = messageService.persistMessage(message, contact);
 
-            final Session ownerSession = activeSessions.get(contact.getOwner().getId());
-            if(ownerSession!=null){
-                ownerSession.getBasicRemote().sendObject(messageDto);
-            }
-            final Session personSession = activeSessions.get(contact.getPerson().getId());
-            if(personSession!=null){
-                personSession.getBasicRemote().sendObject(messageDto);
+                final Session ownerSession = activeSessions.get(contact.getOwner().getId());
+                if(ownerSession!=null){
+                    ownerSession.getBasicRemote().sendObject(messageDto);
+                }
+                final Session personSession = activeSessions.get(contact.getPerson().getId());
+                if(personSession!=null){
+                    personSession.getBasicRemote().sendObject(messageDto);
+                }
             }
 
         } catch (EncodeException | ServiceException | ControllerException e) {
