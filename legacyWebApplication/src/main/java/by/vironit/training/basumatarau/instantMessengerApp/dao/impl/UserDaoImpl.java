@@ -17,9 +17,17 @@ public class UserDaoImpl extends BaseDao implements UserDao {
 
     private static final Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
 
+    //todo fix this statement (conversion):
     private static final String UPDATE_USER =
             "UPDATE legacy_im_db_schema.users " +
-                    "SET firstname=?, lastname=?, nickname=?, email=?, salt=decode(?, 'hex'), passwordhash=?, enabled=?, id_role=? " +
+                    "SET firstname=?, " +
+                    " lastname=?, " +
+                    " nickname=?, " +
+                    " email=?, " +
+                    " salt=decode(?, 'hex'), " +
+                    " passwordhash=?, " +
+                    " enabled=?, " +
+                    " id_role=? " +
                     "WHERE id=? ";
 
     private static final String SEARCH_USERS_WITH_PATTERN
