@@ -12,10 +12,10 @@
 <div class="frame_container">
     <%@ include file="menu.jsp" %>
     <div class="container">
+        <br/>
+        <h2>Contact list</h2>
         <p>${error}</p>
         <p>${message}</p>
-
-        <h2>Contact list</h2>
 
         <form class="search-form" action="q?command=ContactList" method="post">
           <div class="input-group">

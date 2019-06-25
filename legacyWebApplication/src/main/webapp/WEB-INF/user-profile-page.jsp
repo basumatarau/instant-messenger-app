@@ -10,8 +10,9 @@
 <%@ include file="menu.jsp" %>
     <div class="container">
 
-        <h2>Profile page</h2>
         <div class="container">
+            <br/>
+            <h2>Profile page</h2>
             <p>${error}</p>
             <p>${message}</p>
 
@@ -66,7 +67,7 @@
                             <div class="form-group row justify-content-center">
                               <label class="control-label" for="userUserData"></label>
                               <div class="col-md-4">
-                                <button id="userUserData" name="userUserData" type="submit" form="userForm" class="btn btn-primary">User profile</button>
+                                <button id="userUserData" name="userUserData" type="submit" form="userForm" class="btn btn-primary">Update profile</button>
                               </div>
                             </div>
 

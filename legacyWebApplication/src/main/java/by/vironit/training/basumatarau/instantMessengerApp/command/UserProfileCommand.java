@@ -81,7 +81,7 @@ public class UserProfileCommand extends Command {
                 throw new UserNotFound("wrong password");
             } else {
                 final byte[] newSalt = new byte[16];
-                new SecureRandom().nextBytes(salt);
+                new SecureRandom().nextBytes(newSalt);
                 final String newPwdHash = PasswordEncoder.getPwdHash(newpassword, newSalt);
 
                 try {
