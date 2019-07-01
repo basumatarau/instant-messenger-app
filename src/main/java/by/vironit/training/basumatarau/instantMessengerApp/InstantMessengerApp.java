@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class InstantMessengerAppApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(InstantMessengerAppApplication.class, args);
-	}
+public class InstantMessengerApp {
+    public static void main(String[] args) {
 
+        SpringApplication.run(InstantMessengerApp.class, args);
+    }
 }

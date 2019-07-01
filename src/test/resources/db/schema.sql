@@ -92,8 +92,8 @@ CREATE SEQUENCE instant_messenger_db_schema.contacts_id_seq
 
 CREATE TABLE instant_messenger_db_schema.contacts (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.contacts_id_seq'),
-	id_owner int8 NOT NULL,
-	id_person int8 NOT NULL,
+	id_owner bigint NOT NULL,
+	id_person bigint NOT NULL,
 	confirmed bool NOT NULL DEFAULT false,
 	CONSTRAINT contacts_pk PRIMARY KEY (id),
 	CONSTRAINT subscriptions_fk FOREIGN KEY (id_owner) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -135,11 +135,11 @@ CREATE TABLE instant_messenger_db_schema.messages (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.messages_id_seq'),
 	messagetype varchar(45) NOT NULL,
 	body varchar(500) NOT NULL,
-	timesent timestamp NOT NULL,
-	id_contact int8 NULL,
-	id_author int8 NOT NULL,
-	id_messageresource int8 NULL,
-	id_chatroom int8 NULL,
+	timesent bigint NOT NULL,
+	id_contact bigint NULL,
+	id_author bigint NOT NULL,
+	id_messageresource bigint NULL,
+	id_chatroom bigint NULL,
 	CONSTRAINT message_pk PRIMARY KEY (id),
 	CONSTRAINT private_messages_fk FOREIGN KEY (id_contact) REFERENCES instant_messenger_db_schema.contacts(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT private_messages_fk1 FOREIGN KEY (id_author) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE,
@@ -147,6 +147,8 @@ CREATE TABLE instant_messenger_db_schema.messages (
 );
 CREATE INDEX message_timesent_idx ON instant_messenger_db_schema.messages USING btree (timesent);
 CREATE INDEX private_messages_id_author_idx ON instant_messenger_db_schema.messages USING btree (id_author);
+CREATE INDEX messages_id_contact_idx ON instant_messenger_db_schema.messages (id_contact);
+CREATE INDEX messages_timesent_idx ON instant_messenger_db_schema.messages (timesent);
 
 --## ALTER SEQUENCE messages_id_seq OWNED BY messages.id;
 
@@ -165,8 +167,8 @@ CREATE SEQUENCE instant_messenger_db_schema.subscriptions_id_seq
 
 CREATE TABLE instant_messenger_db_schema.subscriptions (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.subscriptions_id_seq'),
-	id_user int8 NOT NULL,
-	id_chatroom int8 NOT NULL,
+	id_user bigint NOT NULL,
+	id_chatroom bigint NOT NULL,
 	enteredchat timestamp NOT NULL,
 	enabled bool NOT NULL,
 	id_userprivilege int4 NOT NULL DEFAULT 0,
@@ -193,7 +195,7 @@ CREATE SEQUENCE instant_messenger_db_schema.messageresources_id_seq
 
 CREATE TABLE instant_messenger_db_schema.messageresources (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.messageresources_id_seq'),
-	id_message int8 NOT NULL,
+	id_message bigint NOT NULL,
 	"name" varchar(150) NOT NULL,
 	CONSTRAINT messageresource_pk PRIMARY KEY (id),
 	CONSTRAINT messageresource_fk FOREIGN KEY (id_message) REFERENCES instant_messenger_db_schema.messages(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -201,46 +203,3 @@ CREATE TABLE instant_messenger_db_schema.messageresources (
 );
 
 --## ALTER SEQUENCE messageresources_id_seq OWNED BY messageresources.id;
-
-
-INSERT INTO instant_messenger_db_schema.roles
-("name")
-VALUES('ADMIN');
-INSERT INTO instant_messenger_db_schema.roles
-("name")
-VALUES('USER');
-
-INSERT INTO instant_messenger_db_schema.users
-(firstname, lastname, nickname, email, passwordhash, enabled, id_role)
-VALUES('Vasia', 'Pupkin', 'pup', 'pupkin@email.com', 'stub', true, 1);
-INSERT INTO instant_messenger_db_schema.users
-(firstname, lastname, nickname, email, passwordhash, enabled, id_role)
-VALUES('Barak', 'Obama', 'persident', 'obama@gov.us', 'stub', true, 2);
-INSERT INTO instant_messenger_db_schema.users
-(firstname, lastname, nickname, email, passwordhash, enabled, id_role)
-VALUES('Vladimir', 'Putin', 'badboy', 'bad@mail.ru', 'stub', true, 2);
-
-INSERT INTO instant_messenger_db_schema.contacts
-(id_owner, id_person, confirmed)
-VALUES(1, 2, true);
-INSERT INTO instant_messenger_db_schema.contacts
-(id_owner, id_person, confirmed)
-VALUES(1, 3, true);
-INSERT INTO instant_messenger_db_schema.contacts
-(id_owner, id_person, confirmed)
-VALUES(2, 1, true);
-INSERT INTO instant_messenger_db_schema.contacts
-(id_owner, id_person, confirmed)
-VALUES(3, 1, true);
-
-INSERT INTO instant_messenger_db_schema.messages
-(body, timesent, id_contact, id_author, messagetype, id_messageresource, id_chatroom)
-VALUES('hello message', '2003-01-29 09:23:14.504', 1, 1, 'pm', NULL, NULL);
-
-INSERT INTO instant_messenger_db_schema.chatroom_privileges
-("name")
-VALUES('CHATADMIN');
-INSERT INTO instant_messenger_db_schema.chatroom_privileges
-("name")
-VALUES('COMMONER');
-

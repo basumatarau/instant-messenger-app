@@ -1,5 +1,6 @@
 package by.vironit.training.basumatarau.instantMessengerApp.persistenceTests.repositoryTests;
 
+import by.vironit.training.basumatarau.instantMessengerApp.model.Role;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.RoleRepsitory;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.UserRepository;
@@ -16,8 +17,20 @@ import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
-@TestPropertySource("/test.properties")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@TestPropertySource(properties = {
+        "spring.datasource.initialization-mode=always",
+        "spring.datasource.url=jdbc:postgresql://localhost:5432/im-db-training-project",
+        "spring.jpa.properties.hibernate.default_schema=instant_messenger_db_schema",
+        "spring.datasource.username=postgres",
+        "spring.datasource.password=password",
+        "spring.datasource.schema=classpath*:db/schema.sql",
+        "spring.datasource.data=classpath*:db/data.sql",
+        "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect",
+        "spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true",
+        "spring.jpa.show-sql=true",
+        //"spring.jpa.hibernate.ddl-auto=validate"
+})
 public class BaseRepositoryTest {
 
     @Autowired
@@ -30,8 +43,9 @@ public class BaseRepositoryTest {
 
     @Before
     public void initBase() throws InstantiationException {
+        final Role userDefaultRole = roleRepsitory.findById(2).get();
         users.add(new User.UserBuilder()
-                .role(roleRepsitory.findById(2).get())
+                .role(userDefaultRole)
                 .enabled(true)
                 .firstName("TestFirstName1")
                 .lastName("TestLastName1")
@@ -40,7 +54,7 @@ public class BaseRepositoryTest {
                 .passwordHash("testStub1")
                 .build());
         users.add(new User.UserBuilder()
-                .role(roleRepsitory.findById(2).get())
+                .role(userDefaultRole)
                 .enabled(true)
                 .firstName("TestFirstName2")
                 .lastName("TestLastName2")
@@ -49,7 +63,7 @@ public class BaseRepositoryTest {
                 .passwordHash("testStub2")
                 .build());
         users.add(new User.UserBuilder()
-                .role(roleRepsitory.findById(2).get())
+                .role(userDefaultRole)
                 .enabled(true)
                 .firstName("TestFirstName3")
                 .lastName("TestLastName3")
@@ -60,8 +74,6 @@ public class BaseRepositoryTest {
         users.forEach(
                 user -> userRepository.saveAndFlush(user)
         );
-
-
     }
 
     @After
@@ -70,3 +82,4 @@ public class BaseRepositoryTest {
     }
 
 }
+

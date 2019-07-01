@@ -33,8 +33,7 @@ public abstract class Message {
     private User author;
 
     @Column(name = "timesent", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timeSent;
+    private Long timeSent;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(
@@ -55,7 +54,7 @@ public abstract class Message {
             <M extends Message, B extends MessageBuilder<M, B>>{
         private String body;
         private User author;
-        private Date timeSent;
+        private Long timeSent;
         private MessageResource messageResource;
 
         protected MessageBuilder(){}
@@ -77,7 +76,7 @@ public abstract class Message {
 
         /**see also {@link #body(String)} */
         @SuppressWarnings("unchecked")
-        public B timeSent(Date timeSent){
+        public B timeSent(Long timeSent){
             this.timeSent = timeSent;
             return ((B) this);
         }
@@ -125,11 +124,11 @@ public abstract class Message {
         this.author = author;
     }
 
-    public Date getTimeSent() {
+    public Long getTimeSent() {
         return timeSent;
     }
 
-    public void setTimeSent(Date timeSent) {
+    public void setTimeSent(Long timeSent) {
         this.timeSent = timeSent;
     }
 

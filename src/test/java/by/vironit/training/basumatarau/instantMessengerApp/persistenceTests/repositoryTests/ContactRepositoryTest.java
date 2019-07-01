@@ -23,11 +23,11 @@ public class ContactRepositoryTest extends BaseRepositoryTest{
             contacts.add(new Contact.ContactBuilder()
                     .owner(owner)
                     .person(contactPerson)
-                    .confirmed(true)
+                    .confirmed(false)
                     .build()
             );
         }
-        owner.setContacts(contacts);
+        owner.getContacts().addAll(contacts);
         userRepository.saveAndFlush(owner);
     }
 

@@ -52,7 +52,7 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
                         .findAny()
                         .orElseThrow(
                                 () -> new InitializationError("test case setup failure")))
-                .timeSent(new Date())
+                .timeSent(new Date().toInstant().toEpochMilli())
                 .build();
         messageRepository.saveAndFlush(message);
     }

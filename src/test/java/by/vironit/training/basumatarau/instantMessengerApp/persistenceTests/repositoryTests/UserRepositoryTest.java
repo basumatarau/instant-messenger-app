@@ -35,7 +35,18 @@ public class UserRepositoryTest extends BaseRepositoryTest {
 
     @Test
     public void whenFindUserById_thenReturnUserEmail() throws InstantiationException {
-        User retrieved = userRepository.findById(1L).get();
+        User user = new User.UserBuilder()
+                .role(roleRepsitory.findById(1).get())
+                .enabled(true)
+                .firstName("TestFirstName")
+                .lastName("TestLastName")
+                .nickName("TestNickName")
+                .email("test@email.com")
+                .passwordHash("testStub")
+                .build();
+        userRepository.saveAndFlush(user);
+
+        User retrieved = userRepository.findByEmail(user.getEmail());
         assertThat(retrieved.getEmail()).isNotNull();
     }
 
