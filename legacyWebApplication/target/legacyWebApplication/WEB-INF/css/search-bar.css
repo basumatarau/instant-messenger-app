@@ -1,0 +1,10 @@
+form.search-form button:hover {
+  background: #0b7dda;
+}
+
+/* Clear floats */
+form.search-form::after {
+  content: "";
+  clear: both;
+  display: table;
+}
