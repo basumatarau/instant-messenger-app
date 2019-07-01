@@ -1,24 +1,36 @@
 spring:
+  resources:
+    add-mappings: true
+  application:
+    name: messenger
+  thymeleaf:
+    # Whether to check that the template exists before rendering it.
+    check-template: true
+    # Whether to check that the templates location exists.
+    check-template-location: true
+    enabled: true
+    encoding: UTF-8
+    mode: HTML
   datasource:
-    url: jdbc:postgresql://localhost:5432/im-db-training-project
-    driverClassName: org.postgresql.Driver
-    username: postgres
-    password: password
+    url: "jdbc:postgresql://localhost:5432/im-db-training-project"
+    driver-class-name: "org.postgresql.Driver"
+    initialization-mode: always
     schema: classpath*:db/schema.sql
     data: classpath*:db/data.sql
+    username: postgres
+    password: password
+    hikari:
+      connectionTimeout: 30000
+      idleTimeout: 600000
+      maxLifetime: 1800000
+      maximumPoolSize: 20
   jpa:
     properties:
       hibernate:
-        ddl-auto: validate
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        jdbc:
-          lob:
-            non_contextual_creation: true
-        c3p0:
-          min_size: 5
-          max_size: 20
-          acquire_increment: 1
-          timeout: 1800
-          max_statements: 150
-    databasePlatform: "org.hibernate.dialect.PostgreSQL9Dialect"
-    show-sql: false
+        format_sql: true
+        #ddl-auto: validate
+    show-sql: true
+server:
+  port: 8082
+  servlet:
+    context-path: /instantMessengerWebApplication

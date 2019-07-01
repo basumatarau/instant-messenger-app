@@ -1,6 +1,6 @@
-DROP SCHEMA instant_messenger_db_schema CASCADE;
+-- DROP SCHEMA if exists instant_messenger_db_schema CASCADE;
 
-CREATE SCHEMA instant_messenger_db_schema AUTHORIZATION postgres;
+CREATE SCHEMA if not exists instant_messenger_db_schema AUTHORIZATION postgres;
 
 COMMENT ON SCHEMA instant_messenger_db_schema IS 'instant messenger web application - vironit training project ';
 
@@ -8,7 +8,7 @@ COMMENT ON SCHEMA instant_messenger_db_schema IS 'instant messenger web applicat
 
 -- DROP TABLE instant_messenger_db_schema.roles;
 
-CREATE TABLE instant_messenger_db_schema.roles (
+CREATE TABLE if not exists instant_messenger_db_schema.roles (
 	id serial NOT NULL,
 	"name" varchar(150) NOT NULL,
 	CONSTRAINT roles_pk PRIMARY KEY (id)
@@ -16,7 +16,7 @@ CREATE TABLE instant_messenger_db_schema.roles (
 
 -- DROP SEQUENCE instant_messenger_db_schema.users_id_seq;
 
-CREATE SEQUENCE instant_messenger_db_schema.users_id_seq
+CREATE SEQUENCE if not exists instant_messenger_db_schema.users_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
 	MAXVALUE 9223372036854775807
@@ -28,7 +28,7 @@ CREATE SEQUENCE instant_messenger_db_schema.users_id_seq
 
 -- DROP TABLE instant_messenger_db_schema.users;
 
-CREATE TABLE instant_messenger_db_schema.users (
+CREATE TABLE if not exists instant_messenger_db_schema.users (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.users_id_seq'),
 	firstname varchar(150) NULL,
 	lastname varchar(150) NULL,
@@ -40,14 +40,14 @@ CREATE TABLE instant_messenger_db_schema.users (
 	CONSTRAINT users_pk PRIMARY KEY (id),
 	CONSTRAINT users_fk1 FOREIGN KEY (id_role) REFERENCES instant_messenger_db_schema.roles(id) ON UPDATE CASCADE
 );
-CREATE UNIQUE INDEX users_email_idx ON instant_messenger_db_schema.users USING btree (email);
+CREATE UNIQUE INDEX if not exists users_email_idx ON instant_messenger_db_schema.users USING btree (email);
 --ALTER SEQUENCE instant_messenger_db_schema.user_id_seq OWNED BY users.id;
 
 -- Drop table
 
 -- DROP TABLE instant_messenger_db_schema.chatroom_privileges;
 
-CREATE TABLE instant_messenger_db_schema.chatroom_privileges (
+CREATE TABLE if not exists instant_messenger_db_schema.chatroom_privileges (
 	id serial NOT NULL,
 	"name" varchar(100) NOT NULL,
 	CONSTRAINT chatroom_privileges_pk PRIMARY KEY (id)
@@ -55,7 +55,7 @@ CREATE TABLE instant_messenger_db_schema.chatroom_privileges (
 
 -- DROP SEQUENCE instant_messenger_db_schema.chatrooms_id_seq;
 
-CREATE SEQUENCE instant_messenger_db_schema.chatrooms_id_seq
+CREATE SEQUENCE if not exists instant_messenger_db_schema.chatrooms_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
 	MAXVALUE 9223372036854775807
@@ -66,7 +66,7 @@ CREATE SEQUENCE instant_messenger_db_schema.chatrooms_id_seq
 
 -- DROP TABLE instant_messenger_db_schema.chatrooms;
 
-CREATE TABLE instant_messenger_db_schema.chatrooms (
+CREATE TABLE if not exists instant_messenger_db_schema.chatrooms (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.chatrooms_id_seq'),
 	"name" varchar(150) NOT NULL,
 	timecreated timestamp NOT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE instant_messenger_db_schema.chatrooms (
 
 -- DROP SEQUENCE instant_messenger_db_schema.contacts_id_seq;
 
-CREATE SEQUENCE instant_messenger_db_schema.contacts_id_seq
+CREATE SEQUENCE if not exists instant_messenger_db_schema.contacts_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
 	MAXVALUE 9223372036854775807
@@ -90,7 +90,7 @@ CREATE SEQUENCE instant_messenger_db_schema.contacts_id_seq
 
 -- DROP TABLE instant_messenger_db_schema.contacts;
 
-CREATE TABLE instant_messenger_db_schema.contacts (
+CREATE TABLE if not exists instant_messenger_db_schema.contacts (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.contacts_id_seq'),
 	id_owner bigint NOT NULL,
 	id_person bigint NOT NULL,
@@ -99,8 +99,8 @@ CREATE TABLE instant_messenger_db_schema.contacts (
 	CONSTRAINT subscriptions_fk FOREIGN KEY (id_owner) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT subscriptions_fk_1 FOREIGN KEY (id_person) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE INDEX contacts_id_owner_idx ON instant_messenger_db_schema.contacts USING btree (id_owner);
-CREATE INDEX contacts_id_person_idx ON instant_messenger_db_schema.contacts USING btree (id_person, id_owner);
+CREATE INDEX if not exists contacts_id_owner_idx ON instant_messenger_db_schema.contacts USING btree (id_owner);
+CREATE INDEX if not exists contacts_id_person_idx ON instant_messenger_db_schema.contacts USING btree (id_person, id_owner);
 
 --## ALTER SEQUENCE contacts_id_seq OWNED BY contacts.id;
 
@@ -108,7 +108,7 @@ CREATE INDEX contacts_id_person_idx ON instant_messenger_db_schema.contacts USIN
 
 -- DROP TABLE instant_messenger_db_schema.imagemessageresources;
 
-CREATE TABLE instant_messenger_db_schema.imagemessageresources (
+CREATE TABLE if not exists instant_messenger_db_schema.imagemessageresources (
 	id bigserial NOT NULL,
 	"name" varchar(150) NOT NULL,
 	imagebin bytea NOT NULL,
@@ -119,7 +119,7 @@ CREATE TABLE instant_messenger_db_schema.imagemessageresources (
 
 -- DROP SEQUENCE instant_messenger_db_schema.messages_id_seq;
 
-CREATE SEQUENCE instant_messenger_db_schema.messages_id_seq
+CREATE SEQUENCE if not exists instant_messenger_db_schema.messages_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
 	MAXVALUE 9223372036854775807
@@ -131,7 +131,7 @@ CREATE SEQUENCE instant_messenger_db_schema.messages_id_seq
 
 -- DROP TABLE instant_messenger_db_schema.messages;
 
-CREATE TABLE instant_messenger_db_schema.messages (
+CREATE TABLE if not exists instant_messenger_db_schema.messages (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.messages_id_seq'),
 	messagetype varchar(45) NOT NULL,
 	body varchar(500) NOT NULL,
@@ -145,16 +145,16 @@ CREATE TABLE instant_messenger_db_schema.messages (
 	CONSTRAINT private_messages_fk1 FOREIGN KEY (id_author) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE,
 	CONSTRAINT private_messages_fk3 FOREIGN KEY (id_chatroom) REFERENCES instant_messenger_db_schema.chatrooms(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE INDEX message_timesent_idx ON instant_messenger_db_schema.messages USING btree (timesent);
-CREATE INDEX private_messages_id_author_idx ON instant_messenger_db_schema.messages USING btree (id_author);
-CREATE INDEX messages_id_contact_idx ON instant_messenger_db_schema.messages (id_contact);
-CREATE INDEX messages_timesent_idx ON instant_messenger_db_schema.messages (timesent);
+CREATE INDEX if not exists message_timesent_idx ON instant_messenger_db_schema.messages USING btree (timesent);
+CREATE INDEX if not exists private_messages_id_author_idx ON instant_messenger_db_schema.messages USING btree (id_author);
+CREATE INDEX if not exists messages_id_contact_idx ON instant_messenger_db_schema.messages (id_contact);
+CREATE INDEX if not exists messages_timesent_idx ON instant_messenger_db_schema.messages (timesent);
 
 --## ALTER SEQUENCE messages_id_seq OWNED BY messages.id;
 
 -- DROP SEQUENCE instant_messenger_db_schema.subscriptions_id_seq;
 
-CREATE SEQUENCE instant_messenger_db_schema.subscriptions_id_seq
+CREATE SEQUENCE if not exists instant_messenger_db_schema.subscriptions_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
 	MAXVALUE 9223372036854775807
@@ -165,7 +165,7 @@ CREATE SEQUENCE instant_messenger_db_schema.subscriptions_id_seq
 
 -- DROP TABLE instant_messenger_db_schema.subscriptions;
 
-CREATE TABLE instant_messenger_db_schema.subscriptions (
+CREATE TABLE if not exists instant_messenger_db_schema.subscriptions (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.subscriptions_id_seq'),
 	id_user bigint NOT NULL,
 	id_chatroom bigint NOT NULL,
@@ -182,7 +182,7 @@ CREATE TABLE instant_messenger_db_schema.subscriptions (
 
 -- DROP SEQUENCE instant_messenger_db_schema.messageresources_id_seq;
 
-CREATE SEQUENCE instant_messenger_db_schema.messageresources_id_seq
+CREATE SEQUENCE if not exists instant_messenger_db_schema.messageresources_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
 	MAXVALUE 9223372036854775807
@@ -193,7 +193,7 @@ CREATE SEQUENCE instant_messenger_db_schema.messageresources_id_seq
 
 -- DROP TABLE instant_messenger_db_schema.messageresources;
 
-CREATE TABLE instant_messenger_db_schema.messageresources (
+CREATE TABLE if not exists instant_messenger_db_schema.messageresources (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.messageresources_id_seq'),
 	id_message bigint NOT NULL,
 	"name" varchar(150) NOT NULL,
@@ -204,20 +204,4 @@ CREATE TABLE instant_messenger_db_schema.messageresources (
 
 --## ALTER SEQUENCE messageresources_id_seq OWNED BY messageresources.id;
 
-INSERT INTO instant_messenger_db_schema.roles
-("name")
-VALUES('ADMIN');
-INSERT INTO instant_messenger_db_schema.roles
-("name")
-VALUES('USER');
 
-INSERT INTO instant_messenger_db_schema.chatroom_privileges
-("name")
-VALUES('CHATADMIN');
-INSERT INTO instant_messenger_db_schema.chatroom_privileges
-("name")
-VALUES('COMMONER');
-
-INSERT INTO instant_messenger_db_schema.users
-(firstname, lastname, nickname, email, salt, passwordhash, enabled, id_role)
-VALUES('Vladimir', 'Putin', 'Vlad', 'bad@mail.ru', decode('ffff', 'hex'), '036a6b0638ebe1a8b59b964a4477255f5490b6b9c9f9fbd7cc105062d0fa66e9cef42ea63a2037a5aac7abaa11dee6de647f5605a8022954498e4d41c32aa91a', true, 1);

@@ -21,15 +21,9 @@ import java.util.Set;
 @TestPropertySource(properties = {
         "spring.datasource.initialization-mode=always",
         "spring.datasource.url=jdbc:postgresql://localhost:5432/im-db-training-project",
-        "spring.jpa.properties.hibernate.default_schema=instant_messenger_db_schema",
         "spring.datasource.username=postgres",
         "spring.datasource.password=password",
-        "spring.datasource.schema=classpath*:db/schema.sql",
-        "spring.datasource.data=classpath*:db/data.sql",
-        "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect",
-        "spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation=true",
-        "spring.jpa.show-sql=true",
-        //"spring.jpa.hibernate.ddl-auto=validate"
+        "spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect"
 })
 public class BaseRepositoryTest {
 

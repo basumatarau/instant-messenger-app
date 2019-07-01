@@ -1,5 +1,6 @@
 package by.vironit.training.basumatarau.instantMessengerApp.controller;
 
+import by.vironit.training.basumatarau.instantMessengerApp.model.Role;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.ContactRepository;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.PrivateMessageRepository;
@@ -35,7 +36,13 @@ public class TestController {
         user.setLastName("test");
         user.setNickName("test");
         user.setPasswordHash("test");
-        user.setRole(roleRepsitory.findById(1).get());
+        final Role role;
+        if (roleRepsitory.findById(2).isPresent()) {
+            role = roleRepsitory.findById(2).get();
+        }else{
+            throw new RuntimeException("error");
+        }
+        user.setRole(role);
         userRepository.save(user);
         return "userListingTest";
     }
