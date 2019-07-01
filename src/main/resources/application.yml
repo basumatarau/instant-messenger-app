@@ -14,5 +14,11 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
+        c3p0:
+          min_size: 5
+          max_size: 20
+          acquire_increment: 1
+          timeout: 1800
+          max_statements: 150
     databasePlatform: "org.hibernate.dialect.PostgreSQL9Dialect"
     show-sql: false

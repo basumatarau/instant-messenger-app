@@ -20,14 +20,23 @@
         </encoder>
     </appender>
 
+    <logger name="org.hibernate.type"
+            level="ALL"
+            additivity="false">
+    </logger>
+
+    <logger name="org.hibernate"
+            level="DEBUG"
+            additivity="false">
+    </logger>
+
     <logger name="by.vironit.training.basumatarau.instantMessengerApp"
             level="INFO"
             additivity="false">
-        <appender-ref ref="STDOUT"/>
-        <appender-ref ref="FILE"/>
     </logger>
 
-    <root level="DEBUG">
-        <appender-ref ref="STDOUT" />
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
     </root>
 </configuration>
