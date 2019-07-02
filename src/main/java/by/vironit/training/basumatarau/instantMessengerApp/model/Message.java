@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "messages")
+@Table(name = "messages", schema = "instant_messenger_db_schema")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "messagetype", discriminatorType=DiscriminatorType.STRING)
 public abstract class Message {
@@ -18,7 +18,7 @@ public abstract class Message {
             generator = "message_identity_generator")
     @SequenceGenerator(name = "message_identity_generator",
             sequenceName = "messages_id_seq",
-            //schema = "instant_messenger_db_schema",
+            schema = "instant_messenger_db_schema",
             allocationSize = 1)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;

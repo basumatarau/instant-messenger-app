@@ -6,14 +6,14 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "chatrooms")
+@Table(name = "chatrooms", schema = "instant_messenger_db_schema")
 public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "chatroom_identity_generator")
     @SequenceGenerator(name = "chatroom_identity_generator",
             sequenceName = "chatrooms_id_seq",
-            //schema = "instant_messenger_db_schema",
+            schema = "instant_messenger_db_schema",
             allocationSize = 1)
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;

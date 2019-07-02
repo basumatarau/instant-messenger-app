@@ -4,14 +4,14 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "contacts")
+@Table(name = "contacts", schema = "instant_messenger_db_schema")
 public class Contact {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "contact_identity_generator")
     @SequenceGenerator(name = "contact_identity_generator",
             sequenceName = "contacts_id_seq",
-            //schema = "instant_messenger_db_schema",
+            schema = "instant_messenger_db_schema",
             allocationSize = 1)
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="APPLICATION_LOG" value="InstantMessengerWebApp/logs/app-main.log"/>
+    <property name="APPLICATION_LOG" value="instant-messenger-web-application-logs/app-main.log"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- encoders are assigned the type

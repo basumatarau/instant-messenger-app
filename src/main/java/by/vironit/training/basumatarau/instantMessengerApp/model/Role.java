@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "roles", schema = "instant_messenger_db_schema")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

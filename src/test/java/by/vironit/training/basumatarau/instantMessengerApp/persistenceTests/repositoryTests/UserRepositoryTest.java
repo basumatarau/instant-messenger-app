@@ -3,10 +3,15 @@ package by.vironit.training.basumatarau.instantMessengerApp.persistenceTests.rep
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.RoleRepsitory;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.UserRepository;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class UserRepositoryTest extends BaseRepositoryTest {
     @Autowired
@@ -17,34 +22,23 @@ public class UserRepositoryTest extends BaseRepositoryTest {
 
     @Test
     public void whenFindUser_thenReturnUserEmail() throws InstantiationException {
-        User user = new User.UserBuilder()
-                .role(roleRepsitory.findById(1).get())
-                .enabled(true)
-                .firstName("TestFirstName")
-                .lastName("TestLastName")
-                .nickName("TestNickName")
-                .email("test@email.com")
-                .passwordHash("testStub")
-                .build();
-        userRepository.saveAndFlush(user);
+        final Optional<User> anyUser = users.stream().findAny();
+        if(!anyUser.isPresent()){
+            fail("no user found for testing");
+        }
+        final User user = anyUser.get();
 
         User retrieved = userRepository.findByEmail(user.getEmail());
-
         assertThat(user.getEmail()).isEqualTo(retrieved.getEmail());
     }
 
     @Test
     public void whenFindUserById_thenReturnUserEmail() throws InstantiationException {
-        User user = new User.UserBuilder()
-                .role(roleRepsitory.findById(1).get())
-                .enabled(true)
-                .firstName("TestFirstName")
-                .lastName("TestLastName")
-                .nickName("TestNickName")
-                .email("test@email.com")
-                .passwordHash("testStub")
-                .build();
-        userRepository.saveAndFlush(user);
+        final Optional<User> anyUser = users.stream().findAny();
+        if(!anyUser.isPresent()){
+            fail("no user found for testing");
+        }
+        final User user = anyUser.get();
 
         User retrieved = userRepository.findByEmail(user.getEmail());
         assertThat(retrieved.getEmail()).isNotNull();

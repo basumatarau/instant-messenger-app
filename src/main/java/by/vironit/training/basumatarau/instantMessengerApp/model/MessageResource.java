@@ -11,6 +11,7 @@ public abstract class MessageResource {
             generator = "messageresource_identity_generator")
     @SequenceGenerator(name = "messageresource_identity_generator",
             sequenceName = "messageresources_id_seq",
+            schema = "instant_messenger_db_schema",
             allocationSize = 1)
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;

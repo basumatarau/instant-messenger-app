@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "chatroom_privileges")
+@Table(name = "chatroom_privileges", schema = "instant_messenger_db_schema")
 public class ChatRoomPrivilege {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

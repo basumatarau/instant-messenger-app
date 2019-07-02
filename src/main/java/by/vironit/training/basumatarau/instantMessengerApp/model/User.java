@@ -6,14 +6,14 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", schema = "instant_messenger_db_schema")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "user_identity_generator")
     @SequenceGenerator(name = "user_identity_generator",
             sequenceName = "users_id_seq",
-            //schema = "instant_messenger_db_schema",
+            schema = "instant_messenger_db_schema",
             allocationSize = 1)
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;

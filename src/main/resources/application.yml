@@ -1,6 +1,4 @@
 spring:
-  resources:
-    add-mappings: true
   application:
     name: messenger
   thymeleaf:
@@ -12,13 +10,12 @@ spring:
     encoding: UTF-8
     mode: HTML
   datasource:
-    url: "jdbc:postgresql://localhost:5432/im-db-training-project"
-    driver-class-name: "org.postgresql.Driver"
-    initialization-mode: always
-    schema: classpath*:db/schema.sql
-    data: classpath*:db/data.sql
+    url: jdbc:postgresql://localhost:5432/im-db-training-project
     username: postgres
     password: password
+    driver-class-name: org.postgresql.Driver
+    testWhileIdle: true
+    validationQuery: SELECT 1
     hikari:
       connectionTimeout: 30000
       idleTimeout: 600000
@@ -28,9 +25,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        #ddl-auto: validate
+        ddl-auto: validate
+        dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
 server:
-  port: 8082
+  port: 8080
   servlet:
     context-path: /instantMessengerWebApplication

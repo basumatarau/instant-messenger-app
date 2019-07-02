@@ -5,14 +5,14 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name = "subscriptions")
+@Table(name = "subscriptions", schema = "instant_messenger_db_schema")
 public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
             generator = "subsription_identity_generator")
     @SequenceGenerator(name = "subsription_identity_generator",
             sequenceName = "subscriptions_id_seq",
-            //schema = "instant_messenger_db_schema",
+            schema = "instant_messenger_db_schema",
             allocationSize = 1)
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
