@@ -69,9 +69,7 @@ public class BaseRepositoryTest {
 
     @After
     public void cleanBase(){
-        users.forEach(user -> {
-            userRepository.delete(user);
-        });
+        userRepository.deleteAll(users);
         users.clear();
     }
 

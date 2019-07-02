@@ -14,7 +14,7 @@
     <artifactId>instantMessengerApp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>instantMessengerApp</name>
-    <description>Demo project for Spring Boot</description>
+    <description>trainig project @ vironit</description>
 
     <modules>
         <module>legacyWebApplication</module>
@@ -39,26 +39,22 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
             <version>${spring-boot-starter-test.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-
         <!-- database init (Test) -->
         <dependency>
             <groupId>org.apache.ibatis</groupId>

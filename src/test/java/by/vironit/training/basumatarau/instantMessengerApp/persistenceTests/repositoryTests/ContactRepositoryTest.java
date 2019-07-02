@@ -2,6 +2,7 @@ package by.vironit.training.basumatarau.instantMessengerApp.persistenceTests.rep
 
 import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.HashSet;
@@ -28,12 +29,16 @@ public class ContactRepositoryTest extends BaseRepositoryTest{
             );
         }
         owner.getContacts().addAll(contacts);
-        userRepository.saveAndFlush(owner);
+        userRepository.save(owner);
+    }
+    @After
+    public void cleanContactRepoTestO() throws InstantiationException{
+        users.add(owner);
     }
 
     @Test
     public void whenUserHasContact_thenGetContactDetails(){
-        final User retrievedUserByEmail = userRepository.findByEmail(owner.getEmail());
+        final User retrievedUserByEmail = userRepository.findUserWithContatsByEmail(owner.getEmail());
         assertThat(retrievedUserByEmail.getRole()).isNotNull();
         final Set<Contact> contacts = retrievedUserByEmail.getContacts();
         assertThat(contacts.isEmpty()).isFalse();
