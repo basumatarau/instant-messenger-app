@@ -17,13 +17,14 @@ import java.util.Date;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 public class ChatRoomRepositoryTest extends BaseRepositoryTest{
     @Autowired
     protected ChatRoomRepository chatRoomRepository;
 
     @Autowired
-    protected SubscriberRepository subscriberRepository;
+    protected SubscriberRepository subscribtionRepository;
 
     @Autowired
     protected ChatRoomPrivilegeRepository chatRoomPrivilegeRepository;
@@ -34,19 +35,13 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest{
     @Before
     public void initChatRoomRepoTest() throws InstantiationException, InitializationError {
 
-        final ChatRoom chatRoom
-                = new ChatRoom.ChatRoomBuilder()
-                .isPublic(true)
-                .name("testChatRoomName")
-                .timeCreated(new Date())
-                .build();
-        chatRoomRepository.saveAndFlush(chatRoom);
-
         admin = users.stream().findAny().orElseThrow(
                 () -> new InitializationError("test data init failure"));
         users.remove(admin);
 
         final ChatRoomPrivilege adminPrivilege = chatRoomPrivilegeRepository.findByName("CHATADMIN");
+        final ChatRoom chatRoom = chatRoomRepository.findAll().stream().findAny().orElseThrow(fail("failed to find any chat room..."));
+
         testedSubscription = new Subscription.SubscriberBuilder()
                 .enteredChat(new Date())
                 .priviledge(adminPrivilege)
@@ -55,12 +50,12 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest{
                 .chatRoom(chatRoom)
                 .build();
 
-        subscriberRepository.saveAndFlush(
+        subscribtionRepository.saveAndFlush(
                 testedSubscription
         );
 
         for (User user : users) {
-            subscriberRepository.saveAndFlush(
+            subscribtionRepository.saveAndFlush(
                     new Subscription.SubscriberBuilder()
                             .enteredChat(new Date())
                             .priviledge(chatRoomPrivilegeRepository.findByName("COMMONER"))
@@ -74,12 +69,12 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest{
 
     @After
     public void cleanChatRoomRepoTest(){
-        users.clear();
+        subscribtionRepository.deleteAll();
     }
 
     @Test
     public void whenUserSubscribedToChatRoom_thenTheUserSeesEveryBodyInTheRoom(){
-        final User user = userRepository.findByEmail(admin.getEmail());
+        final User user = userRepository.findUserWithSubscriptionsByEmail(admin.getEmail());
         final Set<Subscription> subscriptions = user.getSubscriptions();
         assertThat(subscriptions).isNotNull();
     }

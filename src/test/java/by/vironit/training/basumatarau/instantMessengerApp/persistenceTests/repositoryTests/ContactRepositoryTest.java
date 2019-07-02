@@ -31,14 +31,10 @@ public class ContactRepositoryTest extends BaseRepositoryTest{
         owner.getContacts().addAll(contacts);
         userRepository.save(owner);
     }
-    @After
-    public void cleanContactRepoTestO() throws InstantiationException{
-        users.add(owner);
-    }
 
     @Test
     public void whenUserHasContact_thenGetContactDetails(){
-        final User retrievedUserByEmail = userRepository.findUserWithContatsByEmail(owner.getEmail());
+        final User retrievedUserByEmail = userRepository.findUserWithContactsByEmail(owner.getEmail());
         assertThat(retrievedUserByEmail.getRole()).isNotNull();
         final Set<Contact> contacts = retrievedUserByEmail.getContacts();
         assertThat(contacts.isEmpty()).isFalse();

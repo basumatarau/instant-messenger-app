@@ -1,5 +1,12 @@
 package by.vironit.training.basumatarau.instantMessengerApp.persistenceTests.repositoryTests;
 
+import org.junit.Test;
+
+import static org.junit.Assert.fail;
+
 public class MessageResourceRepositoryTest {
-    //to be continued... clob/blob/byte[] ?!
+    @Test
+    public void toBeImplemented(){
+        fail("to be implemented");
+    }
 }

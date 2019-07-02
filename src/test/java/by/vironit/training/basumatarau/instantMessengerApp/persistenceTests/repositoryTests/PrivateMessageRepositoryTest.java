@@ -35,21 +35,26 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
                 () -> new InitializationError("test case setup failure"));
 
         final Contact contact = new Contact.ContactBuilder()
-                .confirmed(false)
+                .confirmed(true)
                 .owner(messageSender)
                 .person(messageReceiver)
                 .build();
+        final Contact contactCounter = new Contact.ContactBuilder()
+                .confirmed(true)
+                .owner(messageReceiver)
+                .person(messageSender)
+                .build();
         messageSender.getContacts().add(contact);
-        contact.confirmContact();
+        messageReceiver.getContacts().add(contactCounter);
+
         userRepository.saveAndFlush(messageSender);
         userRepository.saveAndFlush(messageReceiver);
 
         final PrivateMessage message = new PrivateMessage.PrivateMessageBuilder()
                 .author(messageSender)
                 .body("test message")
-                .contact(messageSender.getContacts()
-                        .stream()
-                        .findAny()
+                .contact(contactRepository.findContactByOwnerIdAndPersonId(
+                        messageSender.getId(), messageReceiver.getId())
                         .orElseThrow(
                                 () -> new InitializationError("test case setup failure")))
                 .timeSent(new Date().toInstant().toEpochMilli())
@@ -59,7 +64,7 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
 
     @Test
     public void whenPrivateMessagePersisted_thenFindMessage() throws Exception {
-        final User sender = userRepository.findByEmail(messageSender.getEmail());
+        final User sender = userRepository.findUserWithContactsByEmail(messageSender.getEmail());
         final Contact contact = sender.getContacts()
                 .stream()
                 .findAny()

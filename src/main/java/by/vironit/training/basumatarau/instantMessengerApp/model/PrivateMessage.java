@@ -1,5 +1,8 @@
 package by.vironit.training.basumatarau.instantMessengerApp.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -11,6 +14,7 @@ public class PrivateMessage extends Message {
     @JoinColumn(
             name = "id_contact",
             foreignKey = @ForeignKey)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Contact contact;
 
     public Contact getContact() {
