@@ -88,7 +88,7 @@ CREATE SEQUENCE if not exists instant_messenger_db_schema.contacts_id_seq
 
 -- Drop table
 
--- DROP TABLE instant_messenger_db_schema.contacts;
+-- DROP TABLE instant_messenger_db_schema.contactEntries;
 
 CREATE TABLE if not exists instant_messenger_db_schema.contacts (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.contacts_id_seq'),
@@ -102,7 +102,7 @@ CREATE TABLE if not exists instant_messenger_db_schema.contacts (
 CREATE INDEX if not exists contacts_id_owner_idx ON instant_messenger_db_schema.contacts USING btree (id_owner);
 CREATE INDEX if not exists contacts_id_person_idx ON instant_messenger_db_schema.contacts USING btree (id_person, id_owner);
 
---## ALTER SEQUENCE contacts_id_seq OWNED BY contacts.id;
+--## ALTER SEQUENCE contacts_id_seq OWNED BY contactEntries.id;
 
 -- Drop table
 

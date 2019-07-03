@@ -45,12 +45,7 @@ public class User {
     @OneToMany(mappedBy = "owner",
             orphanRemoval = true,
             cascade = {CascadeType.ALL})
-    private Set<Contact> contacts = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "user",
-            orphanRemoval = true,
-            cascade = {CascadeType.ALL})
-    private Set<Subscription> subscriptions = new LinkedHashSet<>();
+    private Set<ContactEntry> contactEntries = new LinkedHashSet<>();
 
     public User() {
     }
@@ -63,6 +58,7 @@ public class User {
         this.email = builder.email;
         this.passwordHash = builder.passwordHash;
         this.isEnabled = builder.isEnabled;
+        this.contactEntries = builder.contactEntries;
     }
 
     public Long getId() {
@@ -125,12 +121,12 @@ public class User {
         isEnabled = active;
     }
 
-    public Set<Contact> getContacts() {
-        return contacts;
+    public Set<ContactEntry> getContactEntries() {
+        return contactEntries;
     }
 
-    public void setContacts(Set<Contact> contacts) {
-        this.contacts = contacts;
+    public void setContactEntries(Set<ContactEntry> contactEntries) {
+        this.contactEntries = contactEntries;
     }
 
     public Boolean getEnabled() {
@@ -141,14 +137,6 @@ public class User {
         isEnabled = enabled;
     }
 
-    public Set<Subscription> getSubscriptions() {
-        return subscriptions;
-    }
-
-    public void setSubscriptions(Set<Subscription> subscriptions) {
-        this.subscriptions = subscriptions;
-    }
-
     public static class UserBuilder {
         private Role role;
         private String firstName;
@@ -157,7 +145,7 @@ public class User {
         private String email;
         private String passwordHash;
         private Boolean isEnabled;
-        private Set<Contact> contacts;
+        private Set<ContactEntry> contactEntries = new LinkedHashSet<>();
 
         public UserBuilder() {}
 
@@ -197,8 +185,8 @@ public class User {
             return this;
         }
 
-        public UserBuilder contacts(Set<Contact> contacts) {
-            this.contacts = contacts;
+        public UserBuilder contactEntries(Set<ContactEntry> contactEntries) {
+            this.contactEntries = contactEntries;
             return this;
         }
 
@@ -212,7 +200,8 @@ public class User {
                     || this.passwordHash == null
                     || this.nickName == null
                     || this.role == null
-                    || this.isEnabled == null) {
+                    || this.isEnabled == null
+                    || this.contactEntries == null) {
                 throw new InstantiationException(
                         "invalid or not sufficient data for User object instantiation");
             }

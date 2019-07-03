@@ -7,49 +7,30 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "contacts", schema = "instant_messenger_db_schema")
-public class Contact {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "contact_identity_generator")
-    @SequenceGenerator(name = "contact_identity_generator",
-            sequenceName = "contacts_id_seq",
-            schema = "instant_messenger_db_schema",
-            allocationSize = 1)
-    @Column(name = "id", nullable = false, updatable = false)
-    private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "id_owner")
-    private User owner;
-
+@DiscriminatorValue(value = ContactEntry.PERSONAL_CONTACT_TYPE)
+public class Contact extends ContactEntry{
     @ManyToOne
     @JoinColumn(name = "id_person")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User person;
 
-    @Column(name = "confirmed", nullable = false)
-    private Boolean isConfirmed;
+    @Column(name = "confirmed")
+    private Boolean isConfirmed = Boolean.FALSE;
 
     public Contact(){}
 
     private Contact(ContactBuilder builder){
-        owner = builder.owner;
+        super(builder);
         person = builder.person;
         isConfirmed = builder.isConfirmed;
     }
 
-    public static class ContactBuilder{
-        private User owner;
+    public static class ContactBuilder
+            extends ContactEntryBuilder<Contact, ContactBuilder>{
         private User person;
         private Boolean isConfirmed;
 
         public ContactBuilder(){}
-
-        public ContactBuilder owner(User owner){
-            this.owner = owner;
-            return this;
-        }
 
         public ContactBuilder person(User person){
             this.person = person;
@@ -61,43 +42,33 @@ public class Contact {
             return this;
         }
 
-        private void buildDataIntegrityCheck() throws InstantiationException {
-            if(owner == null || person == null || isConfirmed == null){
-                throw new InstantiationException(
-                        "invalid or not sufficient data for Contact object instantiation");
-            }
+        @Override
+        public Contact build() throws InstantiationException {
+            contactEntryBuildIntegrityCheck();
+            return new Contact(this);
         }
 
-        public Contact build() throws InstantiationException {
-            buildDataIntegrityCheck();
-            return new Contact(this);
+        @Override
+        protected void contactEntryBuildIntegrityCheck() throws InstantiationException {
+            super.contactEntryBuildIntegrityCheck();
+            if (person == null || isConfirmed == null) {
+                throw new InstantiationException(
+                        "invalid or not sufficient data for " +
+                                getClass().getName() +
+                                " object instantiation: addressee has not been assigned");
+            }
         }
     }
 
+    //convenience method (to be executed within session)
     public void confirmContact() throws InstantiationException {
         setIsConfirmed(true);
         final Contact newContact = new ContactBuilder()
-                .person(owner)
+                .person(getOwner())
                 .owner(person)
                 .confirmed(true)
                 .build();
-        person.getContacts().add(newContact);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
+        person.getContactEntries().add(newContact);
     }
 
     public User getPerson() {
@@ -120,13 +91,13 @@ public class Contact {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         Contact contact = (Contact) o;
-        return Objects.equals(owner, contact.owner) &&
-                Objects.equals(person, contact.person);
+        return Objects.equals(person, contact.person);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(owner, person);
+        return Objects.hash(super.hashCode(), person);
     }
 }

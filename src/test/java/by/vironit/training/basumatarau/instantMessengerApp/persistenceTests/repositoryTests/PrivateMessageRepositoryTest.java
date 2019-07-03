@@ -44,8 +44,8 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
                 .owner(messageReceiver)
                 .person(messageSender)
                 .build();
-        messageSender.getContacts().add(contact);
-        messageReceiver.getContacts().add(contactCounter);
+        messageSender.getContactEntries().add(contact);
+        messageReceiver.getContactEntries().add(contactCounter);
 
         userRepository.saveAndFlush(messageSender);
         userRepository.saveAndFlush(messageReceiver);
@@ -65,8 +65,10 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
     @Test
     public void whenPrivateMessagePersisted_thenFindMessage() throws Exception {
         final User sender = userRepository.findUserWithContactsByEmail(messageSender.getEmail());
-        final Contact contact = sender.getContacts()
+        final Contact contact = sender.getContactEntries()
                 .stream()
+                .filter(contactEntry -> contactEntry instanceof Contact)
+                .map(contactEntry -> ((Contact) contactEntry))
                 .findAny()
                 .orElseThrow(
                         () -> new Exception("contact has not been persisted"));

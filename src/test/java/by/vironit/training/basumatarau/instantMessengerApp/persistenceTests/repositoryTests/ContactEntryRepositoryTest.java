@@ -1,6 +1,7 @@
 package by.vironit.training.basumatarau.instantMessengerApp.persistenceTests.repositoryTests;
 
 import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
+import by.vironit.training.basumatarau.instantMessengerApp.model.ContactEntry;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ContactRepositoryTest extends BaseRepositoryTest{
+public class ContactEntryRepositoryTest extends BaseRepositoryTest{
 
     private User owner;
 
@@ -28,7 +29,7 @@ public class ContactRepositoryTest extends BaseRepositoryTest{
                     .build()
             );
         }
-        owner.getContacts().addAll(contacts);
+        owner.getContactEntries().addAll(contacts);
         userRepository.save(owner);
     }
 
@@ -36,12 +37,10 @@ public class ContactRepositoryTest extends BaseRepositoryTest{
     public void whenUserHasContact_thenGetContactDetails(){
         final User retrievedUserByEmail = userRepository.findUserWithContactsByEmail(owner.getEmail());
         assertThat(retrievedUserByEmail.getRole()).isNotNull();
-        final Set<Contact> contacts = retrievedUserByEmail.getContacts();
+        final Set<ContactEntry> contacts = retrievedUserByEmail.getContactEntries();
         assertThat(contacts.isEmpty()).isFalse();
         contacts.forEach(contact -> {
             assertThat(contact.getOwner().equals(owner)).isTrue();
-            assertThat(contact.getPerson().equals(owner)).isFalse();
-            assertThat(contact.getIsConfirmed()).isNotNull();
         });
     }
 

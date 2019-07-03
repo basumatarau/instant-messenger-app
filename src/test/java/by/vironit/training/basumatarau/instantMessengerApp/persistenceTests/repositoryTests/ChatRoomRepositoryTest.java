@@ -14,7 +14,6 @@ import org.junit.runners.model.InitializationError;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,6 +35,7 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
 
         admin = users.stream().findAny().orElseThrow(
                 () -> new InitializationError("test data init failure"));
+
         users.remove(admin);
 
         final ChatRoomPrivilege adminPrivilege =
@@ -50,8 +50,8 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
 
         testedSubscription = new Subscription.SubscriptionBuilder()
                 .enteredChat(new Date())
-                .priviledge(adminPrivilege)
-                .user(admin)
+                .privilege(adminPrivilege)
+                .owner(admin)
                 .enabled(true)
                 .chatRoom(chatRoom)
                 .build();
@@ -64,8 +64,8 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
             subscribtionRepository.saveAndFlush(
                     new Subscription.SubscriptionBuilder()
                             .enteredChat(new Date())
-                            .priviledge(chatRoomPrivilegeRepository.findByName("COMMONER"))
-                            .user(user)
+                            .privilege(chatRoomPrivilegeRepository.findByName("COMMONER"))
+                            .owner(user)
                             .enabled(true)
                             .chatRoom(chatRoom)
                             .build()
@@ -81,7 +81,7 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
     @Test
     public void whenUserSubscribedToChatRoom_thenTheUserSeesEveryBodyInTheRoom() {
         final User user = userRepository.findUserWithSubscriptionsByEmail(admin.getEmail());
-        final Set<Subscription> subscriptions = user.getSubscriptions();
-        assertThat(subscriptions).isNotNull();
+
+        assertThat(user.getContactEntries().contains(testedSubscription)).isTrue();
     }
 }
