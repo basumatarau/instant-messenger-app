@@ -45,7 +45,7 @@ public class Subscription {
 
     public Subscription(){}
 
-    private Subscription(SubscriberBuilder builder){
+    private Subscription(SubscriptionBuilder builder){
         setUser(builder.user);
         this.chatRoom = builder.chatRoom;
         this.enteredChat = builder.enteredChat;
@@ -53,36 +53,36 @@ public class Subscription {
         this.isEnabled = builder.isEnabled;
     }
 
-    public static class SubscriberBuilder{
+    public static class SubscriptionBuilder {
         private ChatRoom chatRoom;
         private User user;
         private Date enteredChat;
         private ChatRoomPrivilege privilege;
         private Boolean isEnabled;
 
-        public SubscriberBuilder(){}
+        public SubscriptionBuilder(){}
 
-        public SubscriberBuilder chatRoom(ChatRoom chatRoom){
+        public SubscriptionBuilder chatRoom(ChatRoom chatRoom){
             this.chatRoom = chatRoom;
             return this;
         }
 
-        public SubscriberBuilder user(User user){
+        public SubscriptionBuilder user(User user){
             this.user = user;
             return this;
         }
 
-        public SubscriberBuilder enteredChat(Date enteredChat){
+        public SubscriptionBuilder enteredChat(Date enteredChat){
             this.enteredChat = enteredChat;
             return this;
         }
 
-        public SubscriberBuilder priviledge(ChatRoomPrivilege privilege){
+        public SubscriptionBuilder priviledge(ChatRoomPrivilege privilege){
             this.privilege = privilege;
             return this;
         }
 
-        public SubscriberBuilder enabled(Boolean enabled){
+        public SubscriptionBuilder enabled(Boolean enabled){
             this.isEnabled = enabled;
             return this;
         }

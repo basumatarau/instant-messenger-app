@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.Objects;
 import java.util.Properties;
 
 @Configuration
@@ -23,7 +24,7 @@ import java.util.Properties;
         "by.vironit.training.basumatarau.instantMessengerApp.model",
 })
 @EnableTransactionManagement
-@PropertySource("application-test.properties")
+@PropertySource("jpa-datasource-test.properties")
 @Profile("test")
 public class H2TestProfileJPAConfiguration {
 
@@ -34,7 +35,7 @@ public class H2TestProfileJPAConfiguration {
     @Profile("test")
     public DataSource dataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
+        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("spring.datasource.driver-class-name")));
         dataSource.setUrl(env.getProperty("spring.datasource.url"));
         dataSource.setUsername(env.getProperty("spring.datasource.username"));
         dataSource.setPassword(env.getProperty("spring.datasource.password"));
@@ -46,7 +47,7 @@ public class H2TestProfileJPAConfiguration {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan(new String[] { "by.vironit.training.basumatarau.instantMessengerApp.model" });
+        em.setPackagesToScan("by.vironit.training.basumatarau.instantMessengerApp.model");
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         em.setJpaProperties(additionalProperties());
         return em;
@@ -60,7 +61,7 @@ public class H2TestProfileJPAConfiguration {
         return transactionManager;
     }
 
-    final Properties additionalProperties() {
+    private Properties additionalProperties() {
         final Properties hibernateProperties = new Properties();
 
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));

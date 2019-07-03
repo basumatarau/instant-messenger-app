@@ -17,9 +17,8 @@ import java.util.Date;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
-public class ChatRoomRepositoryTest extends BaseRepositoryTest{
+public class ChatRoomRepositoryTest extends BaseRepositoryTest {
     @Autowired
     protected ChatRoomRepository chatRoomRepository;
 
@@ -39,10 +38,17 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest{
                 () -> new InitializationError("test data init failure"));
         users.remove(admin);
 
-        final ChatRoomPrivilege adminPrivilege = chatRoomPrivilegeRepository.findByName("CHATADMIN");
-        final ChatRoom chatRoom = chatRoomRepository.findAll().stream().findAny().orElseThrow(fail("failed to find any chat room..."));
+        final ChatRoomPrivilege adminPrivilege =
+                chatRoomPrivilegeRepository.findByName("CHATADMIN");
 
-        testedSubscription = new Subscription.SubscriberBuilder()
+        final ChatRoom chatRoom =
+                chatRoomRepository
+                        .findAll()
+                        .stream()
+                        .findAny()
+                        .orElseThrow(() -> new RuntimeException("failed to find any chat room..."));
+
+        testedSubscription = new Subscription.SubscriptionBuilder()
                 .enteredChat(new Date())
                 .priviledge(adminPrivilege)
                 .user(admin)
@@ -56,7 +62,7 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest{
 
         for (User user : users) {
             subscribtionRepository.saveAndFlush(
-                    new Subscription.SubscriberBuilder()
+                    new Subscription.SubscriptionBuilder()
                             .enteredChat(new Date())
                             .priviledge(chatRoomPrivilegeRepository.findByName("COMMONER"))
                             .user(user)
@@ -68,12 +74,12 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest{
     }
 
     @After
-    public void cleanChatRoomRepoTest(){
+    public void cleanChatRoomRepoTest() {
         subscribtionRepository.deleteAll();
     }
 
     @Test
-    public void whenUserSubscribedToChatRoom_thenTheUserSeesEveryBodyInTheRoom(){
+    public void whenUserSubscribedToChatRoom_thenTheUserSeesEveryBodyInTheRoom() {
         final User user = userRepository.findUserWithSubscriptionsByEmail(admin.getEmail());
         final Set<Subscription> subscriptions = user.getSubscriptions();
         assertThat(subscriptions).isNotNull();

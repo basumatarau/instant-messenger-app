@@ -19,10 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
-
-import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
@@ -84,7 +81,6 @@ public class BaseRepositoryTest {
                 user -> userRepository.saveAndFlush(user)
         );
 
-
         final ChatRoom chatRoom
                 = new ChatRoom.ChatRoomBuilder()
                 .isPublic(true)
@@ -95,7 +91,7 @@ public class BaseRepositoryTest {
     }
 
     @After
-    public void cleanBase(){
+    public void cleanBase() {
         userRepository.deleteAll();
         roleRepsitory.deleteAll();
         chatRoomPrivilegeRepository.deleteAll();

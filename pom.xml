@@ -14,7 +14,7 @@
     <artifactId>instantMessengerApp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>instantMessengerApp</name>
-    <description>trainig project @ vironit</description>
+    <description>training project @ vironit</description>
 
     <modules>
         <module>legacyWebApplication</module>

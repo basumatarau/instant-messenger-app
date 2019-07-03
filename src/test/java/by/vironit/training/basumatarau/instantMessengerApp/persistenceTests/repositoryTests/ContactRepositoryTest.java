@@ -2,7 +2,6 @@ package by.vironit.training.basumatarau.instantMessengerApp.persistenceTests.rep
 
 import by.vironit.training.basumatarau.instantMessengerApp.model.Contact;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.HashSet;
@@ -18,6 +17,7 @@ public class ContactRepositoryTest extends BaseRepositoryTest{
     public void initContactRepoTest() throws InstantiationException {
         owner = users.stream().findAny().orElseThrow(
                 () -> new RuntimeException("before test condition has not been met - collection empty"));
+
         users.remove(owner);
         final Set<Contact> contacts = new HashSet<>();
         for (User contactPerson : users) {
