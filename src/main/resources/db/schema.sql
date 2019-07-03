@@ -91,6 +91,7 @@ CREATE SEQUENCE if not exists instant_messenger_db_schema.contactEntries_id_seq
 
 CREATE TABLE if not exists instant_messenger_db_schema.contactEntries (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.contactEntries_id_seq'),
+	entryType varchar(45) NOT NULL,
 	id_owner bigint NOT NULL,
 	id_person bigint,
 	confirmed bool DEFAULT false,
