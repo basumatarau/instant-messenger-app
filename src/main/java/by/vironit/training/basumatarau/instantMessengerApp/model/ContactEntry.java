@@ -66,7 +66,8 @@ public abstract class ContactEntry {
     }
 
     public void setOwner(User owner) {
-        //todo convenience method adding this to the owner contactEntries
+        //todo fix the convenience method
+        //owner.getContactEntries().add(this);
         this.owner = owner;
     }
 
