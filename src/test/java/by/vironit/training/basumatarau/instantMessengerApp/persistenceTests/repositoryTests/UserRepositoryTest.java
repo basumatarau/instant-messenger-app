@@ -3,8 +3,6 @@ package by.vironit.training.basumatarau.instantMessengerApp.persistenceTests.rep
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.RoleRepsitory;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.UserRepository;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

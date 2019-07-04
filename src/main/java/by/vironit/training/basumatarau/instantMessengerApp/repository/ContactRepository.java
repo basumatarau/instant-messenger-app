@@ -11,7 +11,8 @@ import java.util.Optional;
 @Repository
 public interface ContactRepository extends JpaRepository<Contact, Long> {
 
-    @Query("select c from Contact c where c.owner.id=:ownerId and c.person.id=:personId")
+    @Query("select c from Contact c " +
+            "where c.owner.id=:ownerId and c.person.id=:personId")
     Optional<Contact> findContactByOwnerIdAndPersonId(
             @Param("ownerId") Long ownerId,
             @Param("personId") Long personId);

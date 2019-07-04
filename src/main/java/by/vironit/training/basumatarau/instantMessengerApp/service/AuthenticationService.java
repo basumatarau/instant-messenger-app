@@ -1,4 +1,5 @@
 package by.vironit.training.basumatarau.instantMessengerApp.service;
 
-public interface UserService {
+public interface AuthenticationService {
+
 }

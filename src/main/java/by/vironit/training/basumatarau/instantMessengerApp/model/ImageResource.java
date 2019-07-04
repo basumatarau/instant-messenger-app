@@ -2,6 +2,7 @@ package by.vironit.training.basumatarau.instantMessengerApp.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import java.util.Arrays;
 import java.util.Objects;
@@ -16,6 +17,7 @@ public class ImageResource extends MessageResource {
     @Column(name = "height", nullable = false)
     private Integer height;
 
+    @Lob
     @Column(name = "imagebin", nullable = false)
     private byte[] imageBin;
 
