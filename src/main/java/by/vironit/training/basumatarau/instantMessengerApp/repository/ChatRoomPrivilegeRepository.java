@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChatRoomPrivilegeRepository
         extends JpaRepository<ChatRoomPrivilege, Integer> {
-    public ChatRoomPrivilege findByName(String name);
+    ChatRoomPrivilege findByName(String name);
 }

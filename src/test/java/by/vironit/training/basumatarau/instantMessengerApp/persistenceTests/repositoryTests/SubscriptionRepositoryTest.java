@@ -1,18 +1,18 @@
 package by.vironit.training.basumatarau.instantMessengerApp.persistenceTests.repositoryTests;
 
 import by.vironit.training.basumatarau.instantMessengerApp.repository.ChatRoomRepository;
-import by.vironit.training.basumatarau.instantMessengerApp.repository.SubscriberRepository;
+import by.vironit.training.basumatarau.instantMessengerApp.repository.SubscriptionRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.Assert.fail;
 
-public class SubscriberRepositoryTest extends BaseRepositoryTest{
+public class SubscriptionRepositoryTest extends BaseRepositoryTest{
     @Autowired
     private ChatRoomRepository chatRoomRepository;
 
     @Autowired
-    private SubscriberRepository subscriberRepository;
+    private SubscriptionRepository subscriberRepository;
 
     @Test
     public void toBeImplemented(){

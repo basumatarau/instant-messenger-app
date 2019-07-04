@@ -6,7 +6,7 @@ import by.vironit.training.basumatarau.instantMessengerApp.model.Subscription;
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.ChatRoomPrivilegeRepository;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.ChatRoomRepository;
-import by.vironit.training.basumatarau.instantMessengerApp.repository.SubscriberRepository;
+import by.vironit.training.basumatarau.instantMessengerApp.repository.SubscriptionRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
     protected ChatRoomRepository chatRoomRepository;
 
     @Autowired
-    protected SubscriberRepository subscribtionRepository;
+    protected SubscriptionRepository subscriptionRepository;
 
     @Autowired
     protected ChatRoomPrivilegeRepository chatRoomPrivilegeRepository;
@@ -56,12 +56,12 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
                 .chatRoom(chatRoom)
                 .build();
 
-        subscribtionRepository.saveAndFlush(
+        subscriptionRepository.saveAndFlush(
                 testedSubscription
         );
 
         for (User user : users) {
-            subscribtionRepository.saveAndFlush(
+            subscriptionRepository.saveAndFlush(
                     new Subscription.SubscriptionBuilder()
                             .enteredChat(new Date())
                             .privilege(chatRoomPrivilegeRepository.findByName("COMMONER"))
@@ -75,7 +75,7 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
 
     @After
     public void cleanChatRoomRepoTest() {
-        subscribtionRepository.deleteAll();
+        subscriptionRepository.deleteAll();
     }
 
     @Test
