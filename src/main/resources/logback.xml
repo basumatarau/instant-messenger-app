@@ -30,6 +30,11 @@
             additivity="false">
     </logger>
 
+    <logger name="org.springframework"
+            level="INFO"
+            additivity="false">
+    </logger>
+
     <logger name="by.vironit.training.basumatarau.instantMessengerApp"
             level="INFO"
             additivity="false">

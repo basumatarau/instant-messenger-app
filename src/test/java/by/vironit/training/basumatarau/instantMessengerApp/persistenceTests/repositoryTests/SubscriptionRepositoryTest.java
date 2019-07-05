@@ -52,6 +52,7 @@ public class SubscriptionRepositoryTest extends BaseRepositoryTest{
 
         assertThat(userRepository
                 .findUserWithSubscriptionsByEmail(anyUser.getEmail())
+                .orElseThrow(()-> new RuntimeException("failure to fetch any user"))
                 .getContactEntries()
                 .contains(adminSubscription)).isTrue();
     }

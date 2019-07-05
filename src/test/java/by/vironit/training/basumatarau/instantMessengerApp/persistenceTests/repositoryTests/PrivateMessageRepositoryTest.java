@@ -64,7 +64,8 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
 
     @Test
     public void whenPrivateMessagePersisted_thenFindMessage() throws Exception {
-        final User sender = userRepository.findUserWithContactsByEmail(messageSender.getEmail());
+        final User sender = userRepository.findUserWithContactsByEmail(messageSender.getEmail())
+                .orElseThrow(()-> new RuntimeException("failure to fetch any user"));
         final Contact contact = sender.getContactEntries()
                 .stream()
                 .filter(contactEntry -> contactEntry instanceof Contact)

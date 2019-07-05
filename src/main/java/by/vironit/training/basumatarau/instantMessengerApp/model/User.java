@@ -113,10 +113,6 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public Boolean getActive() {
-        return isEnabled;
-    }
-
     public void setActive(Boolean active) {
         isEnabled = active;
     }

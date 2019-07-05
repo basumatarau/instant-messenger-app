@@ -35,7 +35,8 @@ public class ContactEntryRepositoryTest extends BaseRepositoryTest{
 
     @Test
     public void whenUserHasContact_thenGetContactDetails(){
-        final User retrievedUserByEmail = userRepository.findUserWithContactsByEmail(owner.getEmail());
+        final User retrievedUserByEmail = userRepository.findUserWithContactsByEmail(owner.getEmail())
+                .orElseThrow(()-> new RuntimeException("failure to fetch any user"));
         assertThat(retrievedUserByEmail.getRole()).isNotNull();
         final Set<ContactEntry> contacts = retrievedUserByEmail.getContactEntries();
         assertThat(contacts.isEmpty()).isFalse();
@@ -47,7 +48,8 @@ public class ContactEntryRepositoryTest extends BaseRepositoryTest{
     @Test
     public void whenUserAddedContacts_thenTheNewContactsPersistedCorrectly()
             throws InstantiationException {
-        final User retrieved = userRepository.findByEmail(owner.getEmail());
+        final User retrieved = userRepository.findByEmail(owner.getEmail())
+                .orElseThrow(()-> new RuntimeException("failure to fetch any user"));
         assertThat(retrieved).isEqualTo(owner);
     }
 

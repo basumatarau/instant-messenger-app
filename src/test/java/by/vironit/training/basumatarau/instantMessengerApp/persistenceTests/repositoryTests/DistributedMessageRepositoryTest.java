@@ -20,7 +20,8 @@ public class DistributedMessageRepositoryTest extends ChatRoomRepositoryTest {
 
     @Test
     public void whenDistributedMessagedPersisted_thenDistributedMessageCanBeReadBySubscribers() throws Exception {
-        final Subscription subscr = userRepository.findUserWithContactEntriesByEmail(admin.getEmail()).getContactEntries()
+        final Subscription subscr = userRepository.findUserWithContactEntriesByEmail(admin.getEmail())
+                .orElseThrow(()->new RuntimeException("failed to fetch any user")).getContactEntries()
                 .stream()
                 .filter(contactEntry -> contactEntry instanceof Subscription)
                 .map(contactEntry -> ((Subscription) contactEntry))

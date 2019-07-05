@@ -80,7 +80,9 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
 
     @Test
     public void whenUserSubscribedToChatRoom_thenTheUserSeesEveryBodyInTheRoom() {
-        final User user = userRepository.findUserWithSubscriptionsByEmail(admin.getEmail());
+        final User user = userRepository.findUserWithSubscriptionsByEmail(
+                admin.getEmail()).orElseThrow(() -> new RuntimeException("failure to fetch any user")
+        );
 
         assertThat(user.getContactEntries().contains(testedSubscription)).isTrue();
     }

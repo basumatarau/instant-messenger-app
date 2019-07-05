@@ -26,7 +26,8 @@ public class UserRepositoryTest extends BaseRepositoryTest {
         }
         final User user = anyUser.get();
 
-        User retrieved = userRepository.findByEmail(user.getEmail());
+        User retrieved = userRepository.findByEmail(user.getEmail())
+                .orElseThrow(()-> new RuntimeException("failure to fetch any user"));
         assertThat(user.getEmail()).isEqualTo(retrieved.getEmail());
     }
 
@@ -38,7 +39,8 @@ public class UserRepositoryTest extends BaseRepositoryTest {
         }
         final User user = anyUser.get();
 
-        User retrieved = userRepository.findByEmail(user.getEmail());
+        User retrieved = userRepository.findByEmail(user.getEmail())
+                .orElseThrow(()-> new RuntimeException("failure to fetch any user"));
         assertThat(retrieved.getEmail()).isNotNull();
     }
 
