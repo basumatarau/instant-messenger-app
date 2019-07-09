@@ -1,7 +1,7 @@
 package by.vironit.training.basumatarau.instantMessengerApp.persistenceTests.repositoryTests;
 
 import by.vironit.training.basumatarau.instantMessengerApp.model.User;
-import by.vironit.training.basumatarau.instantMessengerApp.repository.RoleRepsitory;
+import by.vironit.training.basumatarau.instantMessengerApp.repository.RoleRepository;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.UserRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class UserRepositoryTest extends BaseRepositoryTest {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepsitory roleRepsitory;
+    private RoleRepository roleRepsitory;
 
     @Test
     public void whenFindUser_thenReturnUserEmail() throws InstantiationException {

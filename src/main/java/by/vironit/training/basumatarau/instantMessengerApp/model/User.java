@@ -186,20 +186,23 @@ public class User {
             return this;
         }
 
-        public User build() throws InstantiationException {
+        public User build() {
             buildDataIntegrityCheck();
             return new User(this);
         }
 
-        private void buildDataIntegrityCheck() throws InstantiationException {
+        private void buildDataIntegrityCheck(){
             if (this.email == null
                     || this.passwordHash == null
                     || this.nickName == null
                     || this.role == null
                     || this.isEnabled == null
                     || this.contactEntries == null) {
-                throw new InstantiationException(
-                        "invalid or not sufficient data for User object instantiation");
+
+                final InstantiationException e = new InstantiationException(
+                        "invalid or not sufficient data for UserEndPoint object instantiation");
+
+                throw new RuntimeException(e);
             }
         }
     }

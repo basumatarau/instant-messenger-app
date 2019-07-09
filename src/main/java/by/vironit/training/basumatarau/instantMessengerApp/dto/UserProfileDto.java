@@ -1,11 +1,33 @@
 package by.vironit.training.basumatarau.instantMessengerApp.dto;
 
 public class UserProfileDto {
+
+    public enum Status{
+        MY_FRIEND, PENDING, STRANGER
+    }
+
     private String id;
     private String firstName;
     private String lastName;
     private String nickName;
     private String email;
+    private Status status;
+
+    public UserProfileDto(){}
+
+    public UserProfileDto(String id,
+                          String firstName,
+                          String lastName,
+                          String nickName,
+                          String email,
+                          Status status) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nickName = nickName;
+        this.email = email;
+        this.status = status;
+    }
 
     public String getId() {
         return id;
@@ -45,5 +67,13 @@ public class UserProfileDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

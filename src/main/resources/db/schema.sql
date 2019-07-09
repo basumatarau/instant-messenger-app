@@ -76,9 +76,9 @@ CREATE TABLE if not exists instant_messenger_db_schema.chatrooms (
 
 --## ALTER SEQUENCE chatrooms_id_seq OWNED BY chatrooms.id;
 
--- DROP SEQUENCE instant_messenger_db_schema.contactEntries_id_seq;
+-- DROP SEQUENCE instant_messenger_db_schema.contact_entries_id_seq;
 
-CREATE SEQUENCE if not exists instant_messenger_db_schema.contactEntries_id_seq
+CREATE SEQUENCE if not exists instant_messenger_db_schema.contact_entries_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
 	MAXVALUE 9223372036854775807
@@ -87,11 +87,11 @@ CREATE SEQUENCE if not exists instant_messenger_db_schema.contactEntries_id_seq
 
 -- Drop table
 
--- DROP TABLE instant_messenger_db_schema.contactEntries;
+-- DROP TABLE instant_messenger_db_schema.contact_entries;
 
-CREATE TABLE if not exists instant_messenger_db_schema.contactEntries (
-	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.contactEntries_id_seq'),
-	entryType varchar(45) NOT NULL,
+CREATE TABLE if not exists instant_messenger_db_schema.contact_entries (
+	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.contact_entries_id_seq'),
+	entry_type varchar(45) NOT NULL,
 	id_owner bigint NOT NULL,
 	id_person bigint,
 	confirmed bool DEFAULT false,
@@ -105,10 +105,10 @@ CREATE TABLE if not exists instant_messenger_db_schema.contactEntries (
 	CONSTRAINT users_has_chatrooms_fk_1 FOREIGN KEY (id_chatroom) REFERENCES instant_messenger_db_schema.chatrooms(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT subscriptions_fk FOREIGN KEY (id_userprivilege) REFERENCES instant_messenger_db_schema.chatroom_privileges(id) ON UPDATE CASCADE
 );
-CREATE INDEX if not exists contacts_id_owner_idx ON instant_messenger_db_schema.contactEntries USING btree (id_owner);
-CREATE INDEX if not exists contacts_id_person_idx ON instant_messenger_db_schema.contactEntries USING btree (id_person, id_owner);
+CREATE INDEX if not exists contacts_id_owner_idx ON instant_messenger_db_schema.contact_entries USING btree (id_owner);
+CREATE INDEX if not exists contacts_id_person_idx ON instant_messenger_db_schema.contact_entries USING btree (id_person, id_owner);
 
---## ALTER SEQUENCE contactEntries_id_seq OWNED BY contactEntries.id;
+--## ALTER SEQUENCE contact_entries_id_seq OWNED BY contact_entries.id;
 
 -- Drop table
 
@@ -147,7 +147,7 @@ CREATE TABLE if not exists instant_messenger_db_schema.messages (
 	id_messageresource bigint NULL,
 	id_chatroom bigint NULL,
 	CONSTRAINT message_pk PRIMARY KEY (id),
-	CONSTRAINT private_messages_fk FOREIGN KEY (id_contact) REFERENCES instant_messenger_db_schema.contactEntries(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT private_messages_fk FOREIGN KEY (id_contact) REFERENCES instant_messenger_db_schema.contact_entries(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT private_messages_fk1 FOREIGN KEY (id_author) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE,
 	CONSTRAINT private_messages_fk3 FOREIGN KEY (id_chatroom) REFERENCES instant_messenger_db_schema.chatrooms(id) ON UPDATE CASCADE ON DELETE CASCADE
 );

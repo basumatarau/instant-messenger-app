@@ -24,6 +24,13 @@
         <java.version>9</java.version>
         <spring-boot-starter-test.version>2.0.4.RELEASE</spring-boot-starter-test.version>
         <org.apache.ibatis.version>3.0-beta-10</org.apache.ibatis.version>
+        <org.apache.commons.commons-lang3.version>3.9</org.apache.commons.commons-lang3.version>
+        <io.jsonwebtoken.jjwt-api>0.10.6</io.jsonwebtoken.jjwt-api>
+        <io.jsonwebtoken.jjwt-impl>0.10.6</io.jsonwebtoken.jjwt-impl>
+        <io.jsonwebtoken.jjwt-jackson>0.10.6</io.jsonwebtoken.jjwt-jackson>
+        <org.modelmapper.modelmapper>2.3.5</org.modelmapper.modelmapper>
+        <javax.cache.cache-api.version>1.1.1</javax.cache.cache-api.version>
+        <org.ehcache.ehcache.version>3.7.1</org.ehcache.ehcache.version>
     </properties>
 
     <dependencies>
@@ -31,30 +38,30 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.9</version>
+            <version>${org.apache.commons.commons-lang3.version}</version>
         </dependency>
         <!-- json web token -->
         <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.10.6</version>
+            <version>${io.jsonwebtoken.jjwt-api}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
-            <version>0.10.6</version>
+            <version>${io.jsonwebtoken.jjwt-impl}</version>
             <scope>runtime</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
-            <version>0.10.6</version>
+            <version>${io.jsonwebtoken.jjwt-jackson}</version>
             <scope>runtime</scope>
         </dependency>
-        <!-- spring boot starters -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -72,16 +79,22 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- model mappers -->
         <!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
-            <version>2.3.5</version>
+            <version>${org.modelmapper.modelmapper}</version>
         </dependency>
+        <!-- ...and below - test scope -->
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
@@ -95,8 +108,8 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
             <version>${spring-boot-starter-test.version}</version>
+            <scope>test</scope>
         </dependency>
         <!-- database init (Test) -->
         <dependency>

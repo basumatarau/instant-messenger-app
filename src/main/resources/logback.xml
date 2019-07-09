@@ -21,12 +21,12 @@
     </appender>
 
     <logger name="org.hibernate.type"
-            level="ALL"
+            level="INFO"
             additivity="false">
     </logger>
 
     <logger name="org.hibernate"
-            level="DEBUG"
+            level="INFO"
             additivity="false">
     </logger>
 

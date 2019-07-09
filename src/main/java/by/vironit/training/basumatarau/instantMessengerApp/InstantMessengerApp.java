@@ -8,5 +8,7 @@ public class InstantMessengerApp {
     public static void main(String[] args) {
 
         SpringApplication.run(InstantMessengerApp.class, args);
+
+
     }
 }

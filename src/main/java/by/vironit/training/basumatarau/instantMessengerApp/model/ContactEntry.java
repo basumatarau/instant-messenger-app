@@ -4,18 +4,18 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "contactEntries", schema = "instant_messenger_db_schema")
+@Table(name = "contact_entries", schema = "instant_messenger_db_schema")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "entryType", discriminatorType=DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "entry_type", discriminatorType=DiscriminatorType.STRING)
 public abstract class ContactEntry {
     static final String SUBSCRIPTION_TYPE = "subs";
     static final String PERSONAL_CONTACT_TYPE = "cont";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "contactEntry_identity_generator")
-    @SequenceGenerator(name = "contactEntry_identity_generator",
-            sequenceName = "contactEntries_id_seq",
+            generator = "contact_entry_identity_generator")
+    @SequenceGenerator(name = "contact_entry_identity_generator",
+            sequenceName = "contact_entries_id_seq",
             schema = "instant_messenger_db_schema",
             allocationSize = 1)
     @Column(name = "id", updatable = false, nullable = false)

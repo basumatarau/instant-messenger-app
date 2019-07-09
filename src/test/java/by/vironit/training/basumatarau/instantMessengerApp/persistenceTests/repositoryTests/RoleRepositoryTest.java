@@ -1,7 +1,7 @@
 package by.vironit.training.basumatarau.instantMessengerApp.persistenceTests.repositoryTests;
 
 import by.vironit.training.basumatarau.instantMessengerApp.model.Role;
-import by.vironit.training.basumatarau.instantMessengerApp.repository.RoleRepsitory;
+import by.vironit.training.basumatarau.instantMessengerApp.repository.RoleRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RoleRepositoryTest extends BaseRepositoryTest{
 
     @Autowired
-    private RoleRepsitory roleRepsitory;
+    private RoleRepository roleRepsitory;
 
     private Set<Role> userAndAdminRoles = new HashSet<>();
 

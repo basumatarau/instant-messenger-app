@@ -7,7 +7,7 @@ import by.vironit.training.basumatarau.instantMessengerApp.model.User;
 import by.vironit.training.basumatarau.instantMessengerApp.persistenceTests.repositoryTests.config.H2TestProfileJPAConfiguration;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.ChatRoomPrivilegeRepository;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.ChatRoomRepository;
-import by.vironit.training.basumatarau.instantMessengerApp.repository.RoleRepsitory;
+import by.vironit.training.basumatarau.instantMessengerApp.repository.RoleRepository;
 import by.vironit.training.basumatarau.instantMessengerApp.repository.UserRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +30,7 @@ public class BaseRepositoryTest {
     UserRepository userRepository;
 
     @Autowired
-    RoleRepsitory roleRepsitory;
+    RoleRepository roleRepsitory;
 
     @Autowired
     ChatRoomPrivilegeRepository chatRoomPrivilegeRepository;
