@@ -20,7 +20,7 @@
         </encoder>
     </appender>
 
-    <logger name="by.vironit.training.basumatarau.instantMessengerApp"
+    <logger name="by.vironit.training.basumatarau.messengerService"
             level="INFO"
             additivity="false">
         <appender-ref ref="STDOUT"/>
