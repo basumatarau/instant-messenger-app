@@ -6,6 +6,7 @@
     <groupId>by.vironit.training.basumatarau</groupId>
     <artifactId>im-auth-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
     <packaging>jar</packaging>
     <name>im-auth-server</name>
     <description>training project @ vironit</description>

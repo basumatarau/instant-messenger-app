@@ -1,0 +1,55 @@
+2019-07-11 19:50:44,215 INFO by.vironit.training.basumatarau.resourceServer.ResourceServerStarter [main] Starting MessengerServiceApplication on pavel-laptop with PID 28092 (/home/pavel/IdeaProjects/master/im-secure-resource-server/target/classes started by pavel in /home/pavel/IdeaProjects/master)
+2019-07-11 19:50:44,229 INFO by.vironit.training.basumatarau.resourceServer.ResourceServerStarter [main] No active profile set, falling back to default profiles: default
+2019-07-11 19:50:46,898 INFO org.apache.coyote.http11.Http11NioProtocol [main] Initializing ProtocolHandler ["http-nio-8080"]
+2019-07-11 19:50:46,919 INFO org.apache.catalina.core.StandardService [main] Starting service [Tomcat]
+2019-07-11 19:50:46,920 INFO org.apache.catalina.core.StandardEngine [main] Starting Servlet engine: [Apache Tomcat/9.0.19]
+2019-07-11 19:50:47,088 INFO org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/im-webapp] [main] Initializing Spring embedded WebApplicationContext
+2019-07-11 19:50:47,350 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Starting...
+2019-07-11 19:50:47,713 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Start completed.
+2019-07-11 19:50:51,439 INFO org.apache.coyote.http11.Http11NioProtocol [main] Starting ProtocolHandler ["http-nio-8080"]
+2019-07-11 19:50:51,468 INFO by.vironit.training.basumatarau.resourceServer.ResourceServerStarter [main] Started MessengerServiceApplication in 8.194 seconds (JVM running for 9.031)
+2019-07-11 19:51:02,916 INFO com.zaxxer.hikari.HikariDataSource [Thread-4] HikariPool-1 - Shutdown initiated...
+2019-07-11 19:51:02,963 INFO com.zaxxer.hikari.HikariDataSource [Thread-4] HikariPool-1 - Shutdown completed.
+2019-07-11 19:54:14,205 INFO org.apache.coyote.http11.Http11NioProtocol [main] Initializing ProtocolHandler ["http-nio-8080"]
+2019-07-11 19:54:14,239 INFO org.apache.catalina.core.StandardService [main] Starting service [Tomcat]
+2019-07-11 19:54:14,239 INFO org.apache.catalina.core.StandardEngine [main] Starting Servlet engine: [Apache Tomcat/9.0.19]
+2019-07-11 19:54:14,399 INFO org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/im-webapp] [main] Initializing Spring embedded WebApplicationContext
+2019-07-11 19:54:14,643 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Starting...
+2019-07-11 19:54:14,786 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Start completed.
+2019-07-11 19:54:18,737 INFO org.apache.coyote.http11.Http11NioProtocol [main] Starting ProtocolHandler ["http-nio-8080"]
+2019-07-11 19:54:57,057 INFO com.zaxxer.hikari.HikariDataSource [Thread-4] HikariPool-1 - Shutdown initiated...
+2019-07-11 19:54:57,106 INFO com.zaxxer.hikari.HikariDataSource [Thread-4] HikariPool-1 - Shutdown completed.
+2019-07-11 19:58:57,237 INFO by.vironit.training.basumatarau.resourceServer.ResourceServerStarter [main] Starting ResourceServerStarter on pavel-laptop with PID 28991 (/home/pavel/IdeaProjects/master/im-secure-resource-server/target/classes started by pavel in /home/pavel/IdeaProjects/master)
+2019-07-11 19:58:57,272 INFO by.vironit.training.basumatarau.resourceServer.ResourceServerStarter [main] No active profile set, falling back to default profiles: default
+2019-07-11 19:59:01,452 INFO org.apache.coyote.http11.Http11NioProtocol [main] Initializing ProtocolHandler ["http-nio-8080"]
+2019-07-11 19:59:01,503 INFO org.apache.catalina.core.StandardService [main] Starting service [Tomcat]
+2019-07-11 19:59:01,504 INFO org.apache.catalina.core.StandardEngine [main] Starting Servlet engine: [Apache Tomcat/9.0.19]
+2019-07-11 19:59:01,759 INFO org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/im-webapp] [main] Initializing Spring embedded WebApplicationContext
+2019-07-11 19:59:02,069 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Starting...
+2019-07-11 19:59:02,505 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Start completed.
+2019-07-11 19:59:04,603 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Shutdown initiated...
+2019-07-11 19:59:04,672 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Shutdown completed.
+2019-07-11 19:59:04,674 INFO org.apache.catalina.core.StandardService [main] Stopping service [Tomcat]
+2019-07-11 19:59:41,504 INFO by.vironit.training.basumatarau.resourceServer.ResourceServerStarter [main] Starting ResourceServerStarter on pavel-laptop with PID 29156 (/home/pavel/IdeaProjects/master/im-secure-resource-server/target/classes started by pavel in /home/pavel/IdeaProjects/master)
+2019-07-11 19:59:41,517 INFO by.vironit.training.basumatarau.resourceServer.ResourceServerStarter [main] No active profile set, falling back to default profiles: default
+2019-07-11 19:59:44,457 INFO org.apache.coyote.http11.Http11NioProtocol [main] Initializing ProtocolHandler ["http-nio-8080"]
+2019-07-11 19:59:44,476 INFO org.apache.catalina.core.StandardService [main] Starting service [Tomcat]
+2019-07-11 19:59:44,477 INFO org.apache.catalina.core.StandardEngine [main] Starting Servlet engine: [Apache Tomcat/9.0.19]
+2019-07-11 19:59:44,636 INFO org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/im-webapp] [main] Initializing Spring embedded WebApplicationContext
+2019-07-11 19:59:44,924 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Starting...
+2019-07-11 19:59:45,303 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Start completed.
+2019-07-11 19:59:46,630 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Shutdown initiated...
+2019-07-11 19:59:46,708 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Shutdown completed.
+2019-07-11 19:59:46,711 INFO org.apache.catalina.core.StandardService [main] Stopping service [Tomcat]
+2019-07-11 20:08:52,500 INFO by.vironit.training.basumatarau.resourceServer.ResourceServerStarter [main] Starting ResourceServerStarter on pavel-laptop with PID 30283 (/home/pavel/IdeaProjects/master/im-secure-resource-server/target/classes started by pavel in /home/pavel/IdeaProjects/master)
+2019-07-11 20:08:52,513 INFO by.vironit.training.basumatarau.resourceServer.ResourceServerStarter [main] No active profile set, falling back to default profiles: default
+2019-07-11 20:08:55,398 INFO org.apache.coyote.http11.Http11NioProtocol [main] Initializing ProtocolHandler ["http-nio-8080"]
+2019-07-11 20:08:55,420 INFO org.apache.catalina.core.StandardService [main] Starting service [Tomcat]
+2019-07-11 20:08:55,420 INFO org.apache.catalina.core.StandardEngine [main] Starting Servlet engine: [Apache Tomcat/9.0.19]
+2019-07-11 20:08:55,610 INFO org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/im-webapp] [main] Initializing Spring embedded WebApplicationContext
+2019-07-11 20:08:55,950 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Starting...
+2019-07-11 20:08:56,379 INFO com.zaxxer.hikari.HikariDataSource [main] HikariPool-1 - Start completed.
+2019-07-11 20:09:00,541 INFO org.apache.coyote.http11.Http11NioProtocol [main] Starting ProtocolHandler ["http-nio-8080"]
+2019-07-11 20:09:00,586 INFO by.vironit.training.basumatarau.resourceServer.ResourceServerStarter [main] Started ResourceServerStarter in 9.093 seconds (JVM running for 10.083)
+2019-07-11 20:09:12,735 INFO com.zaxxer.hikari.HikariDataSource [Thread-3] HikariPool-1 - Shutdown initiated...
+2019-07-11 20:09:12,789 INFO com.zaxxer.hikari.HikariDataSource [Thread-3] HikariPool-1 - Shutdown completed.

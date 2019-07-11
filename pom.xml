@@ -13,6 +13,7 @@
         <module>im-secure-resource-server</module>
         <module>im-auth-server</module>
         <module>im-simple-web-app</module>
+        <module>project-assembly</module>
     </modules>
 
 </project>
