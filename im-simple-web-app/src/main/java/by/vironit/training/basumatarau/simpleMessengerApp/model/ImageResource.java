@@ -1,22 +1,11 @@
-package by.vironit.training.basumatarau.messengerService.model;
+package by.vironit.training.basumatarau.simpleMessengerApp.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import java.util.Arrays;
 import java.util.Objects;
 
-@Entity
-@Table(name = "imagemessageresources", schema = "instant_messenger_db_schema")
 public class ImageResource extends MessageResource {
-
-    @Column(name = "width", nullable = false)
     private Integer width;
-
-    @Column(name = "height", nullable = false)
     private Integer height;
-
-    @Column(name = "imagebin", nullable = false)
     private byte[] imageBin;
 
     public ImageResource(){}

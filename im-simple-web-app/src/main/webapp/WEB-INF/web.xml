@@ -10,7 +10,7 @@
 
     <servlet>
         <servlet-name>front-controller</servlet-name>
-        <servlet-class>by.vironit.training.basumatarau.messengerService.controller.FrontController</servlet-class>
+        <servlet-class>by.vironit.training.basumatarau.simpleMessengerApp.controller.FrontController</servlet-class>
     </servlet>
 
     <servlet-mapping>
@@ -40,7 +40,7 @@
 
     <filter>
         <filter-name>EncodingFilter</filter-name>
-        <filter-class>by.vironit.training.basumatarau.messengerService.filter.EncodingFilter</filter-class>
+        <filter-class>by.vironit.training.basumatarau.simpleMessengerApp.filter.EncodingFilter</filter-class>
         <init-param>
             <param-name>encoding</param-name>
             <param-value>UTF-8</param-value>
@@ -54,7 +54,7 @@
 
     <filter>
         <filter-name>SecurityFilter</filter-name>
-        <filter-class>by.vironit.training.basumatarau.messengerService.filter.SecurityFilter</filter-class>
+        <filter-class>by.vironit.training.basumatarau.simpleMessengerApp.filter.SecurityFilter</filter-class>
         <init-param>
             <param-name>securedServlets</param-name>
             <param-value>front-controller</param-value>

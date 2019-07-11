@@ -11,10 +11,15 @@
     <description>training project @ vironit</description>
 
     <parent>
-        <groupId>by.vironit.training.basumatarau</groupId>
-        <artifactId>im-application</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.5.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
+    <properties>
+        <oauth.version>2.3.3.RELEASE</oauth.version>
+    </properties>
 
     <dependencies>
         <dependency>
