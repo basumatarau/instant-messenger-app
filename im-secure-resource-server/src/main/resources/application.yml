@@ -32,3 +32,9 @@ server:
   port: 8080
   servlet:
     context-path: /im-webapp
+jwt:
+  clientId: simpleClientId
+  client-secret: simpleCliendSecret
+  accessTokenValidititySeconds: 360
+  refreshTokenValiditySeconds: 3600
+  authorizedGrantTypes: password,authorization_code,refresh_token
