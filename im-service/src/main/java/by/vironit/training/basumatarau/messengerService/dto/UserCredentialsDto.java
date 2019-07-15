@@ -1,10 +1,16 @@
 package by.vironit.training.basumatarau.messengerService.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserCredentialsDto {
     private final String login;
     private final String password;
 
-    public UserCredentialsDto(String login, String password) {
+    @JsonCreator
+    public UserCredentialsDto(
+            @JsonProperty("login") String login,
+            @JsonProperty("password") String password) {
         this.login = login;
         this.password = password;
     }

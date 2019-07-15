@@ -2,19 +2,17 @@ package by.vironit.training.basumatarau.messengerService.service.impl;
 
 import by.vironit.training.basumatarau.messengerService.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messengerService.dto.UserAccountRegistrationDto;
+import by.vironit.training.basumatarau.messengerService.dto.UserCredentialsDto;
 import by.vironit.training.basumatarau.messengerService.dto.UserProfileDto;
 import by.vironit.training.basumatarau.messengerService.exception.NoEntityFound;
 import by.vironit.training.basumatarau.messengerService.exception.UserAccountOccupied;
 import by.vironit.training.basumatarau.messengerService.model.ContactEntry;
-import by.vironit.training.basumatarau.messengerService.model.Role;
 import by.vironit.training.basumatarau.messengerService.model.User;
-import by.vironit.training.basumatarau.messengerService.repository.RoleRepository;
 import by.vironit.training.basumatarau.messengerService.repository.UserRepository;
 import by.vironit.training.basumatarau.messengerService.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,17 +25,11 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepsitory;
-
-    @Autowired
     private ModelMapper modelMapper;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional(readOnly = true)
-    public UserProfileDto getUserProfileDtoByUserEmail(String email) {
+    public UserProfileDto getUserProfileByUserEmail(String email) {
         final User user =
                 userRepository
                         .findByEmail(email)
@@ -60,20 +52,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void registerNewUserAccount(UserAccountRegistrationDto accountDetails) {
         if (userRepository.findByEmail(accountDetails.getEmail()).isPresent()) {
-            throw new UserAccountOccupied("account with email: " + accountDetails.getEmail() + " is already occupied");
+            throw new UserAccountOccupied(
+                    "account with email: " + accountDetails.getEmail() + " is already occupied");
         }
-        final Role defaultRole = roleRepsitory.findByName("USER").orElseThrow(() -> new EntityNotFoundException("role not found"));
-
-        final User newUserAccount = new User.UserBuilder()
-                .email(accountDetails.getEmail())
-                .passwordHash(passwordEncoder.encode(accountDetails.getRawPassword()))
-                .enabled(true)
-                .role(defaultRole)
-                .nickName(accountDetails.getNickName())
-                .firstName(accountDetails.getFirstName())
-                .lastName(accountDetails.getLastName())
-                .build();
-        userRepository.save(newUserAccount);
+        final User newUser = toUser(accountDetails);
+        userRepository.save(newUser);
     }
 
     private UserProfileDto toUserProfileDto(
@@ -84,5 +67,9 @@ public class UserServiceImpl implements UserService {
     private Set<ContactEntryVo> toContactEntryVoSet(
             Set<ContactEntry> contactEntries){
         return modelMapper.map(contactEntries, new TypeToken<Set<ContactEntryVo>>(){}.getType());
+    }
+
+    private User toUser(UserAccountRegistrationDto accountDto){
+        return modelMapper.map(accountDto, User.class);
     }
 }

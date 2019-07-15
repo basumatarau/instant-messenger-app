@@ -1,5 +1,8 @@
 package by.vironit.training.basumatarau.messengerService.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UserAccountRegistrationDto {
     private final String firstName;
     private final String lastName;
@@ -7,11 +10,13 @@ public class UserAccountRegistrationDto {
     private final String email;
     private final String rawPassword;
 
-    public UserAccountRegistrationDto(String firstName,
-                                      String lastName,
-                                      String nickName,
-                                      String email,
-                                      String rawPassword) {
+    @JsonCreator
+    public UserAccountRegistrationDto(
+            @JsonProperty("firstName") String firstName,
+            @JsonProperty("lastName") String lastName,
+            @JsonProperty("nickName") String nickName,
+            @JsonProperty("email") String email,
+            @JsonProperty("rawPassword") String rawPassword) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.nickName = nickName;

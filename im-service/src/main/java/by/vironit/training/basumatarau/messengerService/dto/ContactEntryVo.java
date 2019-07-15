@@ -1,12 +1,29 @@
 package by.vironit.training.basumatarau.messengerService.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.util.Objects;
 
-public class ContactEntryVo {
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "contact_type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = PersonalContactVo.class, name = "personal_contact"),
+        @JsonSubTypes.Type(value = SubscriptionVo.class, name = "subscription"),
+})
+public abstract class ContactEntryVo {
     private final Long id;
     private final UserProfileDto owner;
 
-    public ContactEntryVo(Long id, UserProfileDto owner) {
+    @JsonCreator
+    public ContactEntryVo(
+            @JsonProperty("id") Long id,
+            @JsonProperty("owner") UserProfileDto owner) {
         this.id = id;
         this.owner = owner;
     }

@@ -6,7 +6,10 @@ import by.vironit.training.basumatarau.messengerService.repository.DistributedMe
 import by.vironit.training.basumatarau.messengerService.repository.UserRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,6 +36,14 @@ public class DistributedMessageRepositoryTest extends ChatRoomRepositoryTest {
         assertThat(messages).isNotNull();
         for (Message message : messages) {
             System.out.println(message.getBody());
+        }
+        final PageRequest pageable = PageRequest.of(0, 10);
+        final Slice<Message> slice =
+                distributedMessageRepository.findByChatRoom(subscr.getChatRoom(), pageable);
+
+        assertThat(slice.getNumberOfElements()).isNotNull();
+        for (Message message : slice.getContent()) {
+            System.out.println(message);
         }
     }
 }

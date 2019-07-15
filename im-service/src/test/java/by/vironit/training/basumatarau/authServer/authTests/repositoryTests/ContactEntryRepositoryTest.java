@@ -3,14 +3,22 @@ package by.vironit.training.basumatarau.authServer.authTests.repositoryTests;
 import by.vironit.training.basumatarau.messengerService.model.Contact;
 import by.vironit.training.basumatarau.messengerService.model.ContactEntry;
 import by.vironit.training.basumatarau.messengerService.model.User;
+import by.vironit.training.basumatarau.messengerService.repository.ContactEntryRepository;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ContactEntryRepositoryTest extends BaseRepositoryTest{
+
+    @Autowired
+    private ContactEntryRepository contactEntryRepository;
 
     private User owner;
 
@@ -53,6 +61,19 @@ public class ContactEntryRepositoryTest extends BaseRepositoryTest{
         final User retrieved = userRepository.findByEmail(owner.getEmail())
                 .orElseThrow(()-> new RuntimeException("failure to fetch any user"));
         assertThat(retrieved).isEqualTo(owner);
+    }
+
+    @Test
+    public void whenUserHasContacts_thenContactsCanBeRetrieved()
+            throws InstantiationException {
+
+        final PageRequest pageable = PageRequest.of(0, 10);
+
+        final Slice<ContactEntry> contacts = contactEntryRepository.getAllContactsByOwner(owner, pageable);
+        assertThat(contacts.getNumberOfElements()).isPositive();
+        for (ContactEntry contactEntry : contacts.getContent()) {
+            assertThat(contactEntry.getOwner().equals(owner)).isTrue();
+        }
     }
 
 }

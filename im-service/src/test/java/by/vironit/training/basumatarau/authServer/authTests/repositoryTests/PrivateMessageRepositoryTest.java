@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runners.model.InitializationError;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 
 import java.util.Date;
 import java.util.List;
@@ -80,6 +82,12 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
             System.out.println(message.getBody());
         }
 
+        final PageRequest pageable = PageRequest.of(0, 10);
+        final Slice<Message> slice = messageRepository.findByContact(contact, pageable);
+        assertThat(slice.getNumberOfElements()).isPositive();
+        for (Message message : slice.getContent()) {
+            System.out.println(message.getBody());
+        }
     }
 
 }
