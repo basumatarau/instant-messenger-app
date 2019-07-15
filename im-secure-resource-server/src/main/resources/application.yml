@@ -24,6 +24,11 @@ spring:
   jpa:
     properties:
       hibernate:
+        jdbc:
+          lob:
+            #noncontextual lob creation switch-on
+            #https://github.com/spring-projects/spring-boot/issues/12007#issuecomment-369388646
+            non_contextual_creation: true
         format_sql: true
         ddl-auto: validate
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -32,9 +37,3 @@ server:
   port: 8080
   servlet:
     context-path: /im-webapp
-jwt:
-  clientId: simpleClientId
-  client-secret: simpleCliendSecret
-  accessTokenValidititySeconds: 360
-  refreshTokenValiditySeconds: 3600
-  authorizedGrantTypes: password,authorization_code,refresh_token

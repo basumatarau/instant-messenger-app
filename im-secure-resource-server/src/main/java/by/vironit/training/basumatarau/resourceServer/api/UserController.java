@@ -17,12 +17,11 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/info")
-    @PreAuthorize("hasAuthority('ADMIN') || hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<UserProfileDto> getUserInfo(Principal principal){
         return ResponseEntity.ok(
                 userService.getUserProfileDtoByUserEmail(principal.getName())
         );
     }
-
 }
 
