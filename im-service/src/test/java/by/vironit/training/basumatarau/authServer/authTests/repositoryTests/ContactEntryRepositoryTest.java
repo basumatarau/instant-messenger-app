@@ -33,7 +33,7 @@ public class ContactEntryRepositoryTest extends BaseRepositoryTest{
             contacts.add(new Contact.ContactBuilder()
                     .owner(owner)
                     .person(contactPerson)
-                    .confirmed(false)
+                    .confirmed(true)
                     .build()
             );
         }
@@ -69,8 +69,11 @@ public class ContactEntryRepositoryTest extends BaseRepositoryTest{
 
         final PageRequest pageable = PageRequest.of(0, 10);
 
-        final Slice<ContactEntry> contacts = contactEntryRepository.getAllContactsByOwner(owner, pageable);
+        final Slice<ContactEntry> contacts =
+                contactEntryRepository.getConfirmedContactsForUser(owner, pageable);
+
         assertThat(contacts.getNumberOfElements()).isPositive();
+
         for (ContactEntry contactEntry : contacts.getContent()) {
             assertThat(contactEntry.getOwner().equals(owner)).isTrue();
         }

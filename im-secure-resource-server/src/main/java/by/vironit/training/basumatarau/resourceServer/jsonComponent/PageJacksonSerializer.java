@@ -1,4 +1,4 @@
-package by.vironit.training.basumatarau.messengerService.jsonComponent;
+package by.vironit.training.basumatarau.resourceServer.jsonComponent;
 
 import by.vironit.training.basumatarau.messengerService.dto.ContactEntryVo;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -11,7 +11,7 @@ import org.springframework.data.domain.Sort;
 import java.io.IOException;
 
 @JsonComponent
-public class SliceJacksonSerializer extends JsonSerializer<Page<ContactEntryVo>> {
+public class PageJacksonSerializer extends JsonSerializer<Page<ContactEntryVo>> {
     @Override
     public void serialize(Page<ContactEntryVo> page,
                           JsonGenerator jsonGenerator,

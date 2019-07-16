@@ -8,6 +8,8 @@ import java.util.Set;
 
 public interface UserService {
     UserProfileDto getUserProfileByUserEmail(String email);
+    UserProfileDto getUserById(Long id);
+
     void registerNewUserAccount(UserAccountRegistrationDto credentials);
     Set<ContactEntryVo> getUserContactEntriesByUserEmail(String email);
 }

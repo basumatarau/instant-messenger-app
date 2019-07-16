@@ -2,7 +2,6 @@ package by.vironit.training.basumatarau.messengerService.config;
 
 import by.vironit.training.basumatarau.messengerService.converter.UserProfileDtoToUser;
 import by.vironit.training.basumatarau.messengerService.converter.UserToUserProfileDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,13 +32,6 @@ public class ServiceConfig {
     @Bean
     public UserProfileDtoToUser getUserProfileDtoToUserConverter() {
         return new UserProfileDtoToUser();
-    }
-
-    @Bean
-    public ObjectMapper objectMapper(){
-        final ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enableDefaultTyping();
-        return objectMapper;
     }
 
 }

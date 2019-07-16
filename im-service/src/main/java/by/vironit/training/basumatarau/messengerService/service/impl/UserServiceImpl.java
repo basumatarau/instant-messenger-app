@@ -2,7 +2,6 @@ package by.vironit.training.basumatarau.messengerService.service.impl;
 
 import by.vironit.training.basumatarau.messengerService.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messengerService.dto.UserAccountRegistrationDto;
-import by.vironit.training.basumatarau.messengerService.dto.UserCredentialsDto;
 import by.vironit.training.basumatarau.messengerService.dto.UserProfileDto;
 import by.vironit.training.basumatarau.messengerService.exception.NoEntityFound;
 import by.vironit.training.basumatarau.messengerService.exception.UserAccountOccupied;
@@ -26,6 +25,14 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Override
+    public UserProfileDto getUserById(Long id) {
+        final User user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new NoEntityFound("user not found"));
+        return toUserProfileDto(user);
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -58,6 +65,8 @@ public class UserServiceImpl implements UserService {
         final User newUser = toUser(accountDetails);
         userRepository.save(newUser);
     }
+
+
 
     private UserProfileDto toUserProfileDto(
             by.vironit.training.basumatarau.messengerService.model.User user) {

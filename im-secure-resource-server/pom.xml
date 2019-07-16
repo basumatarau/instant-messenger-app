@@ -18,29 +18,10 @@
     </parent>
 
     <properties>
-        <spring-boot-starter-test.version>2.0.4.RELEASE</spring-boot-starter-test.version>
+        <spring-boot-starter-test.version>2.1.6.RELEASE</spring-boot-starter-test.version>
     </properties>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.9.9</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.9.9</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.9.9</version>
-        </dependency>
-        
         <dependency>
             <groupId>by.vironit.training.basumatarau</groupId>
             <artifactId>im-service</artifactId>
