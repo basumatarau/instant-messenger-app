@@ -98,7 +98,7 @@ CREATE TABLE if not exists instant_messenger_db_schema.contact_entries (
 	id_chatroom bigint,
 	enteredchat timestamp,
 	enabled bool,
-	id_userprivilege int4 DEFAULT 0,
+	id_userprivilege int4,
 	CONSTRAINT subscriptions_pk PRIMARY KEY (id),
 	CONSTRAINT users_has_chatrooms_fk FOREIGN KEY (id_owner) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT subscriptions_fk_1 FOREIGN KEY (id_person) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE,

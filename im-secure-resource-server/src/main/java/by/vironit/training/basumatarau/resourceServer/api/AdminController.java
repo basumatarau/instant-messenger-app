@@ -26,7 +26,7 @@ public class AdminController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public Page<ContactEntryVo>
         getContactEntriesFroUser(Pageable pageable,
-                                 @PathVariable Long id) {
+                                 @PathVariable("id") Long id) {
         final UserProfileDto user = userService.getUserById(id);
         return contactEntryService.getContactEntriesForUser(user, pageable);
     }
@@ -35,7 +35,7 @@ public class AdminController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN')")
     public void
-        deleteContact(@PathVariable Long contactId) {
+        deleteContact(@PathVariable("contactId") Long contactId) {
         contactEntryService.removeContactEntryById(contactId);
     }
 

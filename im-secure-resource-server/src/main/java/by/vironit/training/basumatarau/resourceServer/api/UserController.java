@@ -52,7 +52,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public ResponseEntity<String>
-        deleteContact(Authentication auth, @PathVariable Long id) {
+        deleteContact(Authentication auth, @PathVariable("id") Long id) {
 
         final ContactEntry contact =
                 contactEntryService
@@ -73,7 +73,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public void
-        sendContactRequest(Authentication auth, @PathVariable Long id)
+        sendContactRequest(Authentication auth, @PathVariable("id") Long id)
             throws InstantiationException {
 
         final String username = ((UserDetails) auth.getPrincipal()).getUsername();
@@ -85,7 +85,7 @@ public class UserController {
     @PatchMapping(value = "/contact{id}/confirm")
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public ResponseEntity<String>
-        confirmContactRequest(Authentication auth, @PathVariable Long id)
+        confirmContactRequest(Authentication auth, @PathVariable("id") Long id)
             throws InstantiationException {
 
         final Contact contact = contactEntryService
@@ -103,7 +103,7 @@ public class UserController {
     @PatchMapping(value = "/contact{id}/decline")
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public ResponseEntity<String>
-        declineContactRequest(Authentication auth, @PathVariable Long id)
+        declineContactRequest(Authentication auth, @PathVariable("id") Long id)
             throws InstantiationException {
 
         final Contact contact = contactEntryService

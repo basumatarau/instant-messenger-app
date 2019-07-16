@@ -2,6 +2,7 @@ package by.vironit.training.basumatarau.messengerService.service.impl;
 
 import by.vironit.training.basumatarau.messengerService.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messengerService.dto.UserProfileDto;
+import by.vironit.training.basumatarau.messengerService.exception.ContactRequestIsAlreadyPending;
 import by.vironit.training.basumatarau.messengerService.exception.NoEntityFound;
 import by.vironit.training.basumatarau.messengerService.model.Contact;
 import by.vironit.training.basumatarau.messengerService.model.ContactEntry;
@@ -80,6 +81,13 @@ public class ContactEntryServiceImpl implements ContactEntryService {
     @Override
     public void sendContactRequest(UserProfileDto owner, UserProfileDto person)
             throws InstantiationException {
+
+        final Optional<Contact> contactByOwnerAndPerson = contactEntryRepository.findContactByOwnerAndPerson(
+                modelMapper.map(owner, User.class), modelMapper.map(person, User.class));
+
+        if(contactByOwnerAndPerson.isPresent()){
+            throw new ContactRequestIsAlreadyPending("contact is already pending");
+        }
 
         final Contact newUnconfirmedContact = new Contact.ContactBuilder()
                 .owner(modelMapper.map(owner, User.class))
