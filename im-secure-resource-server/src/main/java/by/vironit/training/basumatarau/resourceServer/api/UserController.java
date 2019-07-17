@@ -33,7 +33,7 @@ public class UserController {
     @Autowired
     private ContactEntryService contactEntryService;
 
-    @GetMapping(value = "/info", produces = {"application/json;charset=utf-8"})
+    @GetMapping(value = "/info")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public UserProfileDto getUserInfo(Principal principal) {

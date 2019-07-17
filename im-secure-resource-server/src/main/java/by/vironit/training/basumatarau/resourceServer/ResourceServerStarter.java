@@ -13,7 +13,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "by.vironit.training.basumatarau.resourceServer"})
 public class ResourceServerStarter {
     public static void main(String[] args) {
-
         SpringApplication.run(ResourceServerStarter.class, args);
     }
 }
