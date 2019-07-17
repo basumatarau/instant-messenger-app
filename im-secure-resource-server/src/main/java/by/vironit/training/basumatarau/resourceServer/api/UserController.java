@@ -69,7 +69,7 @@ public class UserController {
         }
     }
 
-    @PatchMapping(value = "/contact/person{id}")
+    @PutMapping(value = "/contact/person{id}/send")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public void
@@ -82,7 +82,7 @@ public class UserController {
         contactEntryService.sendContactRequest(currentUserProfile, person);
     }
 
-    @PatchMapping(value = "/contact{id}/confirm")
+    @PutMapping(value = "/contact{id}/confirm")
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public ResponseEntity<String>
         confirmContactRequest(Authentication auth, @PathVariable("id") Long id)
@@ -100,7 +100,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping(value = "/contact{id}/decline")
+    @DeleteMapping(value = "/contact{id}/decline")
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public ResponseEntity<String>
         declineContactRequest(Authentication auth, @PathVariable("id") Long id)

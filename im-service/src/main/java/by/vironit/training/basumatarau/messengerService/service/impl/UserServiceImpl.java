@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private User toUser(UserAccountRegistrationDto accountDto){
+
         return modelMapper.map(accountDto, User.class);
     }
 }

@@ -11,7 +11,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-public class UserAccountDtoToUser implements Converter<UserAccountRegistrationDto, User> {
+public class UserAccountDtoToUser
+        implements Converter<UserAccountRegistrationDto, User> {
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
