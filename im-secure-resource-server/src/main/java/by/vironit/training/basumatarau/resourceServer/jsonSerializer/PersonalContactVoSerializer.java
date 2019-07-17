@@ -20,6 +20,7 @@ public class PersonalContactVoSerializer extends JsonSerializer<PersonalContactV
         jsonGenerator.writeNumberField("id", personalContactVo.getId());
         jsonGenerator.writeObjectField("owner", personalContactVo.getOwner());
         jsonGenerator.writeObjectField("person", personalContactVo.getPerson());
+        jsonGenerator.writeObjectField("confirmed", personalContactVo.getConfirmed());
         jsonGenerator.writeEndObject();
     }
 }

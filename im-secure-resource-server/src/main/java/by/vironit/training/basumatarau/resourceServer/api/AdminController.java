@@ -7,9 +7,14 @@ import by.vironit.training.basumatarau.messengerService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -25,9 +30,13 @@ public class AdminController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('ADMIN')")
     public Page<ContactEntryVo>
-        getContactEntriesFroUser(Pageable pageable,
+        getContactEntriesFroUser(@Valid
+                                 @PageableDefault(page = 0, size = 20)
+                                 @SortDefault.SortDefaults({
+                                         @SortDefault(sort = "id", direction = Sort.Direction.ASC)
+                                 }) Pageable pageable,
                                  @PathVariable("id") Long id) {
-        final UserProfileDto user = userService.getUserById(id);
+        final UserProfileDto user = userService.getUserById(++id);
         return contactEntryService.getContactEntriesForUser(user, pageable);
     }
 

@@ -17,7 +17,8 @@ public class ContactToPersonalContactVo implements Converter<Contact, ContactEnt
     public PersonalContactVo convert(MappingContext<Contact, ContactEntryVo> context) {
         return context.getSource() == null ? null :
                 new PersonalContactVo(context.getSource().getId(),
-                modelMapper.map(context.getSource().getOwner(), UserProfileDto.class),
-                modelMapper.map(context.getSource().getPerson(), UserProfileDto.class));
+                        modelMapper.map(context.getSource().getOwner(), UserProfileDto.class),
+                        modelMapper.map(context.getSource().getPerson(), UserProfileDto.class),
+                        context.getSource().getIsConfirmed());
     }
 }
