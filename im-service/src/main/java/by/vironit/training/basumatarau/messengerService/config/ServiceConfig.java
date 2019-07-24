@@ -26,7 +26,13 @@ public class ServiceConfig {
         modelMapper.addConverter(new ChatRoomToChatRoomDto());
         modelMapper.addConverter(getContactToPersonalContactVo());
         modelMapper.addConverter(getSubscriptionToSubscriptionVo());
+        modelMapper.addConverter(getUserAccountDtoToUser());
         return modelMapper;
+    }
+
+    @Bean
+    public UserAccountDtoToUser getUserAccountDtoToUser(){
+        return new UserAccountDtoToUser();
     }
 
     @Bean

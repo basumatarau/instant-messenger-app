@@ -7,12 +7,14 @@ import by.vironit.training.basumatarau.messengerService.exception.NoEntityFound;
 import by.vironit.training.basumatarau.messengerService.exception.UserAccountOccupied;
 import by.vironit.training.basumatarau.messengerService.model.ContactEntry;
 import by.vironit.training.basumatarau.messengerService.model.User;
+import by.vironit.training.basumatarau.messengerService.repository.RoleRepository;
 import by.vironit.training.basumatarau.messengerService.repository.UserRepository;
 import by.vironit.training.basumatarau.messengerService.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
@@ -23,6 +25,9 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -69,8 +74,7 @@ public class UserServiceImpl implements UserService {
 
 
 
-    private UserProfileDto toUserProfileDto(
-            by.vironit.training.basumatarau.messengerService.model.User user) {
+    private UserProfileDto toUserProfileDto(User user) {
         return modelMapper.map(user, UserProfileDto.class);
     }
 
@@ -80,7 +84,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private User toUser(UserAccountRegistrationDto accountDto){
-
         return modelMapper.map(accountDto, User.class);
     }
 }

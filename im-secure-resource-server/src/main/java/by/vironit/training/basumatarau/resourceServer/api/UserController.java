@@ -1,6 +1,7 @@
 package by.vironit.training.basumatarau.resourceServer.api;
 
 import by.vironit.training.basumatarau.messengerService.dto.ContactEntryVo;
+import by.vironit.training.basumatarau.messengerService.dto.UserAccountRegistrationDto;
 import by.vironit.training.basumatarau.messengerService.dto.UserProfileDto;
 import by.vironit.training.basumatarau.messengerService.exception.NoEntityFound;
 import by.vironit.training.basumatarau.messengerService.model.Contact;
@@ -33,11 +34,17 @@ public class UserController {
     @Autowired
     private ContactEntryService contactEntryService;
 
-    @GetMapping(value = "/info")
+    @GetMapping(value = "/login")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public UserProfileDto getUserInfo(Principal principal) {
         return userService.getUserProfileByUserEmail(principal.getName());
+    }
+
+    @PostMapping(value = "/signup", consumes = {"application/json;charset=utf-8"})
+    @ResponseStatus(HttpStatus.OK)
+    public void signUp(@Valid @RequestBody UserAccountRegistrationDto newAccount,
+            Principal principal) {
+        userService.registerNewUserAccount(newAccount);
     }
 
     @GetMapping(value = "/contacts", produces = {"application/json;charset=utf-8"})
