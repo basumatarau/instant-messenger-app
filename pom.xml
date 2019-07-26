@@ -9,8 +9,7 @@
     <name>instant-messenger-application</name>
 
     <modules>
-        <module>im-service</module>
-        <module>im-secure-resource-server</module>
+        <module>messenger</module>
         <module>im-simple-web-app</module>
     </modules>
 
