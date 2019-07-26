@@ -34,7 +34,7 @@ public class UserController {
     @Autowired
     private ContactEntryService contactEntryService;
 
-    @GetMapping(value = "/login")
+    @GetMapping(value = {"/login", "/me"})
     @ResponseStatus(HttpStatus.OK)
     public UserProfileDto getUserInfo(Principal principal) {
         return userService.getUserProfileByUserEmail(principal.getName());
@@ -63,6 +63,39 @@ public class UserController {
         return contactEntryService.getContactEntriesForUser(currentUser, pageable);
     }
 
+    @GetMapping(value = "/contacts/pending", produces = {"application/json;charset=utf-8"})
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
+    public Page<ContactEntryVo>
+    getPendingUserContacts(Principal principal,
+                          @Valid
+                          @PageableDefault(page = 0, size = 20)
+                          @SortDefault.SortDefaults({
+                                  @SortDefault(sort = "id", direction = Sort.Direction.ASC)
+                          }) Pageable pageable) {
+        final UserProfileDto currentUser =
+                userService.getUserProfileByUserEmail(principal.getName());
+
+        return contactEntryService.getPendingContactsForUser(currentUser, pageable);
+    }
+
+    @GetMapping(value = "/contacts/search", produces = {"application/json;charset=utf-8"})
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
+    public Page<ContactEntryVo>
+    searchContactEntries(Principal principal,
+                          @Valid
+                          @PageableDefault(page = 0, size = 20)
+                          @SortDefault.SortDefaults({
+                                  @SortDefault(sort = "id", direction = Sort.Direction.ASC)
+                          }) Pageable pageable) {
+        final UserProfileDto currentUser =
+                userService.getUserProfileByUserEmail(principal.getName());
+
+        //todo
+        return null;
+    }
+
     @DeleteMapping(value = "/contact{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
@@ -84,14 +117,14 @@ public class UserController {
         }
     }
 
-    @PutMapping(value = "/contact/person{id}/send")
+    @PutMapping(value = "/contact{id}/request")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public void
-        sendContactRequest(Authentication auth, @PathVariable("id") Long id)
+        sendContactRequest(Principal principal, @PathVariable("id") Long id)
             throws InstantiationException {
 
-        final String username = ((UserDetails) auth.getPrincipal()).getUsername();
+        final String username = principal.getName();
         final UserProfileDto currentUserProfile = userService.getUserProfileByUserEmail(username);
         final UserProfileDto person = userService.getUserById(id);
         contactEntryService.sendContactRequest(currentUserProfile, person);
@@ -100,14 +133,14 @@ public class UserController {
     @PutMapping(value = "/contact{id}/confirm")
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public ResponseEntity<String>
-        confirmContactRequest(Authentication auth, @PathVariable("id") Long id)
+        confirmContactRequest(Principal principal, @PathVariable("id") Long id)
             throws InstantiationException {
 
         final Contact contact = contactEntryService
                 .findContactById(id)
                 .orElseThrow(() -> new NoEntityFound("no contact found"));
 
-        final String currentUserName = ((UserDetails) auth.getPrincipal()).getUsername();
+        final String currentUserName = principal.getName();
         if (!contact.getPerson().getEmail().equals(currentUserName)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
@@ -132,7 +165,6 @@ public class UserController {
         contactEntryService.declineContactRequest(contact);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
 }
 

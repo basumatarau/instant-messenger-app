@@ -23,5 +23,6 @@ public interface ContactEntryService {
     void confirmContactRequest(Contact contact) throws InstantiationException;
     void declineContactRequest(Contact contact);
 
+    Page<ContactEntryVo> getPendingContactsForUser(UserProfileDto userDto, Pageable pageable);
     Optional<Contact> getPersonalContact(User owner, User person);
 }

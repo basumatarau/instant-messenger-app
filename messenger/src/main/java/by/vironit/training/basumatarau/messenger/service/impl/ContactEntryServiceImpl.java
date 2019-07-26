@@ -54,6 +54,23 @@ public class ContactEntryServiceImpl implements ContactEntryService {
 
     @Override
     @Transactional(readOnly = true)
+    public Page<ContactEntryVo> getPendingContactsForUser(UserProfileDto userDto, Pageable pageable) {
+        final User user = modelMapper.map(userDto, User.class);
+
+        final Page<ContactEntry> allContactsByOwner =
+                contactEntryRepository.getPendingContactsForUser(user, pageable);
+
+        final List<ContactEntryVo> contacts = allContactsByOwner.getContent()
+                .stream()
+                .map(c -> modelMapper.map(c, ContactEntryVo.class))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(contacts, pageable, contacts.size());
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
     public Optional<ContactEntry> findContactEntryById(Long id) {
         return contactEntryRepository.findById(id);
     }

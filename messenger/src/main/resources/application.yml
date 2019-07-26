@@ -21,6 +21,10 @@ spring:
       idleTimeout: 600000
       maxLifetime: 1800000
       maximumPoolSize: 20
+#    uncomment to init and populate the database
+#    schema: classpath:db/schema.sql
+#    data: classpath:db/data.sql
+#    initialization-mode: always
   jpa:
     properties:
       hibernate:
