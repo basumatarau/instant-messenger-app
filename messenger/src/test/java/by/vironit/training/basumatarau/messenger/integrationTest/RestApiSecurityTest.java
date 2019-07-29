@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @ActiveProfiles("integration-test")
 @SpringBootTest(classes = {MessengerApp.class})
-public class RestApiTest {
+public class RestApiSecurityTest {
 
     @Autowired
     private WebApplicationContext webAppContext;

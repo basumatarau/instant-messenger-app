@@ -1,0 +1,25 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/testDB
+    username: postgres
+    password: password
+    driver-class-name: org.postgresql.Driver
+    schema: classpath:db/schema.sql
+    data: classpath:db/data.sql
+    initialization-mode: always
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        ddl-auto: none
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        temp:
+          use_jdbc_metadata_defaults: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+server:
+#  port: 8080
+  servlet:
+    context-path: /
