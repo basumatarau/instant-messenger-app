@@ -27,6 +27,10 @@ public class ServiceConfig {
         modelMapper.addConverter(getContactToPersonalContactVo());
         modelMapper.addConverter(getSubscriptionToSubscriptionVo());
         modelMapper.addConverter(getUserAccountDtoToUser());
+        modelMapper.addConverter(getPersonalContactVoToContactConverter());
+        modelMapper.addConverter(getSubscriptionVoToSubscriptionConverter());
+        modelMapper.addConverter(getDistributedMessageToMessageDtoConverter());
+        modelMapper.addConverter(getPrivateMessageToMessageDtoConverter());
         return modelMapper;
     }
 
@@ -55,4 +59,23 @@ public class ServiceConfig {
         return new UserProfileDtoToUser();
     }
 
+    @Bean
+    public PersonalContactVoToContact getPersonalContactVoToContactConverter(){
+        return new PersonalContactVoToContact();
+    }
+
+    @Bean
+    public SubscriptionVoToSubscription getSubscriptionVoToSubscriptionConverter(){
+        return new SubscriptionVoToSubscription();
+    }
+
+    @Bean
+    public DistributedMessageToMessageDto getDistributedMessageToMessageDtoConverter(){
+        return new DistributedMessageToMessageDto();
+    }
+
+    @Bean
+    public PrivateMessageToMessageDto getPrivateMessageToMessageDtoConverter(){
+        return new PrivateMessageToMessageDto();
+    }
 }

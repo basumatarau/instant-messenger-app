@@ -1,6 +1,7 @@
 package by.vironit.training.basumatarau.messenger.webSocketTest;
 
 import by.vironit.training.basumatarau.messenger.dto.IncomingMessageDto;
+import by.vironit.training.basumatarau.messenger.dto.MessageDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.*;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.socket.WebSocketHttpHeaders;
@@ -29,10 +31,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+//todo do do do do....
 @RunWith(SpringRunner.class)
 @ActiveProfiles("ws-test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SimpleWebSocketTest {
+public class PrivateMessagingWebSocketTest {
 
     @LocalServerPort
     private int port;
@@ -60,7 +63,7 @@ public class SimpleWebSocketTest {
     }
 
     @Test
-    public void getGreeting() throws Exception {
+    public void getPrivateMessage() throws Exception {
 
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicReference<Throwable> failure = new AtomicReference<>();
@@ -69,17 +72,17 @@ public class SimpleWebSocketTest {
 
             @Override
             public void afterConnected(final StompSession session, StompHeaders connectedHeaders) {
-                session.subscribe("/topic/greetings", new StompFrameHandler() {
+                session.subscribe("/queue", new StompFrameHandler() {
                     @Override
                     public Type getPayloadType(StompHeaders headers) {
-                        return IncomingMessageDto.class;
+                        return MessageDto.class;
                     }
 
                     @Override
                     public void handleFrame(StompHeaders headers, Object payload) {
-                        IncomingMessageDto greeting = (IncomingMessageDto) payload;
+                        MessageDto message = (MessageDto) payload;
                         try {
-                            assertEquals("Hello world!", greeting.getBody());
+                            assertEquals("Hello world!", message.getBody());
                         } catch (Throwable t) {
                             failure.set(t);
                         } finally {
@@ -90,7 +93,7 @@ public class SimpleWebSocketTest {
                 });
 
                 try {
-                        session.send("/app/hello", new IncomingMessageDto("Hello world!"));
+                        session.send("/app/messaging", new IncomingMessageDto("Hello world!"));
                 } catch (Throwable t) {
                     failure.set(t);
                     latch.countDown();

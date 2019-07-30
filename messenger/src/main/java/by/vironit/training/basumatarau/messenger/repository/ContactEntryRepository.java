@@ -24,6 +24,15 @@ public interface ContactEntryRepository
     );
 
     @Query(value = "select con from ContactEntry con " +
+            "where con.id=:#{#contractId} and " +
+            "con.owner.id=:#{#ownerId} and treat(con as Contact).isConfirmed=true " +
+            "or con.owner.id=:#{#ownerId} and type(con) in (Subscription) ")
+    Optional<ContactEntry> findContactEntryByContactIdAndOwnerId(
+            @Param("contractId") Long contactId,
+            @Param("ownerId") Long ownerId
+    );
+
+    @Query(value = "select con from ContactEntry con " +
             //pending contact requests for user's approval
             "where treat(con as Contact).person.id=:#{#user.id} and treat(con as Contact).isConfirmed=false " +
             //pending user's contact requests

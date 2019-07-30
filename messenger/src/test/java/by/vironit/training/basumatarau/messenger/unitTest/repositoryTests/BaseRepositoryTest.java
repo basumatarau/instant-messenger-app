@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @RunWith(SpringRunner.class)
-@ActiveProfiles("test")
+@ActiveProfiles("dao-test")
 @ContextConfiguration(classes = {H2TestProfileJPAConfiguration.class})
 public abstract class BaseRepositoryTest {
 

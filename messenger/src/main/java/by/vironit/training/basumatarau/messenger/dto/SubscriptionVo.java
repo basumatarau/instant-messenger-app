@@ -1,9 +1,11 @@
 package by.vironit.training.basumatarau.messenger.dto;
 
+import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitorForContactEntries;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class SubscriptionVo extends ContactEntryVo {
+public class SubscriptionVo
+        extends ContactEntryVo {
 
     private final ChatRoomDto chatRoom;
 
@@ -18,5 +20,13 @@ public class SubscriptionVo extends ContactEntryVo {
 
     public ChatRoomDto getChatRoom() {
         return chatRoom;
+    }
+
+    @Override
+    public void accept(
+            MessagingServiceVisitorForContactEntries visitor,
+            IncomingMessageDto msg)
+            throws InstantiationException {
+        visitor.visit(msg, this);
     }
 }

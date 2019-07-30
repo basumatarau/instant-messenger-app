@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,6 +36,15 @@ public class ContactEntryServiceImpl implements ContactEntryService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Override
+    @Transactional(readOnly = true)
+    public ContactEntryVo getContactEntryForUserByEntryId(Long contactEntryId, Long ownerId) {
+        final ContactEntry contactEntry = contactEntryRepository.findContactEntryByContactIdAndOwnerId(contactEntryId, ownerId)
+                .orElseThrow(() -> new EntityNotFoundException("no contact entry has been found"));
+
+        return modelMapper.map(contactEntry, ContactEntryVo.class);
+    }
 
     @Override
     @Transactional(readOnly = true)

@@ -25,4 +25,6 @@ public interface ContactEntryService {
 
     Page<ContactEntryVo> getPendingContactsForUser(UserProfileDto userDto, Pageable pageable);
     Optional<Contact> getPersonalContact(User owner, User person);
+
+    ContactEntryVo getContactEntryForUserByEntryId(Long contactEntryId, Long ownerId);
 }

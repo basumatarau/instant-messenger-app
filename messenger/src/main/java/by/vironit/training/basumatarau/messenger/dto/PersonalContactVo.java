@@ -1,9 +1,11 @@
 package by.vironit.training.basumatarau.messenger.dto;
 
+import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitorForContactEntries;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PersonalContactVo extends ContactEntryVo {
+public class PersonalContactVo
+        extends ContactEntryVo {
 
     private final UserProfileDto person;
     private final Boolean confirmed;
@@ -25,5 +27,13 @@ public class PersonalContactVo extends ContactEntryVo {
 
     public Boolean getConfirmed() {
         return confirmed;
+    }
+
+    @Override
+    public void accept(
+            MessagingServiceVisitorForContactEntries visitor,
+            IncomingMessageDto msg)
+            throws InstantiationException {
+        visitor.visit(msg, this);
     }
 }

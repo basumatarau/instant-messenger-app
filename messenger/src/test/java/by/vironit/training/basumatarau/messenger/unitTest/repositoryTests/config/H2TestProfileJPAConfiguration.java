@@ -24,15 +24,14 @@ import java.util.Properties;
         "by.vironit.training.basumatarau.messenger.model",
 })
 @EnableTransactionManagement
-@PropertySource("jpa-datasource-test.properties")
-@Profile("test")
+@PropertySource("application-dao-test.properties")
+@Profile("dao-test")
 public class H2TestProfileJPAConfiguration {
 
     @Autowired
     private Environment env;
 
     @Bean
-    @Profile("test")
     public DataSource dataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("spring.datasource.driver-class-name")));
@@ -43,7 +42,6 @@ public class H2TestProfileJPAConfiguration {
     }
 
     @Bean
-    @Profile("test")
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
@@ -54,7 +52,6 @@ public class H2TestProfileJPAConfiguration {
     }
 
     @Bean
-    @Profile("test")
     JpaTransactionManager transactionManager(final EntityManagerFactory entityManagerFactory) {
         final JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManagerFactory);
