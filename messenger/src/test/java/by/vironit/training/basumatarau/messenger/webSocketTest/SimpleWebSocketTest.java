@@ -8,10 +8,17 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.*;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -28,6 +35,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("ws-test")
@@ -44,10 +54,23 @@ public class SimpleWebSocketTest {
     private final WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
 
     @Autowired
+    private FilterChainProxy springSecurityFilterChainProxy;
+
+    private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext webAppContext;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Before
     public void setup() {
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(this.webAppContext)
+                .addFilter(this.springSecurityFilterChainProxy)
+                .build();
+
         List<Transport> transports = new ArrayList<>();
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
         this.sockJsClient = new SockJsClient(transports);
@@ -97,8 +120,9 @@ public class SimpleWebSocketTest {
                 }
             }
         };
-
-        this.stompClient.connect("ws://localhost:{port}/api/WSUpgrade", this.headers, handler, this.port);
+        final String accessToken = obtainAccessToken("bad@mail.ru", "stub");
+        this.headers.add("Authorization", accessToken);
+        this.stompClient.connect("ws://localhost:{port}/api/WSUpgrade/", this.headers, handler, this.port);
 
         if (latch.await(3, TimeUnit.SECONDS)) {
             if (failure.get() != null) {
@@ -134,5 +158,19 @@ public class SimpleWebSocketTest {
         public void handleTransportError(StompSession session, Throwable ex) {
             this.failure.set(ex);
         }
+    }
+
+    private String obtainAccessToken(String username, String password) throws Exception {
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("username", username);
+        httpHeaders.add("password", password);
+
+        final ResultActions authResponse = mockMvc.perform(
+                get("/api/user/login")
+                        .headers(httpHeaders))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+
+        return authResponse.andReturn().getResponse().getHeader("Authorization");
     }
 }

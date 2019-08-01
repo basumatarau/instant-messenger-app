@@ -11,9 +11,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.*;
-import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
@@ -47,6 +49,14 @@ public class PrivateMessagingWebSocketTest {
     private final WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
 
     @Autowired
+    private WebApplicationContext webAppContext;
+
+    @Autowired
+    private FilterChainProxy springSecurityFilterChainProxy;
+
+    private MockMvc mockMvc;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Before
@@ -69,10 +79,9 @@ public class PrivateMessagingWebSocketTest {
         final AtomicReference<Throwable> failure = new AtomicReference<>();
 
         StompSessionHandler handler = new TestSessionHandler(failure) {
-
             @Override
             public void afterConnected(final StompSession session, StompHeaders connectedHeaders) {
-                session.subscribe("/queue", new StompFrameHandler() {
+                session.subscribe("/user/queue", new StompFrameHandler() {
                     @Override
                     public Type getPayloadType(StompHeaders headers) {
                         return MessageDto.class;
@@ -101,6 +110,7 @@ public class PrivateMessagingWebSocketTest {
             }
         };
 
+        //this.headers.
         this.stompClient.connect("ws://localhost:{port}/api/WSUpgrade", this.headers, handler, this.port);
 
         if (latch.await(3, TimeUnit.SECONDS)) {

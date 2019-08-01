@@ -4,11 +4,9 @@ import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messenger.dto.IncomingMessageDto;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
 import by.vironit.training.basumatarau.messenger.service.ContactEntryService;
-import by.vironit.training.basumatarau.messenger.service.MessagingService;
 import by.vironit.training.basumatarau.messenger.service.UserService;
 import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitorForContactEntries;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -36,7 +34,6 @@ public class MessageController {
 
     @MessageMapping("/messaging")
     public void handleUserUpdate(
-            @Header("userId") String userId,
             @Payload IncomingMessageDto msg,
             Principal principal) throws InstantiationException {
 

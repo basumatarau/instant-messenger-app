@@ -19,11 +19,10 @@
     </parent>
 
     <properties>
+        <javax.validation.validation-api.version>2.0.1.Final</javax.validation.validation-api.version>
         <java.version>10</java.version>
         <org.apache.commons.commons-lang3.version>3.9</org.apache.commons.commons-lang3.version>
         <org.modelmapper.modelmapper>2.3.5</org.modelmapper.modelmapper>
-        <spring-boot-starter-test.version>2.0.4.RELEASE</spring-boot-starter-test.version>
-        <spring-boot-starter-test.version>2.1.6.RELEASE</spring-boot-starter-test.version>
         <org.apache.commons.commons-lang3.version>3.9</org.apache.commons.commons-lang3.version>
         <io.jsonwebtoken.jjwt-api>0.10.6</io.jsonwebtoken.jjwt-api>
         <io.jsonwebtoken.jjwt-impl>0.10.6</io.jsonwebtoken.jjwt-impl>
@@ -61,6 +60,10 @@
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-messaging</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -93,13 +96,12 @@
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
+            <version>${javax.validation.validation-api.version}</version>
         </dependency>
         <!-- test scope -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring-boot-starter-test.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

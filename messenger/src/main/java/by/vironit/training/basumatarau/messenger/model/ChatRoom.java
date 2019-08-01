@@ -28,7 +28,7 @@ public class ChatRoom {
 
     @OneToMany(mappedBy = "chatRoom",
             orphanRemoval = true)
-    private Set<Subscription> subscribers;
+    private Set<Subscription> subscriptions;
 
     @Column(name = "public", nullable = false)
     private Boolean isPublic;
@@ -38,14 +38,14 @@ public class ChatRoom {
     private ChatRoom(ChatRoomBuilder builder){
         this.name = builder.name;
         this.timeCreated = builder.timeCreated;
-        this.subscribers = builder.subscribers;
+        this.subscriptions = builder.subscriptions;
         this.isPublic = builder.isPublic;
     }
 
     public static class ChatRoomBuilder{
         private String name;
         private Date timeCreated;
-        private Set<Subscription> subscribers;
+        private Set<Subscription> subscriptions;
         private Boolean isPublic;
 
         public ChatRoomBuilder(){}
@@ -61,7 +61,7 @@ public class ChatRoom {
         }
 
         public ChatRoomBuilder subscribers(Set<Subscription> subscribers){
-            this.subscribers = subscribers;
+            this.subscriptions = subscribers;
             return this;
         }
 
@@ -109,12 +109,12 @@ public class ChatRoom {
         this.timeCreated = timeCreated;
     }
 
-    public Set<Subscription> getSubscribers() {
-        return subscribers;
+    public Set<Subscription> getSubscriptions() {
+        return subscriptions;
     }
 
-    public void setSubscribers(Set<Subscription> subscribers) {
-        this.subscribers = subscribers;
+    public void setSubscriptions(Set<Subscription> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 
     public Boolean getPublic() {

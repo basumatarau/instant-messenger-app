@@ -2,6 +2,7 @@ package by.vironit.training.basumatarau.messenger.service.impl;
 
 import by.vironit.training.basumatarau.messenger.dto.*;
 import by.vironit.training.basumatarau.messenger.model.*;
+import by.vironit.training.basumatarau.messenger.repository.ChatRoomRepository;
 import by.vironit.training.basumatarau.messenger.repository.DistributedMessageRepository;
 import by.vironit.training.basumatarau.messenger.repository.PrivateMessageRepository;
 import by.vironit.training.basumatarau.messenger.service.MessagingService;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.Date;
 
@@ -22,6 +24,9 @@ public class MessagingServiceImpl implements MessagingService {
 
     @Autowired
     private PrivateMessageRepository privateMessageRepository;
+
+    @Autowired
+    private ChatRoomRepository chatRoomRepository;
 
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
@@ -46,7 +51,13 @@ public class MessagingServiceImpl implements MessagingService {
         privateMessageRepository.save(newPrivateMessage);
 
         simpMessagingTemplate.convertAndSendToUser(
-                personalContactVo.getPerson().getId().toString(),
+                personalContactVo.getOwner().getEmail(),
+                "/queue",
+                modelMapper.map(newPrivateMessage, MessageDto.class)
+        );
+
+        simpMessagingTemplate.convertAndSendToUser(
+                personalContactVo.getPerson().getEmail(),
                 "/queue",
                 modelMapper.map(newPrivateMessage, MessageDto.class)
         );
@@ -58,19 +69,26 @@ public class MessagingServiceImpl implements MessagingService {
             SubscriptionVo subscriptionVo)
             throws InstantiationException {
 
+        final ChatRoom chatRoom =
+                chatRoomRepository.findChatRoomByIdWithAllPeers(subscriptionVo.getChatRoom().getId())
+                .orElseThrow(() -> new EntityNotFoundException("no chatRoom found"));
+
         final DistributedMessage newDistributedMessage =
                 new DistributedMessage.DistributedMessageBuilder()
                         .author(modelMapper.map(subscriptionVo.getOwner(), User.class))
-                        .chatRoom(modelMapper.map(subscriptionVo.getChatRoom(), ChatRoom.class))
+                        .chatRoom(chatRoom)
                         .body(messageDto.getBody())
                         .timeSent(new Date().getTime())
                         .build();
+
         distributedMessageRepository.save(newDistributedMessage);
 
-        simpMessagingTemplate.convertAndSendToUser(
-                subscriptionVo.getChatRoom().getId().toString(),
-                "/topic",
-                modelMapper.map(newDistributedMessage, MessageDto.class)
-        );
+        for (Subscription subscription : chatRoom.getSubscriptions()) {
+            simpMessagingTemplate.convertAndSendToUser(
+                    subscription.getOwner().getEmail(),
+                    "/queue",
+                    modelMapper.map(newDistributedMessage, MessageDto.class)
+            );
+        }
     }
 }
