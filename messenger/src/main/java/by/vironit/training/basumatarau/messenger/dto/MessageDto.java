@@ -45,4 +45,15 @@ public class MessageDto {
     public ContactEntryVo getContactEntryVo() {
         return contactEntryVo;
     }
+
+    @Override
+    public String toString() {
+        return "MessageDto{" +
+                "id=" + id +
+                ", author=" + author +
+                ", body='" + body + '\'' +
+                ", timesent=" + timesent +
+                ", contactEntryVo=" + contactEntryVo +
+                '}';
+    }
 }

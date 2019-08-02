@@ -48,126 +48,118 @@ public class PrivateMessagingWebSocketTest {
     @LocalServerPort
     private int port;
 
-    private SockJsClient sockJsClient;
-
-    private WebSocketStompClient stompClient;
-
-    private final WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
-
     @Autowired
     private WebApplicationContext webAppContext;
 
     @Autowired
     private FilterChainProxy springSecurityFilterChainProxy;
 
-    private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
+
+    private MockUser sender;
+
+    private MockUser receiver;
 
     @Before
     public void setup() {
 
-        this.mockMvc = MockMvcBuilders
+        final MappingJackson2MessageConverter messageConverterOne =
+                new MappingJackson2MessageConverter();
+        messageConverterOne.setPrettyPrint(true);
+        messageConverterOne.setObjectMapper(objectMapper);
+
+        final MappingJackson2MessageConverter messageConverterTwo =
+                new MappingJackson2MessageConverter();
+        messageConverterOne.setPrettyPrint(true);
+        messageConverterOne.setObjectMapper(objectMapper);
+
+        final MockMvc mockMvcOne = MockMvcBuilders
+                .webAppContextSetup(this.webAppContext)
+                .addFilter(this.springSecurityFilterChainProxy)
+                .build();
+
+        final MockMvc mockMvcTwo = MockMvcBuilders
                 .webAppContextSetup(this.webAppContext)
                 .addFilter(this.springSecurityFilterChainProxy)
                 .build();
 
         List<Transport> transports = new ArrayList<>();
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
-        this.sockJsClient = new SockJsClient(transports);
+        final SockJsClient senderSockJsClient = new SockJsClient(transports);
 
-        this.stompClient = new WebSocketStompClient(sockJsClient);
-        final MappingJackson2MessageConverter messageConverter = new MappingJackson2MessageConverter();
-        messageConverter.setPrettyPrint(true);
-        messageConverter.setObjectMapper(objectMapper);
-        this.stompClient.setMessageConverter(messageConverter);
+        final WebSocketStompClient senderWebSocketStompClient =
+                new WebSocketStompClient(senderSockJsClient);
+        senderWebSocketStompClient.setMessageConverter(messageConverterOne);
+
+        final SockJsClient receiverSockJsClient = new SockJsClient(transports);
+
+        final WebSocketStompClient receiverWebSocketStompClient =
+                new WebSocketStompClient(receiverSockJsClient);
+        senderWebSocketStompClient.setMessageConverter(messageConverterTwo);
+
+        sender = new MockUser(
+                senderSockJsClient,
+                senderWebSocketStompClient,
+                mockMvcOne
+        );
+
+        receiver = new MockUser(
+                receiverSockJsClient,
+                receiverWebSocketStompClient,
+                mockMvcTwo
+        );
     }
 
     @Test
     public void getPrivateMessage() throws Exception {
-        final String accessToken = obtainAccessToken("bad@mail.ru", "stub");
 
-        final CountDownLatch latch = new CountDownLatch(1);
+        final CountDownLatch testTimeoutLatch = new CountDownLatch(2);
+        final CountDownLatch subscriptionLatch = new CountDownLatch(2);
+
         final AtomicReference<Throwable> failure = new AtomicReference<>();
 
-        StompSessionHandler handler = new TestSessionHandler(failure) {
-            @Override
-            public void afterConnected(final StompSession session, StompHeaders connectedHeaders) {
+        final String accessTokenOne = obtainAccessToken("bad@mail.ru", "stub", sender.getMockMvc());
+        final String accessTokenTwo = obtainAccessToken("black@mail.gov", "stub", receiver.getMockMvc());
+        final IncomingMessageDto testIncomingMessageDto = new IncomingMessageDto(1L, "Hello World!");
 
-                
-                session.subscribe("/user/queue", new StompFrameHandler() {
-                    @Override
-                    public Type getPayloadType(StompHeaders headers) {
-                        return MessageDto.class;
-                    }
+        StompSessionHandler senderHandler = new PrivateMessageSenderTestHandler(
+                failure,
+                testTimeoutLatch,
+                subscriptionLatch,
+                testIncomingMessageDto
+        );
 
-                    @Override
-                    public void handleFrame(StompHeaders headers, Object payload) {
-                        MessageDto message = (MessageDto) payload;
-                        try {
-                            assertEquals("Hello world!", message.getBody());
-                        } catch (Throwable t) {
-                            failure.set(t);
-                        } finally {
-                            session.disconnect();
-                            latch.countDown();
-                        }
-                    }
-                });
+        PrivateMessageReceiverTestHandler receiverHandler = new PrivateMessageReceiverTestHandler(
+                failure,
+                testTimeoutLatch,
+                subscriptionLatch,
+                testIncomingMessageDto
+        );
 
-                try {
-                    //session.send(new StompHeaders().add("Authorization", accessToken));
-                    session.send("/app/messaging", new IncomingMessageDto(1L,"Hello world!"));
-                } catch (Throwable t) {
-                    failure.set(t);
-                    latch.countDown();
-                }
-            }
-        };
+        sender.getHeaders().add("Authorization", accessTokenOne);
+        sender.getStompClient().connect("ws://localhost:{port}/api/WSUpgrade",
+                sender.getHeaders(),
+                senderHandler,
+                this.port);
+
+        receiver.getHeaders().add("Authorization", accessTokenTwo);
+        receiver.getStompClient().connect("ws://localhost:{port}/api/WSUpgrade",
+                receiver.getHeaders(),
+                receiverHandler,
+                this.port);
 
 
-        this.headers.add("Authorization", accessToken);
-
-        this.stompClient.connect("ws://localhost:{port}/api/WSUpgrade", this.headers, handler, this.port);
-
-        if (latch.await(3, TimeUnit.SECONDS)) {
+        if (testTimeoutLatch.await(500, TimeUnit.SECONDS)) {
             if (failure.get() != null) {
                 throw new AssertionError("", failure.get());
             }
-        }
-        else {
-            fail("Greeting not received");
-        }
-
-    }
-
-    private class TestSessionHandler extends StompSessionHandlerAdapter {
-
-        private final AtomicReference<Throwable> failure;
-
-
-        public TestSessionHandler(AtomicReference<Throwable> failure) {
-            this.failure = failure;
-        }
-
-        @Override
-        public void handleFrame(StompHeaders headers, Object payload) {
-            this.failure.set(new Exception(headers.toString()));
-        }
-
-        @Override
-        public void handleException(StompSession s, StompCommand c, StompHeaders h, byte[] p, Throwable ex) {
-            this.failure.set(ex);
-        }
-
-        @Override
-        public void handleTransportError(StompSession session, Throwable ex) {
-            this.failure.set(ex);
+        } else {
+            fail("Private message has not been received by all the intended receivers");
         }
     }
 
-    private String obtainAccessToken(String username, String password) throws Exception {
+    private String obtainAccessToken(String username, String password, MockMvc mockMvc) throws Exception {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("username", username);
         httpHeaders.add("password", password);
