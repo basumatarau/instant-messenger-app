@@ -13,10 +13,10 @@ training project "instant messenger webapplication" implements basic functionali
  9. administrative tools (delete/ban application users)
  10. chatrooms support different privileges for users (chat administrators and commoners)
 
-**stack: Tomcat(v9), Postgres v10, Java(spring-core v.5.x, spring-security v.5.x, hibernate v.5.x, webSockets), Thymeleaf + Bootstrap**
+**stack: Tomcat(v9), Postgres v10, Java(spring-core v.5.x, spring-security v.5.x, JPA - hibernate v.5.x, JMS - STOMP over webSockets), Bootstrap**
 
 ***
-**UML diagram:**
+**UML - entities:**
 ***
 ![](uml-diagram-03.png)
 ***
