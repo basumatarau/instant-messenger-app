@@ -50,16 +50,18 @@ public class MessagingServiceImpl implements MessagingService {
 
         privateMessageRepository.save(newPrivateMessage);
 
+        final MessageDto outboundMessageDto = modelMapper.map(newPrivateMessage, MessageDto.class);
+
         simpMessagingTemplate.convertAndSendToUser(
                 personalContactVo.getOwner().getEmail(),
                 "/queue",
-                modelMapper.map(newPrivateMessage, MessageDto.class)
+                outboundMessageDto
         );
 
         simpMessagingTemplate.convertAndSendToUser(
                 personalContactVo.getPerson().getEmail(),
                 "/queue",
-                modelMapper.map(newPrivateMessage, MessageDto.class)
+                outboundMessageDto
         );
     }
 

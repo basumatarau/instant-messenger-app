@@ -1,5 +1,6 @@
 package by.vironit.training.basumatarau.messenger.converter;
 
+import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messenger.dto.MessageDto;
 import by.vironit.training.basumatarau.messenger.dto.PersonalContactVo;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
@@ -27,7 +28,7 @@ public class PrivateMessageToMessageDto
                         modelMapper.map(context.getSource().getAuthor(), UserProfileDto.class),
                         context.getSource().getBody(),
                         new Date(context.getSource().getTimeSent()),
-                        modelMapper.map(context.getSource().getContact(), PersonalContactVo.class)
+                        modelMapper.map(context.getSource().getContact(), ContactEntryVo.class)
                 );
     }
 }

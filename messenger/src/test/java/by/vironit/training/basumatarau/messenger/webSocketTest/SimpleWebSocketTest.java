@@ -121,6 +121,7 @@ public class SimpleWebSocketTest {
             }
         };
         final String accessToken = obtainAccessToken("bad@mail.ru", "stub");
+
         this.headers.add("Authorization", accessToken);
         this.stompClient.connect("ws://localhost:{port}/api/WSUpgrade/", this.headers, handler, this.port);
 

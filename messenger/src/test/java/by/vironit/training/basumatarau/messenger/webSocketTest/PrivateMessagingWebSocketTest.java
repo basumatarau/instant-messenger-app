@@ -9,12 +9,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.*;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -32,8 +36,10 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//todo do do do do....
 @RunWith(SpringRunner.class)
 @ActiveProfiles("ws-test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -61,6 +67,12 @@ public class PrivateMessagingWebSocketTest {
 
     @Before
     public void setup() {
+
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(this.webAppContext)
+                .addFilter(this.springSecurityFilterChainProxy)
+                .build();
+
         List<Transport> transports = new ArrayList<>();
         transports.add(new WebSocketTransport(new StandardWebSocketClient()));
         this.sockJsClient = new SockJsClient(transports);
@@ -74,6 +86,7 @@ public class PrivateMessagingWebSocketTest {
 
     @Test
     public void getPrivateMessage() throws Exception {
+        final String accessToken = obtainAccessToken("bad@mail.ru", "stub");
 
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicReference<Throwable> failure = new AtomicReference<>();
@@ -81,6 +94,8 @@ public class PrivateMessagingWebSocketTest {
         StompSessionHandler handler = new TestSessionHandler(failure) {
             @Override
             public void afterConnected(final StompSession session, StompHeaders connectedHeaders) {
+
+                
                 session.subscribe("/user/queue", new StompFrameHandler() {
                     @Override
                     public Type getPayloadType(StompHeaders headers) {
@@ -102,7 +117,8 @@ public class PrivateMessagingWebSocketTest {
                 });
 
                 try {
-                        session.send("/app/messaging", new IncomingMessageDto("Hello world!"));
+                    //session.send(new StompHeaders().add("Authorization", accessToken));
+                    session.send("/app/messaging", new IncomingMessageDto(1L,"Hello world!"));
                 } catch (Throwable t) {
                     failure.set(t);
                     latch.countDown();
@@ -110,7 +126,9 @@ public class PrivateMessagingWebSocketTest {
             }
         };
 
-        //this.headers.
+
+        this.headers.add("Authorization", accessToken);
+
         this.stompClient.connect("ws://localhost:{port}/api/WSUpgrade", this.headers, handler, this.port);
 
         if (latch.await(3, TimeUnit.SECONDS)) {
@@ -147,5 +165,19 @@ public class PrivateMessagingWebSocketTest {
         public void handleTransportError(StompSession session, Throwable ex) {
             this.failure.set(ex);
         }
+    }
+
+    private String obtainAccessToken(String username, String password) throws Exception {
+        final HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("username", username);
+        httpHeaders.add("password", password);
+
+        final ResultActions authResponse = mockMvc.perform(
+                get("/api/user/login")
+                        .headers(httpHeaders))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
+
+        return authResponse.andReturn().getResponse().getHeader("Authorization");
     }
 }
