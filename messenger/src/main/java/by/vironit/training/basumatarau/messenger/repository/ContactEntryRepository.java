@@ -16,8 +16,9 @@ public interface ContactEntryRepository
         extends JpaRepository<ContactEntry, Long> {
 
     @Query(value = "select con from ContactEntry con " +
-            "where con.owner.id=:#{#user.id} and treat(con as Contact).isConfirmed=true " +
-            "or con.owner.id=:#{#user.id} and type(con) in (Subscription) ")
+            "where con.owner.id=:#{#user.id} " +
+            "and (type(con) in (Contact) and con.isConfirmed=true " +
+            "or type(con) in (Subscription)) ")
     Page<ContactEntry> getConfirmedContactsForUser(
             @Param("user") User owner,
             Pageable pageable
@@ -33,6 +34,7 @@ public interface ContactEntryRepository
             @Param("ownerId") Long ownerId
     );
 
+    //todo fix the shit:
     @Query(value = "select con from ContactEntry con " +
             //pending contact requests for user's approval
             "where treat(con as Contact).person.id=:#{#user.id} and treat(con as Contact).isConfirmed=false " +
