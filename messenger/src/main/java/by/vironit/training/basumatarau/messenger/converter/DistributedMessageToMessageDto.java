@@ -1,5 +1,6 @@
 package by.vironit.training.basumatarau.messenger.converter;
 
+import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messenger.dto.MessageDto;
 import by.vironit.training.basumatarau.messenger.dto.SubscriptionVo;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
@@ -42,6 +43,6 @@ public class DistributedMessageToMessageDto
                         modelMapper.map(author, UserProfileDto.class),
                         context.getSource().getBody(),
                         new Date(context.getSource().getTimeSent()),
-                        modelMapper.map(subscription, SubscriptionVo.class));
+                        modelMapper.map(subscription, ContactEntryVo.class));
     }
 }

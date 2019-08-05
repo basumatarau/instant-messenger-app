@@ -1,30 +1,28 @@
-package by.vironit.training.basumatarau.messenger.webSocketTest;
+package by.vironit.training.basumatarau.messenger.webSocketTest.util;
 
-import by.vironit.training.basumatarau.messenger.dto.IncomingMessageDto;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class PrivateMessageReceiverTestHandler extends StompSessionHandlerAdapter {
+public class MessageReceiverTestHandler extends StompSessionHandlerAdapter {
 
     private final AtomicReference<Throwable> failure;
-    private final CountDownLatch testTimeoutLatch;
+    private final CountDownLatch deliveryLatch;
     private final CountDownLatch subscriptionLatch;
-    private final IncomingMessageDto testIncomingMessage;
+    private final String testIncomingMessageBody;
 
-    public PrivateMessageReceiverTestHandler(AtomicReference<Throwable> reference,
-                                           CountDownLatch timeoutLatch,
-                                           CountDownLatch subscriptionLatch,
-                                           IncomingMessageDto testIncomingMessage) {
+    public MessageReceiverTestHandler(AtomicReference<Throwable> reference,
+                                      CountDownLatch deliveryLatch,
+                                      CountDownLatch subscriptionLatch,
+                                      String testIncomingMessageBody) {
         this.failure = reference;
-        this.testTimeoutLatch = timeoutLatch;
+        this.deliveryLatch = deliveryLatch;
         this.subscriptionLatch = subscriptionLatch;
-        this.testIncomingMessage = testIncomingMessage;
+        this.testIncomingMessageBody = testIncomingMessageBody;
     }
 
     @Override
@@ -53,28 +51,16 @@ public class PrivateMessageReceiverTestHandler extends StompSessionHandlerAdapte
                 new MessageReceivedCallback(
                         session,
                         failure,
-                        testIncomingMessage,
-                        testTimeoutLatch
+                        testIncomingMessageBody,
+                        deliveryLatch
                 ){
                     @Override
-                    public void signallingMessage() {
-                        System.out.println("receiver got message");
+                    public void receiverEcho() {
+                        System.out.println("Receiver got message");
                     }
                 }
         );
 
         subscriptionLatch.countDown();
-
-
-        try {
-            if(subscriptionLatch.await(500, TimeUnit.SECONDS)) {
-                if(failure.get() != null) {
-                    throw new RuntimeException("failed to subscribe all the receivers");
-                }
-            }
-        } catch (Throwable t) {
-            failure.set(t);
-            testTimeoutLatch.countDown();
-        }
     }
 }

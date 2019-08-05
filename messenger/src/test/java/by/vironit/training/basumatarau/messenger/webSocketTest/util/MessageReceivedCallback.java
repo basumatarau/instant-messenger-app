@@ -1,37 +1,33 @@
-package by.vironit.training.basumatarau.messenger.webSocketTest;
+package by.vironit.training.basumatarau.messenger.webSocketTest.util;
 
-import by.vironit.training.basumatarau.messenger.dto.IncomingMessageDto;
 import by.vironit.training.basumatarau.messenger.dto.MessageDto;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
-
 import java.lang.reflect.Type;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.Assert.assertEquals;
 
-public class MessageReceivedCallback implements StompFrameHandler {
+public abstract class MessageReceivedCallback implements StompFrameHandler {
 
     private final StompSession session;
-    private final IncomingMessageDto incomingMessage;
+    private final String incomingMessageBody;
     private final AtomicReference<Throwable> failure;
-    private final CountDownLatch timeoutLatch;
+    private final CountDownLatch deliveryLatch;
 
     public MessageReceivedCallback(StompSession stompSession,
                                    AtomicReference<Throwable> failure,
-                                   IncomingMessageDto incomingMessage,
-                                   CountDownLatch latch){
+                                   String incomingMessageBody,
+                                   CountDownLatch deliveryLatch){
         this.session = stompSession;
         this.failure = failure;
-        this.incomingMessage = incomingMessage;
-        this.timeoutLatch = latch;
+        this.incomingMessageBody = incomingMessageBody;
+        this.deliveryLatch = deliveryLatch;
     }
 
-    public void signallingMessage(){
-        System.out.println("default");
-    }
+    public abstract void receiverEcho();
 
     @Override
     public Type getPayloadType(StompHeaders headers) {
@@ -42,15 +38,16 @@ public class MessageReceivedCallback implements StompFrameHandler {
     public void handleFrame(StompHeaders headers, Object payload) {
         MessageDto message = (MessageDto) payload;
         try {
-            assertEquals(incomingMessage.getBody(), message.getBody());
+            assertEquals(incomingMessageBody, message.getBody());
             System.out.println("-#########- Anticipated message received! -#########-");
-            signallingMessage();
             System.out.println(message);
+
+            receiverEcho();
         } catch (Throwable t) {
             failure.set(t);
         } finally {
             session.disconnect();
-            timeoutLatch.countDown();
+            deliveryLatch.countDown();
         }
     }
 }

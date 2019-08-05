@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @ActiveProfiles("ws-test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PrivateMessagingWebSocketTest {
+public class DistributedMessagingWebSocketTest {
 
     private static final String AUTHORIZATION_HEADER_NAME = "Authorization";
     private static final String STOMP_ENDPOINT = "ws://localhost:{port}/api/WSUpgrade";
@@ -53,7 +55,7 @@ public class PrivateMessagingWebSocketTest {
     private MockMvc mockMvc;
 
     private MockUser sender;
-    private MockUser receiver;
+    private List<MockUser> receivers = new LinkedList<>();
 
     @Before
     public void setup() {
@@ -69,46 +71,49 @@ public class PrivateMessagingWebSocketTest {
         messageConverter.setObjectMapper(objectMapper);
 
         sender = new MockUser(messageConverter, port);
-        receiver = new MockUser(messageConverter, port);
+        receivers.add(new MockUser(messageConverter, port));
+        receivers.add(new MockUser(messageConverter, port));
     }
 
     @Test
     public void getPrivateMessage() throws Exception {
 
-        final CountDownLatch deliveryLatch = new CountDownLatch(2);
-        final CountDownLatch subscriptionLatch = new CountDownLatch(2);
+        final CountDownLatch deliveryLatch = new CountDownLatch(1 + receivers.size());
+        final CountDownLatch subscriptionLatch = new CountDownLatch(1 + receivers.size());
 
         final AtomicReference<Throwable> failure = new AtomicReference<>();
 
-        final String accessTokenOne = obtainAccessToken("bad@mail.ru", "stub", mockMvc);
-        final String accessTokenTwo = obtainAccessToken("black@mail.gov", "stub", mockMvc);
-        final IncomingMessageDto testMessage = new IncomingMessageDto(1L, "Hello World!");
+        final LinkedList<String> accessTokens = new LinkedList<>();
+        accessTokens.add(obtainAccessToken("bad@mail.ru", "stub", mockMvc));
+        accessTokens.add(obtainAccessToken("black@mail.gov", "stub", mockMvc));
+        accessTokens.add(obtainAccessToken("doe@mail.com", "stub", mockMvc));
 
-        MessageSenderTestHandler senderHandler = new MessageSenderTestHandler(
-                failure,
-                deliveryLatch,
-                subscriptionLatch,
-                testMessage
-        );
+        final IncomingMessageDto testMessage = new IncomingMessageDto(3L, "Hi everybody!");
 
-        MessageReceiverTestHandler receiverHandler = new MessageReceiverTestHandler(
-                failure,
-                deliveryLatch,
-                subscriptionLatch,
-                testMessage.getBody()
-        );
-
-        sender.getHeaders().add(AUTHORIZATION_HEADER_NAME, accessTokenOne);
+        sender.getHeaders().add(AUTHORIZATION_HEADER_NAME, accessTokens.remove());
         sender.performStompClientConnectWithHandler(
                 STOMP_ENDPOINT,
-                senderHandler
+                new MessageSenderTestHandler(
+                        failure,
+                        deliveryLatch,
+                        subscriptionLatch,
+                        testMessage
+                )
         );
 
-        receiver.getHeaders().add(AUTHORIZATION_HEADER_NAME, accessTokenTwo);
-        receiver.performStompClientConnectWithHandler(
-                STOMP_ENDPOINT,
-                receiverHandler
-        );
+        receivers.forEach(r->{
+            r.getHeaders().add(AUTHORIZATION_HEADER_NAME, accessTokens.remove());
+            r.performStompClientConnectWithHandler(
+                    STOMP_ENDPOINT,
+                    new MessageReceiverTestHandler(
+                            failure,
+                            deliveryLatch,
+                            subscriptionLatch,
+                            testMessage.getBody()
+                    )
+            );
+        });
+
 
 
         if (deliveryLatch.await(500, TimeUnit.SECONDS)) {

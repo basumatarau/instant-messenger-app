@@ -24,9 +24,10 @@ public interface ContactEntryRepository
     );
 
     @Query(value = "select con from ContactEntry con " +
-            "where con.id=:#{#contractId} and " +
-            "con.owner.id=:#{#ownerId} and treat(con as Contact).isConfirmed=true " +
-            "or con.owner.id=:#{#ownerId} and type(con) in (Subscription) ")
+            "where con.id=:#{#contractId} and con.owner.id=:#{#ownerId} " +
+            "and (type(con) in (Contact) and con.isConfirmed=true " +
+            "or " +
+            "type(con) in (Subscription)) ")
     Optional<ContactEntry> findContactEntryByContactIdAndOwnerId(
             @Param("contractId") Long contactId,
             @Param("ownerId") Long ownerId

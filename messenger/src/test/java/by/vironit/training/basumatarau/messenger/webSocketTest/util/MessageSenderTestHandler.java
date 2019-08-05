@@ -1,4 +1,4 @@
-package by.vironit.training.basumatarau.messenger.webSocketTest;
+package by.vironit.training.basumatarau.messenger.webSocketTest.util;
 
 import by.vironit.training.basumatarau.messenger.dto.IncomingMessageDto;
 import org.springframework.messaging.simp.stomp.*;
@@ -6,19 +6,19 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class PrivateMessageSenderTestHandler extends StompSessionHandlerAdapter {
+public class MessageSenderTestHandler extends StompSessionHandlerAdapter {
 
     private final AtomicReference<Throwable> failure;
-    private final CountDownLatch testTimeoutLatch;
+    private final CountDownLatch deliveryLatch;
     private final CountDownLatch subscriptionLatch;
     private final IncomingMessageDto testIncomingMessage;
 
-    public PrivateMessageSenderTestHandler(AtomicReference<Throwable> reference,
-                                           CountDownLatch timeoutLatch,
-                                           CountDownLatch subscriptionLatch,
-                                           IncomingMessageDto testIncomingMessage) {
+    public MessageSenderTestHandler(AtomicReference<Throwable> reference,
+                                    CountDownLatch deliveryLatch,
+                                    CountDownLatch subscriptionLatch,
+                                    IncomingMessageDto testIncomingMessage) {
         this.failure = reference;
-        this.testTimeoutLatch = timeoutLatch;
+        this.deliveryLatch = deliveryLatch;
         this.subscriptionLatch = subscriptionLatch;
         this.testIncomingMessage = testIncomingMessage;
     }
@@ -50,11 +50,11 @@ public class PrivateMessageSenderTestHandler extends StompSessionHandlerAdapter 
                 new MessageReceivedCallback(
                         session,
                         failure,
-                        testIncomingMessage,
-                        testTimeoutLatch
+                        testIncomingMessage.getBody(),
+                        deliveryLatch
                 ){
                     @Override
-                    public void signallingMessage() {
+                    public void receiverEcho() {
                         System.out.println("Sender got his message back");
                     }
                 }
@@ -65,15 +65,13 @@ public class PrivateMessageSenderTestHandler extends StompSessionHandlerAdapter 
         try {
             if(subscriptionLatch.await(500, TimeUnit.SECONDS)) {
                 if(failure.get() != null) {
-                    throw new RuntimeException("failed to subscribe all the receivers");
+                    throw new RuntimeException("failed to subscribe all the receivers", failure.get());
                 }
             }
-
             session.send("/app/messaging", testIncomingMessage);
-
         } catch (Throwable t) {
             failure.set(t);
-            testTimeoutLatch.countDown();
+            deliveryLatch.countDown();
         }
     }
 }
