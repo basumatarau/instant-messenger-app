@@ -21,7 +21,7 @@ public class PersonalContactVoSerializer extends JsonSerializer<PersonalContactV
                                   SerializerProvider serializers,
                                   TypeSerializer typeSer)
             throws IOException {
-        //super.serializeWithType(value, gen, serializers, typeSer);
+
         WritableTypeId typeId = typeSer.typeId(value, START_OBJECT);
         typeSer.writeTypePrefix(gen, typeId);
         serialize(value, gen, serializers);

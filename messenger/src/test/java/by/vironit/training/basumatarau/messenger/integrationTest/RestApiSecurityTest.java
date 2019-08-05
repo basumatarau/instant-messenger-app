@@ -1,6 +1,7 @@
 package by.vironit.training.basumatarau.messenger.integrationTest;
 
 import by.vironit.training.basumatarau.messenger.MessengerApp;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,6 +30,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("integration-test")
 @SpringBootTest(classes = {MessengerApp.class})
 public class RestApiSecurityTest {
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     private WebApplicationContext webAppContext;
@@ -102,10 +106,11 @@ public class RestApiSecurityTest {
     public void whenGivenValidToken_thenAuthorized() throws Exception {
         final String accessToken = obtainAccessToken("bad@mail.ru", "stub");
         System.out.println("token:" + accessToken);
-        mockMvc.perform(
+        final String body = mockMvc.perform(
                 get("/api/user/contacts")
                         .header("Authorization", accessToken)
-        ).andExpect(status().isOk());
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        System.out.println(body);
     }
 
     @Test
@@ -113,9 +118,9 @@ public class RestApiSecurityTest {
         final JSONObject newAccJson =
                 new JSONObject()
                 .put("firstName", "John")
-                .put("lastName", "Doe")
+                .put("lastName", "Doe Jr.")
                 .put("nickName", "Jhonny")
-                .put("email", "doe@mail.com")
+                .put("email", "doe.jr@mail.com")
                 .put("rawPassword", "stub");
 
         mockMvc.perform(
@@ -125,13 +130,14 @@ public class RestApiSecurityTest {
         ).andExpect(status().isOk());
 
 
-        final String accessToken = obtainAccessToken("doe@mail.com", "stub");
+        final String accessToken = obtainAccessToken("doe.jr@mail.com", "stub");
         System.out.println("token:" + accessToken);
 
-        mockMvc.perform(
+        final String body = mockMvc.perform(
                 get("/api/user/contacts")
                         .header("Authorization", accessToken)
-        ).andExpect(status().isOk());
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        System.out.println(body);
     }
 
     @Test

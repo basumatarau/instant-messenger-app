@@ -83,7 +83,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public Page<ContactEntryVo>
-    searchContactEntries(Principal principal,
+        searchContactEntries(Principal principal,
                           @Valid
                           @PageableDefault(page = 0, size = 20)
                           @SortDefault.SortDefaults({

@@ -2,7 +2,6 @@ package by.vironit.training.basumatarau.messenger.converter;
 
 import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messenger.dto.MessageDto;
-import by.vironit.training.basumatarau.messenger.dto.SubscriptionVo;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
 import by.vironit.training.basumatarau.messenger.model.ChatRoom;
 import by.vironit.training.basumatarau.messenger.model.DistributedMessage;

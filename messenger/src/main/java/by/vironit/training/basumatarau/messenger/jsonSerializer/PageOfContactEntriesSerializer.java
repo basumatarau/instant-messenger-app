@@ -4,6 +4,7 @@ import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import io.jsonwebtoken.lang.Collections;
 import org.springframework.boot.jackson.JsonComponent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -11,14 +12,20 @@ import org.springframework.data.domain.Sort;
 import java.io.IOException;
 
 @JsonComponent
-public class PageJacksonSerializer extends JsonSerializer<Page<ContactEntryVo>> {
+public class PageOfContactEntriesSerializer extends JsonSerializer<Page<ContactEntryVo>> {
     @Override
     public void serialize(Page<ContactEntryVo> page,
                           JsonGenerator jsonGenerator,
                           SerializerProvider serializerProvider)
             throws IOException {
         jsonGenerator.writeStartObject();
-        jsonGenerator.writeObjectField("content", page.getContent());
+
+        jsonGenerator.writeArrayFieldStart("content");
+        for (ContactEntryVo contactEntryVo : page.getContent()) {
+            jsonGenerator.writeObject(contactEntryVo);
+        }
+        jsonGenerator.writeEndArray();
+
         jsonGenerator.writeBooleanField("first", page.isFirst());
         jsonGenerator.writeBooleanField("last", page.isLast());
         jsonGenerator.writeNumberField("totalPages", page.getTotalPages());
