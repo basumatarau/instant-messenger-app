@@ -14,8 +14,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u " +
             "left join fetch u.contactEntries entry " +
-            "where u.email=?1 and type(entry) in (Contact) ")
-    Optional<User> findUserWithContactsByEmail(String email);
+            "where u.email=?1 and type(entry) in (PersonalContact) ")
+    Optional<User> findUserWithPersonalContactsByEmail(String email);
 
     @Query("select u from User u " +
             "left join fetch u.contactEntries entry " +

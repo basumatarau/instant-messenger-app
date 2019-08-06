@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Entity
 @DiscriminatorValue(value = ContactEntry.PERSONAL_CONTACT_TYPE)
-public class Contact extends ContactEntry{
+public class PersonalContact extends ContactEntry{
     @ManyToOne
     @JoinColumn(name = "id_person")
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -17,16 +17,16 @@ public class Contact extends ContactEntry{
     @Column(name = "confirmed")
     private Boolean isConfirmed = Boolean.FALSE;
 
-    public Contact(){}
+    public PersonalContact(){}
 
-    private Contact(ContactBuilder builder){
+    private PersonalContact(ContactBuilder builder){
         super(builder);
         person = builder.person;
         isConfirmed = builder.isConfirmed;
     }
 
     public static class ContactBuilder
-            extends ContactEntryBuilder<Contact, ContactBuilder>{
+            extends ContactEntryBuilder<PersonalContact, ContactBuilder>{
         private User person;
         private Boolean isConfirmed;
 
@@ -43,9 +43,9 @@ public class Contact extends ContactEntry{
         }
 
         @Override
-        public Contact build() throws InstantiationException {
+        public PersonalContact build() throws InstantiationException {
             contactEntryBuildIntegrityCheck();
-            return new Contact(this);
+            return new PersonalContact(this);
         }
 
         @Override
@@ -63,12 +63,12 @@ public class Contact extends ContactEntry{
     //convenience method (to be executed within session)
     public void confirmContact() throws InstantiationException {
         setIsConfirmed(true);
-        final Contact newContact = new ContactBuilder()
+        final PersonalContact newPersonalContact = new ContactBuilder()
                 .person(getOwner())
                 .owner(person)
                 .confirmed(true)
                 .build();
-        person.getContactEntries().add(newContact);
+        person.getContactEntries().add(newPersonalContact);
     }
 
     public User getPerson() {
@@ -92,8 +92,8 @@ public class Contact extends ContactEntry{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        Contact contact = (Contact) o;
-        return Objects.equals(person, contact.person);
+        PersonalContact personalContact = (PersonalContact) o;
+        return Objects.equals(person, personalContact.person);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package by.vironit.training.basumatarau.messenger.unitTest.repositoryTests;
 
-import by.vironit.training.basumatarau.messenger.model.Contact;
+import by.vironit.training.basumatarau.messenger.model.PersonalContact;
 import by.vironit.training.basumatarau.messenger.model.ContactEntry;
 import by.vironit.training.basumatarau.messenger.model.User;
 import by.vironit.training.basumatarau.messenger.repository.ContactEntryRepository;
@@ -28,22 +28,22 @@ public class ContactEntryRepositoryTest extends BaseRepositoryTest{
                 () -> new RuntimeException("before test condition has not been met - collection empty"));
 
         users.remove(owner);
-        final Set<Contact> contacts = new HashSet<>();
+        final Set<PersonalContact> personalContacts = new HashSet<>();
         for (User contactPerson : users) {
-            contacts.add(new Contact.ContactBuilder()
+            personalContacts.add(new PersonalContact.ContactBuilder()
                     .owner(owner)
                     .person(contactPerson)
                     .confirmed(true)
                     .build()
             );
         }
-        owner.getContactEntries().addAll(contacts);
+        owner.getContactEntries().addAll(personalContacts);
         userRepository.save(owner);
     }
 
     @Test
     public void whenUserHasContact_thenGetContactDetails(){
-        final User retrievedUserByEmail = userRepository.findUserWithContactsByEmail(owner.getEmail())
+        final User retrievedUserByEmail = userRepository.findUserWithPersonalContactsByEmail(owner.getEmail())
                 .orElseThrow(()-> new RuntimeException("failure to fetch any user"));
 
         assertThat(retrievedUserByEmail.getRole()).isNotNull();

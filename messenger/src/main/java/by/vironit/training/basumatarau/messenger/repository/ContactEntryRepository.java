@@ -1,6 +1,6 @@
 package by.vironit.training.basumatarau.messenger.repository;
 
-import by.vironit.training.basumatarau.messenger.model.Contact;
+import by.vironit.training.basumatarau.messenger.model.PersonalContact;
 import by.vironit.training.basumatarau.messenger.model.ContactEntry;
 import by.vironit.training.basumatarau.messenger.model.Subscription;
 import by.vironit.training.basumatarau.messenger.model.User;
@@ -17,7 +17,7 @@ public interface ContactEntryRepository
 
     @Query(value = "select con from ContactEntry con " +
             "where con.owner.id=:#{#user.id} " +
-            "and (type(con) in (Contact) and con.isConfirmed=true " +
+            "and (type(con) in (PersonalContact) and con.isConfirmed=true " +
             "or type(con) in (Subscription)) ")
     Page<ContactEntry> getConfirmedContactsForUser(
             @Param("user") User owner,
@@ -26,7 +26,7 @@ public interface ContactEntryRepository
 
     @Query(value = "select con from ContactEntry con " +
             "where con.id=:#{#contractId} and con.owner.id=:#{#ownerId} " +
-            "and (type(con) in (Contact) and con.isConfirmed=true " +
+            "and (type(con) in (PersonalContact) and con.isConfirmed=true " +
             "or " +
             "type(con) in (Subscription)) ")
     Optional<ContactEntry> findContactEntryByContactIdAndOwnerId(
@@ -37,19 +37,19 @@ public interface ContactEntryRepository
     //todo fix the shit:
     @Query(value = "select con from ContactEntry con " +
             //pending contact requests for user's approval
-            "where treat(con as Contact).person.id=:#{#user.id} and treat(con as Contact).isConfirmed=false " +
+            "where treat(con as PersonalContact).person.id=:#{#user.id} and treat(con as PersonalContact).isConfirmed=false " +
             //pending user's contact requests
-            "or con.owner.id=:#{#user.id} and treat(con as Contact).isConfirmed=false ")
+            "or con.owner.id=:#{#user.id} and treat(con as PersonalContact).isConfirmed=false ")
     Page<ContactEntry> getPendingContactsForUser(
             @Param("user") User owner,
             Pageable pageable
     );
 
-    Optional<Contact> findContactByOwnerAndPerson(User owner, User person);
+    Optional<PersonalContact> findContactByOwnerAndPerson(User owner, User person);
 
     @Query(value = "select ce from ContactEntry ce " +
-            "where ce.id=?1 and type(ce) in (Contact) ")
-    Optional<Contact> findContactById(Long id);
+            "where ce.id=?1 and type(ce) in (PersonalContact) ")
+    Optional<PersonalContact> findContactById(Long id);
 
     @Query(value = "select ce from ContactEntry ce " +
             "where ce.id=?1 and type(ce) in (Subscription) ")

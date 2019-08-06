@@ -4,9 +4,9 @@ import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messenger.dto.UserAccountRegistrationDto;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
 import by.vironit.training.basumatarau.messenger.exception.NoEntityFound;
-import by.vironit.training.basumatarau.messenger.model.Contact;
+import by.vironit.training.basumatarau.messenger.model.PersonalContact;
 import by.vironit.training.basumatarau.messenger.model.ContactEntry;
-import by.vironit.training.basumatarau.messenger.service.ContactEntryService;
+import by.vironit.training.basumatarau.messenger.service.ContactService;
 import by.vironit.training.basumatarau.messenger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,7 +31,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private ContactEntryService contactEntryService;
+    private ContactService contactEntryService;
 
     @GetMapping(value = {"/login", "/me"})
     @ResponseStatus(HttpStatus.OK)
@@ -135,15 +135,15 @@ public class UserController {
         confirmContactRequest(Principal principal, @PathVariable("id") Long id)
             throws InstantiationException {
 
-        final Contact contact = contactEntryService
+        final PersonalContact personalContact = contactEntryService
                 .findContactById(id)
                 .orElseThrow(() -> new NoEntityFound("no contact found"));
 
         final String currentUserName = principal.getName();
-        if (!contact.getPerson().getEmail().equals(currentUserName)) {
+        if (!personalContact.getPerson().getEmail().equals(currentUserName)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        contactEntryService.confirmContactRequest(contact);
+        contactEntryService.confirmContactRequest(personalContact);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -153,15 +153,15 @@ public class UserController {
         declineContactRequest(Authentication auth, @PathVariable("id") Long id)
             throws InstantiationException {
 
-        final Contact contact = contactEntryService
+        final PersonalContact personalContact = contactEntryService
                 .findContactById(id)
                 .orElseThrow(() -> new NoEntityFound("no contact found"));
 
         final String currentUserName = ((UserDetails) auth.getPrincipal()).getUsername();
-        if (!contact.getPerson().getEmail().equals(currentUserName)) {
+        if (!personalContact.getPerson().getEmail().equals(currentUserName)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        contactEntryService.declineContactRequest(contact);
+        contactEntryService.declineContactRequest(personalContact);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

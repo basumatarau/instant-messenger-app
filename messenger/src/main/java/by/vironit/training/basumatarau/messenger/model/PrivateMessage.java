@@ -15,14 +15,14 @@ public class PrivateMessage extends Message {
             name = "id_contact",
             foreignKey = @ForeignKey)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Contact contact;
+    private PersonalContact personalContact;
 
-    public Contact getContact() {
-        return contact;
+    public PersonalContact getPersonalContact() {
+        return personalContact;
     }
 
-    public void setContact(Contact contact) {
-        this.contact = contact;
+    public void setPersonalContact(PersonalContact personalContact) {
+        this.personalContact = personalContact;
     }
 
     public PrivateMessage() {
@@ -30,23 +30,23 @@ public class PrivateMessage extends Message {
 
     protected PrivateMessage(PrivateMessageBuilder builder) {
         super(builder);
-        this.contact = builder.contact;
+        this.personalContact = builder.personalContact;
     }
 
     public static class PrivateMessageBuilder
             extends MessageBuilder<PrivateMessage, PrivateMessageBuilder> {
 
-        private Contact contact;
+        private PersonalContact personalContact;
 
-        public PrivateMessageBuilder contact(Contact contact) {
-            this.contact = contact;
+        public PrivateMessageBuilder contact(PersonalContact personalContact) {
+            this.personalContact = personalContact;
             return this;
         }
 
         @Override
         protected void messageBuildIntegrityCheck() throws InstantiationException {
             super.messageBuildIntegrityCheck();
-            if (contact == null) {
+            if (personalContact == null) {
                 throw new InstantiationException(
                         "invalid or not sufficient data for " +
                                 getClass().getName() +
@@ -67,11 +67,11 @@ public class PrivateMessage extends Message {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         PrivateMessage that = (PrivateMessage) o;
-        return Objects.equals(contact, that.contact);
+        return Objects.equals(personalContact, that.personalContact);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), contact);
+        return Objects.hash(super.hashCode(), personalContact);
     }
 }

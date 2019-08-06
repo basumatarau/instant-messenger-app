@@ -4,13 +4,13 @@ import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
 import by.vironit.training.basumatarau.messenger.exception.ContactRequestIsAlreadyPending;
 import by.vironit.training.basumatarau.messenger.exception.NoEntityFound;
-import by.vironit.training.basumatarau.messenger.model.Contact;
+import by.vironit.training.basumatarau.messenger.model.PersonalContact;
 import by.vironit.training.basumatarau.messenger.model.ContactEntry;
 import by.vironit.training.basumatarau.messenger.model.Subscription;
 import by.vironit.training.basumatarau.messenger.model.User;
 import by.vironit.training.basumatarau.messenger.repository.ContactEntryRepository;
 import by.vironit.training.basumatarau.messenger.repository.UserRepository;
-import by.vironit.training.basumatarau.messenger.service.ContactEntryService;
+import by.vironit.training.basumatarau.messenger.service.ContactService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class ContactEntryServiceImpl implements ContactEntryService {
+public class ContactServiceImpl implements ContactService {
 
     @Autowired
     private ContactEntryRepository contactEntryRepository;
@@ -91,13 +91,13 @@ public class ContactEntryServiceImpl implements ContactEntryService {
                         .findById(entryId)
                         .orElseThrow(() -> new NoEntityFound("contact not found"));
 
-        if(contactEntry instanceof Contact){
-            final Contact contact = (Contact) contactEntry;
-            if(contact.getIsConfirmed()){
-                final Contact counterContact = contactEntryRepository
-                        .findContactByOwnerAndPerson(contact.getPerson(), contact.getOwner())
+        if(contactEntry instanceof PersonalContact){
+            final PersonalContact personalContact = (PersonalContact) contactEntry;
+            if(personalContact.getIsConfirmed()){
+                final PersonalContact counterPersonalContact = contactEntryRepository
+                        .findContactByOwnerAndPerson(personalContact.getPerson(), personalContact.getOwner())
                         .orElseThrow(() -> new NoEntityFound("counterContact not found"));
-                contactEntryRepository.delete(counterContact);
+                contactEntryRepository.delete(counterPersonalContact);
             }
         }
         contactEntryRepository.delete(contactEntry);
@@ -107,25 +107,25 @@ public class ContactEntryServiceImpl implements ContactEntryService {
     public void sendContactRequest(UserProfileDto owner, UserProfileDto person)
             throws InstantiationException {
 
-        final Optional<Contact> contactByOwnerAndPerson = contactEntryRepository.findContactByOwnerAndPerson(
+        final Optional<PersonalContact> contactByOwnerAndPerson = contactEntryRepository.findContactByOwnerAndPerson(
                 modelMapper.map(owner, User.class), modelMapper.map(person, User.class));
 
         if(contactByOwnerAndPerson.isPresent()){
             throw new ContactRequestIsAlreadyPending("contact is already pending");
         }
 
-        final Contact newUnconfirmedContact = new Contact.ContactBuilder()
+        final PersonalContact newUnconfirmedPersonalContact = new PersonalContact.ContactBuilder()
                 .owner(modelMapper.map(owner, User.class))
                 .person(modelMapper.map(person, User.class))
                 .confirmed(false)
                 .build();
 
-        contactEntryRepository.save(newUnconfirmedContact);
+        contactEntryRepository.save(newUnconfirmedPersonalContact);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Contact> findContactById(Long id) {
+    public Optional<PersonalContact> findContactById(Long id) {
         return contactEntryRepository.findContactById(id);
     }
 
@@ -137,27 +137,27 @@ public class ContactEntryServiceImpl implements ContactEntryService {
 
     @Override
     @Transactional
-    public void confirmContactRequest(Contact contact) throws InstantiationException {
-        final Contact counterContact = new Contact.ContactBuilder()
-                .owner(contact.getPerson())
-                .person(contact.getOwner())
+    public void confirmContactRequest(PersonalContact personalContact) throws InstantiationException {
+        final PersonalContact counterPersonalContact = new PersonalContact.ContactBuilder()
+                .owner(personalContact.getPerson())
+                .person(personalContact.getOwner())
                 .confirmed(true)
                 .build();
 
-        contact.setIsConfirmed(true);
+        personalContact.setIsConfirmed(true);
 
-        contactEntryRepository.save(counterContact);
-        contactEntryRepository.save(contact);
+        contactEntryRepository.save(counterPersonalContact);
+        contactEntryRepository.save(personalContact);
     }
 
     @Override
-    public void declineContactRequest(Contact contact) {
-        contactEntryRepository.delete(contact);
+    public void declineContactRequest(PersonalContact personalContact) {
+        contactEntryRepository.delete(personalContact);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Contact> getPersonalContact(User owner, User person) {
+    public Optional<PersonalContact> getPersonalContact(User owner, User person) {
         return contactEntryRepository.findContactByOwnerAndPerson(owner, person);
     }
 }

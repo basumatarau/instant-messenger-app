@@ -10,12 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
-public class ServiceConfig {
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
+public class ModelMapperConfiguration {
     @Bean
     @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
     public ModelMapper modelMapper() {

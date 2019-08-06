@@ -2,7 +2,7 @@ package by.vironit.training.basumatarau.messenger.api;
 
 import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
-import by.vironit.training.basumatarau.messenger.service.ContactEntryService;
+import by.vironit.training.basumatarau.messenger.service.ContactService;
 import by.vironit.training.basumatarau.messenger.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,7 +24,7 @@ public class AdminController {
     private UserService userService;
 
     @Autowired
-    private ContactEntryService contactEntryService;
+    private ContactService contactEntryService;
 
     @GetMapping(value = "/user{id}/contacts", produces = {"application/json;charset=utf-8"})
     @ResponseStatus(HttpStatus.OK)

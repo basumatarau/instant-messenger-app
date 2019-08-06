@@ -2,8 +2,8 @@ package by.vironit.training.basumatarau.messenger.converter;
 
 import by.vironit.training.basumatarau.messenger.dto.PersonalContactVo;
 import by.vironit.training.basumatarau.messenger.exception.NoEntityFound;
-import by.vironit.training.basumatarau.messenger.model.Contact;
-import by.vironit.training.basumatarau.messenger.repository.ContactRepository;
+import by.vironit.training.basumatarau.messenger.model.PersonalContact;
+import by.vironit.training.basumatarau.messenger.repository.PersonalContactRepository;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class PersonalContactVoToContact
-    implements Converter<PersonalContactVo, Contact> {
+    implements Converter<PersonalContactVo, PersonalContact> {
 
     @Autowired
-    private ContactRepository contactRepository;
+    private PersonalContactRepository personalContactRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public Contact convert(MappingContext<PersonalContactVo, Contact> context) {
+    public PersonalContact convert(MappingContext<PersonalContactVo, PersonalContact> context) {
         return context.getSource() == null ? null :
-                contactRepository.findById(context.getSource().getId())
+                personalContactRepository.findById(context.getSource().getId())
                         .orElseThrow(() -> new NoEntityFound("no contact found"));
     }
 }

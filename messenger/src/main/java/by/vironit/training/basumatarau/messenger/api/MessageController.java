@@ -3,7 +3,7 @@ package by.vironit.training.basumatarau.messenger.api;
 import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messenger.dto.IncomingMessageDto;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
-import by.vironit.training.basumatarau.messenger.service.ContactEntryService;
+import by.vironit.training.basumatarau.messenger.service.ContactService;
 import by.vironit.training.basumatarau.messenger.service.UserService;
 import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class MessageController {
     private UserService userService;
 
     @Autowired
-    private ContactEntryService contactEntryService;
+    private ContactService contactEntryService;
 
     @Autowired
     private MessagingServiceVisitor messagingServiceVisitorForContactEntries;

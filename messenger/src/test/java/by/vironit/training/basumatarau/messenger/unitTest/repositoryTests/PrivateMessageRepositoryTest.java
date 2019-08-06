@@ -1,10 +1,10 @@
 package by.vironit.training.basumatarau.messenger.unitTest.repositoryTests;
 
-import by.vironit.training.basumatarau.messenger.model.Contact;
+import by.vironit.training.basumatarau.messenger.model.PersonalContact;
 import by.vironit.training.basumatarau.messenger.model.Message;
 import by.vironit.training.basumatarau.messenger.model.PrivateMessage;
 import by.vironit.training.basumatarau.messenger.model.User;
-import by.vironit.training.basumatarau.messenger.repository.ContactRepository;
+import by.vironit.training.basumatarau.messenger.repository.PersonalContactRepository;
 import by.vironit.training.basumatarau.messenger.repository.PrivateMessageRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
     private PrivateMessageRepository messageRepository;
 
     @Autowired
-    private ContactRepository contactRepository;
+    private PersonalContactRepository personalContactRepository;
 
     private User messageSender;
     private User messageReceiver;
@@ -36,18 +36,18 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
         messageReceiver = users.stream().findAny().orElseThrow(
                 () -> new InitializationError("test case setup failure"));
 
-        final Contact contact = new Contact.ContactBuilder()
+        final PersonalContact personalContact = new PersonalContact.ContactBuilder()
                 .confirmed(true)
                 .owner(messageSender)
                 .person(messageReceiver)
                 .build();
-        final Contact contactCounter = new Contact.ContactBuilder()
+        final PersonalContact personalContactCounter = new PersonalContact.ContactBuilder()
                 .confirmed(true)
                 .owner(messageReceiver)
                 .person(messageSender)
                 .build();
-        messageSender.getContactEntries().add(contact);
-        messageReceiver.getContactEntries().add(contactCounter);
+        messageSender.getContactEntries().add(personalContact);
+        messageReceiver.getContactEntries().add(personalContactCounter);
 
         userRepository.saveAndFlush(messageSender);
         userRepository.saveAndFlush(messageReceiver);
@@ -55,7 +55,7 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
         final PrivateMessage message = new PrivateMessage.PrivateMessageBuilder()
                 .author(messageSender)
                 .body("test message")
-                .contact(contactRepository.findContactByOwnerIdAndPersonId(
+                .contact(personalContactRepository.findContactByOwnerIdAndPersonId(
                         messageSender.getId(), messageReceiver.getId())
                         .orElseThrow(
                                 () -> new InitializationError("test case setup failure")))
@@ -66,16 +66,16 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
 
     @Test
     public void whenPrivateMessagePersisted_thenFindMessage() throws Exception {
-        final User sender = userRepository.findUserWithContactsByEmail(messageSender.getEmail())
+        final User sender = userRepository.findUserWithPersonalContactsByEmail(messageSender.getEmail())
                 .orElseThrow(()-> new RuntimeException("failure to fetch any user"));
-        final Contact contact = sender.getContactEntries()
+        final PersonalContact personalContact = sender.getContactEntries()
                 .stream()
-                .filter(contactEntry -> contactEntry instanceof Contact)
-                .map(contactEntry -> ((Contact) contactEntry))
+                .filter(contactEntry -> contactEntry instanceof PersonalContact)
+                .map(contactEntry -> ((PersonalContact) contactEntry))
                 .findAny()
                 .orElseThrow(
                         () -> new Exception("contact has not been persisted"));
-        final List<Message> messagesForContact = messageRepository.findByContact(contact);
+        final List<Message> messagesForContact = messageRepository.findByPersonalContact(personalContact);
         assertThat(messagesForContact).isNotNull();
         for (Message message : messagesForContact) {
             System.out.print(message.getTimeSent() + " ");
@@ -83,7 +83,7 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
         }
 
         final PageRequest pageable = PageRequest.of(0, 10);
-        final Slice<Message> slice = messageRepository.findByContact(contact, pageable);
+        final Slice<Message> slice = messageRepository.findByPersonalContact(personalContact, pageable);
         assertThat(slice.getNumberOfElements()).isPositive();
         for (Message message : slice.getContent()) {
             System.out.println(message.getBody());

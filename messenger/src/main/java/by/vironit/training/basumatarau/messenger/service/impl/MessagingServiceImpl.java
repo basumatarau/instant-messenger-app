@@ -43,7 +43,7 @@ public class MessagingServiceImpl implements MessagingService {
         final PrivateMessage newPrivateMessage =
                 new PrivateMessage.PrivateMessageBuilder()
                         .author(modelMapper.map(personalContactVo.getOwner(), User.class))
-                        .contact(modelMapper.map(personalContactVo, Contact.class))
+                        .contact(modelMapper.map(personalContactVo, PersonalContact.class))
                         .body(messageDto.getBody())
                         .timeSent(new Date().getTime())
                         .build();

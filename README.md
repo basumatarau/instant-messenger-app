@@ -5,7 +5,7 @@ training project "instant messenger webapplication" implements basic functionali
  1. subscription (sign-up) 
  2. authorization 
  3. friend requests (may or may not be approved)
- 4. contacts look up (each user has it's own contact list)
+ 4. contact look up (each user has it's own contact list)
  5. chatrooms look up (in case chatroom was created or set to be private)
  6. instant sending/receiving messages
  7. instant sending/receiving messages in group chats (chatrooms don't require users to have each other in contact lists)
@@ -18,7 +18,7 @@ training project "instant messenger webapplication" implements basic functionali
 ***
 **UML - entities:**
 ***
-![](uml-diagram-03.bmp)
+![](uml-diagram-04.bmp)
 ***
 **DB schema:**
 ***
