@@ -1,6 +1,7 @@
 package by.vironit.training.basumatarau.messenger.dto;
 
-import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitorForContactEntries;
+import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitor;
+import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitorImpl;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -31,7 +32,7 @@ public class PersonalContactVo
 
     @Override
     public void accept(
-            MessagingServiceVisitorForContactEntries visitor,
+            MessagingServiceVisitor visitor,
             IncomingMessageDto msg)
             throws InstantiationException {
         visitor.visit(msg, this);

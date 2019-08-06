@@ -5,13 +5,14 @@ import by.vironit.training.basumatarau.messenger.dto.IncomingMessageDto;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
 import by.vironit.training.basumatarau.messenger.service.ContactEntryService;
 import by.vironit.training.basumatarau.messenger.service.UserService;
-import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitorForContactEntries;
+import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
+import javax.validation.Valid;
 import java.security.Principal;
 
 @Controller
@@ -24,7 +25,7 @@ public class MessageController {
     private ContactEntryService contactEntryService;
 
     @Autowired
-    private MessagingServiceVisitorForContactEntries messagingServiceVisitorForContactEntries;
+    private MessagingServiceVisitor messagingServiceVisitorForContactEntries;
 
     @MessageMapping("/hello")
     @SendTo("/topic/greetings")
@@ -34,7 +35,7 @@ public class MessageController {
 
     @MessageMapping("/messaging")
     public void handleUserUpdate(
-            @Payload IncomingMessageDto msg,
+            @Valid @Payload IncomingMessageDto msg,
             Principal principal) throws InstantiationException {
 
         final UserProfileDto currentUser =

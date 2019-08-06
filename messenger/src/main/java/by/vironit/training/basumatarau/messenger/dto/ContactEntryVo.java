@@ -1,7 +1,8 @@
 package by.vironit.training.basumatarau.messenger.dto;
 
-import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitorForContactEntries;
-import by.vironit.training.basumatarau.messenger.util.Visitable;
+import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitor;
+import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitorImpl;
+import by.vironit.training.basumatarau.messenger.util.VisitableContactEntry;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -19,7 +20,7 @@ import java.util.Objects;
         @JsonSubTypes.Type(value = SubscriptionVo.class, name = "subscription"),
 })
 public abstract class ContactEntryVo
-        implements Visitable<MessagingServiceVisitorForContactEntries, IncomingMessageDto> {
+        implements VisitableContactEntry<MessagingServiceVisitor, IncomingMessageDto> {
     private final Long id;
     private final UserProfileDto owner;
 

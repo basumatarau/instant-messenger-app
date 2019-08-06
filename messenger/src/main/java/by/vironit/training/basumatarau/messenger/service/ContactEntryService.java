@@ -18,8 +18,7 @@ public interface ContactEntryService {
     Optional<Subscription> findSubscriptionById(Long id);
     void removeContactEntryById(Long entryId);
 
-    void sendContactRequest(UserProfileDto owner, UserProfileDto person)
-            throws InstantiationException;
+    void sendContactRequest(UserProfileDto owner, UserProfileDto person) throws InstantiationException;
     void confirmContactRequest(Contact contact) throws InstantiationException;
     void declineContactRequest(Contact contact);
 

@@ -78,7 +78,6 @@ public class ContactEntryServiceImpl implements ContactEntryService {
         return new PageImpl<>(contacts, pageable, contacts.size());
     }
 
-
     @Override
     @Transactional(readOnly = true)
     public Optional<ContactEntry> findContactEntryById(Long id) {

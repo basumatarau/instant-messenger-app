@@ -20,7 +20,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
 import java.security.Principal;
 
@@ -67,7 +66,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public Page<ContactEntryVo>
-    getPendingUserContacts(Principal principal,
+        getPendingUserContacts(Principal principal,
                           @Valid
                           @PageableDefault(page = 0, size = 20)
                           @SortDefault.SortDefaults({

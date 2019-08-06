@@ -1,13 +1,29 @@
 package by.vironit.training.basumatarau.messenger.dto;
 
+import by.vironit.training.basumatarau.messenger.validator.ValidEmail;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class UserAccountRegistrationDto {
+    @Size(max = 150)
     private final String firstName;
+
+    @Size(max = 150)
     private final String lastName;
+
+    @NotNull
+    @Size(min = 1, max = 60)
     private final String nickName;
+
+    @ValidEmail
+    @Size(min = 5, max = 160)
     private final String email;
+
+    @NotNull
+    @Size(min = 1, max = 500)
     private final String rawPassword;
 
     @JsonCreator

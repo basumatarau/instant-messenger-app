@@ -71,8 +71,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(newUser);
     }
 
-
-
     private UserProfileDto toUserProfileDto(User user) {
         return modelMapper.map(user, UserProfileDto.class);
     }

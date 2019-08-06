@@ -42,6 +42,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private GrantedAuthority[] buildGrantedAuthorities(User user) {
         return new GrantedAuthority[]{new SimpleGrantedAuthority(user.getRole().getName())};
     }
-
-
 }

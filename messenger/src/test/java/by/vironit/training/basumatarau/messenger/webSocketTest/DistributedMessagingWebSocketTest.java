@@ -76,7 +76,7 @@ public class DistributedMessagingWebSocketTest {
     }
 
     @Test
-    public void getPrivateMessage() throws Exception {
+    public void getDistributedMessage() throws Exception {
 
         final CountDownLatch deliveryLatch = new CountDownLatch(1 + receivers.size());
         final CountDownLatch subscriptionLatch = new CountDownLatch(1 + receivers.size());
