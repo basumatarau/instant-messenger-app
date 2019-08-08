@@ -40,9 +40,9 @@ public abstract class MessageReceivedCallback implements StompFrameHandler {
         try {
             assertEquals(incomingMessageBody, message.getBody());
             System.out.println("-#########- Anticipated message received! -#########-");
-            System.out.println(message);
-
             receiverEcho();
+
+            System.out.println(message);
         } catch (Throwable t) {
             failure.set(t);
         } finally {
