@@ -158,6 +158,35 @@ CREATE INDEX if not exists messages_timesent_idx ON instant_messenger_db_schema.
 
 --## ALTER SEQUENCE messages_id_seq OWNED BY messages.id;
 
+-- DROP SEQUENCE instant_messenger_db_schema.message_status_info_id_seq;
+
+CREATE SEQUENCE instant_messenger_db_schema.message_status_info_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	CACHE 1
+	NO CYCLE;
+
+-- Drop table
+
+-- DROP TABLE instant_messenger_db_schema.message_status_info;
+
+CREATE TABLE instant_messenger_db_schema.message_status_info (
+	id int8 NOT NULL DEFAULT nextval('instant_messenger_db_schema.message_status_info_id_seq'),
+	id_contact_entry int8 NOT NULL,
+	id_message int8 NOT NULL,
+	delivered bool NOT NULL,
+	time_delivered int8 NULL,
+	"read" bool NOT NULL,
+	time_read int8 NULL,
+	CONSTRAINT message_status_info_pk PRIMARY KEY (id),
+	CONSTRAINT message_status_info_fk FOREIGN KEY (id_message) REFERENCES instant_messenger_db_schema.messages(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT message_status_info_fk_1 FOREIGN KEY (id_contact_entry) REFERENCES instant_messenger_db_schema.contact_entries(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+CREATE UNIQUE INDEX message_status_info_id_contact_entry_idx ON instant_messenger_db_schema.message_status_info USING btree (id_contact_entry, id_message);
+
+--## ALTER SEQUENCE message_status_info_id_seq OWNED BY message_status_info.id;
+
 -- DROP SEQUENCE instant_messenger_db_schema.messageresources_id_seq;
 
 CREATE SEQUENCE if not exists instant_messenger_db_schema.messageresources_id_seq

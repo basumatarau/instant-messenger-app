@@ -1,9 +1,6 @@
 package by.vironit.training.basumatarau.messenger.unitTest.repositoryTests;
 
-import by.vironit.training.basumatarau.messenger.model.PersonalContact;
-import by.vironit.training.basumatarau.messenger.model.Message;
-import by.vironit.training.basumatarau.messenger.model.PrivateMessage;
-import by.vironit.training.basumatarau.messenger.model.User;
+import by.vironit.training.basumatarau.messenger.model.*;
 import by.vironit.training.basumatarau.messenger.repository.PersonalContactRepository;
 import by.vironit.training.basumatarau.messenger.repository.PrivateMessageRepository;
 import org.junit.Before;
@@ -52,15 +49,18 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
         userRepository.saveAndFlush(messageSender);
         userRepository.saveAndFlush(messageReceiver);
 
+        final PersonalContact contact = personalContactRepository.findContactByOwnerIdAndPersonId(
+                messageSender.getId(), messageReceiver.getId())
+                .orElseThrow(
+                        () -> new InitializationError("test case setup failure"));
+
         final PrivateMessage message = new PrivateMessage.PrivateMessageBuilder()
                 .author(messageSender)
                 .body("test message")
-                .contact(personalContactRepository.findContactByOwnerIdAndPersonId(
-                        messageSender.getId(), messageReceiver.getId())
-                        .orElseThrow(
-                                () -> new InitializationError("test case setup failure")))
+                .contact(contact)
                 .timeSent(new Date().toInstant().toEpochMilli())
                 .build();
+
         messageRepository.saveAndFlush(message);
     }
 
@@ -79,6 +79,8 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
         assertThat(messagesForContact).isNotNull();
         for (Message message : messagesForContact) {
             System.out.print(message.getTimeSent() + " ");
+            final Boolean delivered = ((PrivateMessage) message).getDelivery().getDelivered();
+            System.out.println("message delivery status: " + delivered);
             System.out.println(message.getBody());
         }
 

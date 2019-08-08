@@ -1,8 +1,10 @@
 package by.vironit.training.basumatarau.messenger.dto;
 
+import by.vironit.training.basumatarau.messenger.model.StatusInfo;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class MessageDto {
@@ -11,6 +13,7 @@ public class MessageDto {
     private final String body;
     private final Date timesent;
     private final ContactEntryVo contactEntryVo;
+    private final MessageStatusInfoDto[] messageStatusInfo;
 
     @JsonCreator
     public MessageDto(
@@ -18,12 +21,14 @@ public class MessageDto {
             @JsonProperty("author") UserProfileDto author,
             @JsonProperty("body") String body,
             @JsonProperty("timesent") Date timesent,
-            @JsonProperty("contact_entry") ContactEntryVo contactEntryVo) {
+            @JsonProperty("contact_entry") ContactEntryVo contactEntryVo,
+            @JsonProperty("message_status_info") MessageStatusInfoDto[] messageStatusInfo) {
         this.id = id;
         this.author = author;
         this.body = body;
         this.timesent = timesent;
         this.contactEntryVo = contactEntryVo;
+        this.messageStatusInfo = messageStatusInfo;
     }
 
     public Long getId() {
@@ -46,6 +51,10 @@ public class MessageDto {
         return contactEntryVo;
     }
 
+    public MessageStatusInfoDto[] getMessageStatusInfo() {
+        return messageStatusInfo;
+    }
+
     @Override
     public String toString() {
         return "MessageDto{" +
@@ -54,6 +63,7 @@ public class MessageDto {
                 ", body='" + body + '\'' +
                 ", timesent=" + timesent +
                 ", contactEntryVo=" + contactEntryVo +
+                ", messageStatusInfo=" + Arrays.toString(messageStatusInfo) +
                 '}';
     }
 }

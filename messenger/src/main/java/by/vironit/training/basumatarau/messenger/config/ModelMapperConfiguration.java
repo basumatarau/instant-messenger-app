@@ -26,6 +26,7 @@ public class ModelMapperConfiguration {
         modelMapper.addConverter(getSubscriptionVoToSubscriptionConverter());
         modelMapper.addConverter(getDistributedMessageToMessageDtoConverter());
         modelMapper.addConverter(getPrivateMessageToMessageDtoConverter());
+        modelMapper.addConverter(messageStatusInfoToMessageStatusInfoDto());
         return modelMapper;
     }
 
@@ -72,5 +73,10 @@ public class ModelMapperConfiguration {
     @Bean
     public PrivateMessageToMessageDto getPrivateMessageToMessageDtoConverter(){
         return new PrivateMessageToMessageDto();
+    }
+
+    @Bean
+    public MessageStatusInfoToMessageStatusInfoDto messageStatusInfoToMessageStatusInfoDto(){
+        return new MessageStatusInfoToMessageStatusInfoDto();
     }
 }

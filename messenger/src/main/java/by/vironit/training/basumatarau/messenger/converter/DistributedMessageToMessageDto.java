@@ -2,11 +2,9 @@ package by.vironit.training.basumatarau.messenger.converter;
 
 import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messenger.dto.MessageDto;
+import by.vironit.training.basumatarau.messenger.dto.MessageStatusInfoDto;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
-import by.vironit.training.basumatarau.messenger.model.ChatRoom;
-import by.vironit.training.basumatarau.messenger.model.DistributedMessage;
-import by.vironit.training.basumatarau.messenger.model.Subscription;
-import by.vironit.training.basumatarau.messenger.model.User;
+import by.vironit.training.basumatarau.messenger.model.*;
 import by.vironit.training.basumatarau.messenger.repository.SubscriptionRepository;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -16,6 +14,8 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class DistributedMessageToMessageDto
@@ -42,6 +42,12 @@ public class DistributedMessageToMessageDto
                         modelMapper.map(author, UserProfileDto.class),
                         context.getSource().getBody(),
                         new Date(context.getSource().getTimeSent()),
-                        modelMapper.map(subscription, ContactEntryVo.class));
+                        modelMapper.map(subscription, ContactEntryVo.class),
+                        context.getSource()
+                                .getDeliveries()
+                                .stream()
+                                .map(statusInfo -> modelMapper.map(statusInfo, MessageStatusInfoDto.class))
+                                .toArray(MessageStatusInfoDto[]::new)
+                );
     }
 }

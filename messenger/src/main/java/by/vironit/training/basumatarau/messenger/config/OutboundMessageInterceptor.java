@@ -8,13 +8,10 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.stereotype.Component;
-
 import java.security.Principal;
 import java.util.Objects;
 
-@Component
-public class SubscribeMessageInterceptor implements ChannelInterceptor {
+public class OutboundMessageInterceptor implements ChannelInterceptor {
 
     @Autowired
     private UserService userService;
@@ -33,4 +30,11 @@ public class SubscribeMessageInterceptor implements ChannelInterceptor {
         return message;
     }
 
+    @Override
+    public void afterSendCompletion(Message<?> message,
+                                    MessageChannel channel,
+                                    boolean sent,
+                                    Exception ex) {
+        
+    }
 }

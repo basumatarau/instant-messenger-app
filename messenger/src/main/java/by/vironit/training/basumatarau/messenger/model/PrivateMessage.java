@@ -17,12 +17,26 @@ public class PrivateMessage extends Message {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private PersonalContact personalContact;
 
+    @OneToOne(
+            mappedBy = "message",
+            cascade = {CascadeType.ALL})
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private StatusInfo delivery;
+
     public PersonalContact getPersonalContact() {
         return personalContact;
     }
 
     public void setPersonalContact(PersonalContact personalContact) {
         this.personalContact = personalContact;
+    }
+
+    public StatusInfo getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(StatusInfo delivery) {
+        this.delivery = delivery;
     }
 
     public PrivateMessage() {
@@ -37,6 +51,7 @@ public class PrivateMessage extends Message {
             extends MessageBuilder<PrivateMessage, PrivateMessageBuilder> {
 
         private PersonalContact personalContact;
+        private StatusInfo delivery;
 
         public PrivateMessageBuilder contact(PersonalContact personalContact) {
             this.personalContact = personalContact;
@@ -57,7 +72,19 @@ public class PrivateMessage extends Message {
         @Override
         public PrivateMessage build() throws InstantiationException {
             messageBuildIntegrityCheck();
-            return new PrivateMessage(this);
+
+            final PrivateMessage newPrivateMessage = new PrivateMessage(this);
+
+            final StatusInfo deliveryStatus = new StatusInfo.StatusInfoBuilder()
+                    .contactEntry(this.personalContact)
+                    .message(newPrivateMessage)
+                    .read(false)
+                    .delivered(false)
+                    .build();
+
+            newPrivateMessage.setDelivery(deliveryStatus);
+
+            return newPrivateMessage;
         }
     }
 

@@ -22,7 +22,7 @@ public class MessageController {
     private UserService userService;
 
     @Autowired
-    private ContactService contactEntryService;
+    private ContactService contactService;
 
     @Autowired
     private MessagingServiceVisitor messagingServiceVisitorForContactEntries;
@@ -42,7 +42,7 @@ public class MessageController {
                 userService.getUserProfileByUserEmail(principal.getName());
 
         final ContactEntryVo contactEntry =
-                contactEntryService.getContactEntryForUserByEntryId(
+                contactService.getContactEntryForUserByEntryId(
                         msg.getContactEntryId(), currentUser.getId()
                 );
 

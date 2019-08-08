@@ -1,16 +1,27 @@
 package by.vironit.training.basumatarau.messenger.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @DiscriminatorValue(value = Message.DISTRIBUTED_MESSAGE_TYPE)
 public class DistributedMessage extends Message {
+
     @ManyToOne
     @JoinColumn(
             name = "id_chatroom",
             foreignKey = @ForeignKey)
     private ChatRoom chatRoom;
+
+    @OneToMany(mappedBy = "message",
+            orphanRemoval = true,
+            cascade = {CascadeType.ALL})
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<StatusInfo> deliveries = new HashSet<>();
 
     public ChatRoom getChatRoom() {
         return chatRoom;
@@ -20,10 +31,19 @@ public class DistributedMessage extends Message {
         this.chatRoom = chatRoom;
     }
 
+    public Set<StatusInfo> getDeliveries() {
+        return deliveries;
+    }
+
+    public void setDeliveries(Set<StatusInfo> deliveries) {
+        this.deliveries = deliveries;
+    }
+
     public DistributedMessage(){}
 
     protected DistributedMessage(DistributedMessageBuilder builder){
         super(builder);
+        this.deliveries = builder.deliveries;
         this.chatRoom = builder.chatRoom;
     }
 
@@ -32,10 +52,16 @@ public class DistributedMessage extends Message {
         public DistributedMessageBuilder() {
         }
 
+        private Set<StatusInfo> deliveries;
         private ChatRoom chatRoom;
 
         public DistributedMessageBuilder chatRoom(ChatRoom chatRoom){
             this.chatRoom = chatRoom;
+            return this;
+        }
+
+        public DistributedMessageBuilder deliveries(Set<StatusInfo> deliveries){
+            this.deliveries = deliveries;
             return this;
         }
 
@@ -53,7 +79,21 @@ public class DistributedMessage extends Message {
         @Override
         public DistributedMessage build() throws InstantiationException {
             messageBuildIntegrityCheck();
-            return new DistributedMessage(this);
+            final DistributedMessage newDistributedMessage = new DistributedMessage(this);
+
+            final Set<StatusInfo> deliveries = this.chatRoom.getSubscriptions()
+                    .stream()
+                    .map(subscription -> new StatusInfo.StatusInfoBuilder()
+                            .delivered(false)
+                            .read(false)
+                            .message(newDistributedMessage)
+                            .contactEntry(subscription)
+                            .build())
+                    .collect(Collectors.toSet());
+
+            newDistributedMessage.setDeliveries(deliveries);
+
+            return newDistributedMessage;
         }
     }
 
