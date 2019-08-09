@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class ModelMapperConfiguration {
+
     @Bean
     @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
     public ModelMapper modelMapper() {
@@ -27,6 +28,8 @@ public class ModelMapperConfiguration {
         modelMapper.addConverter(getDistributedMessageToMessageDtoConverter());
         modelMapper.addConverter(getPrivateMessageToMessageDtoConverter());
         modelMapper.addConverter(messageStatusInfoToMessageStatusInfoDto());
+        modelMapper.addConverter(getDistributedMessageToMessageWithDetailsDtoConverter());
+        modelMapper.addConverter(getPrivateMessageToMessageWithDetailsDtoConverter());
         return modelMapper;
     }
 
@@ -78,5 +81,15 @@ public class ModelMapperConfiguration {
     @Bean
     public MessageStatusInfoToMessageStatusInfoDto messageStatusInfoToMessageStatusInfoDto(){
         return new MessageStatusInfoToMessageStatusInfoDto();
+    }
+
+    @Bean
+    public DistributedMessageToMessageWithDetailsDto getDistributedMessageToMessageWithDetailsDtoConverter(){
+        return new DistributedMessageToMessageWithDetailsDto();
+    }
+
+    @Bean
+    public PrivateMessageToMessageWithDetailsDto getPrivateMessageToMessageWithDetailsDtoConverter(){
+        return new PrivateMessageToMessageWithDetailsDto();
     }
 }

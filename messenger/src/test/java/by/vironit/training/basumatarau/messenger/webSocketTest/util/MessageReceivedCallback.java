@@ -4,6 +4,7 @@ import by.vironit.training.basumatarau.messenger.dto.MessageDto;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
+
 import java.lang.reflect.Type;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
@@ -36,6 +37,7 @@ public abstract class MessageReceivedCallback implements StompFrameHandler {
 
     @Override
     public void handleFrame(StompHeaders headers, Object payload) {
+
         MessageDto message = (MessageDto) payload;
         try {
             assertEquals(incomingMessageBody, message.getBody());

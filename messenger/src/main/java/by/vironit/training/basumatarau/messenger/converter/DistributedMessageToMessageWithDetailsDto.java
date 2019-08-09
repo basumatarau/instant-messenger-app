@@ -1,9 +1,10 @@
 package by.vironit.training.basumatarau.messenger.converter;
 
-import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
-import by.vironit.training.basumatarau.messenger.dto.MessageDto;
-import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
-import by.vironit.training.basumatarau.messenger.model.*;
+import by.vironit.training.basumatarau.messenger.dto.*;
+import by.vironit.training.basumatarau.messenger.model.ChatRoom;
+import by.vironit.training.basumatarau.messenger.model.DistributedMessage;
+import by.vironit.training.basumatarau.messenger.model.Subscription;
+import by.vironit.training.basumatarau.messenger.model.User;
 import by.vironit.training.basumatarau.messenger.repository.SubscriptionRepository;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -14,8 +15,8 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Date;
 
 @Component
-public class DistributedMessageToMessageDto
-        implements Converter<DistributedMessage, MessageDto> {
+public class DistributedMessageToMessageWithDetailsDto
+        implements Converter<DistributedMessage, MessageWithDetailsDto> {
 
     @Autowired
     private ModelMapper modelMapper;
@@ -24,7 +25,10 @@ public class DistributedMessageToMessageDto
     private SubscriptionRepository subscriptionRepository;
 
     @Override
-    public MessageDto convert(MappingContext<DistributedMessage, MessageDto> context) {
+    public MessageWithDetailsDto convert(
+            MappingContext<DistributedMessage,
+            MessageWithDetailsDto> context) {
+
         final User author = context.getSource().getAuthor();
         final ChatRoom chatRoom = context.getSource().getChatRoom();
 
@@ -33,12 +37,17 @@ public class DistributedMessageToMessageDto
                 .orElseThrow(() -> new EntityNotFoundException("no sub found"));
 
         return context.getSource() == null ? null :
-                new MessageDto(
+                new MessageWithDetailsDto(
                         context.getSource().getId(),
                         modelMapper.map(author, UserProfileDto.class),
                         context.getSource().getBody(),
                         new Date(context.getSource().getTimeSent()),
-                        modelMapper.map(subscription, ContactEntryVo.class)
+                        modelMapper.map(subscription, ContactEntryVo.class),
+                        context.getSource()
+                                .getDeliveries()
+                                .stream()
+                                .map(statusInfo -> modelMapper.map(statusInfo, MessageStatusInfoDto.class))
+                                .toArray(MessageStatusInfoDto[]::new)
                 );
     }
 }

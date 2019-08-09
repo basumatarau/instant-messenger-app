@@ -1,8 +1,6 @@
 package by.vironit.training.basumatarau.messenger.converter;
 
-import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
-import by.vironit.training.basumatarau.messenger.dto.MessageDto;
-import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
+import by.vironit.training.basumatarau.messenger.dto.*;
 import by.vironit.training.basumatarau.messenger.model.PrivateMessage;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -12,21 +10,24 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
-public class PrivateMessageToMessageDto
-        implements Converter<PrivateMessage, MessageDto> {
+public class PrivateMessageToMessageWithDetailsDto
+        implements Converter<PrivateMessage, MessageWithDetailsDto> {
 
     @Autowired
     private ModelMapper modelMapper;
 
     @Override
-    public MessageDto convert(MappingContext<PrivateMessage, MessageDto> context) {
+    public MessageWithDetailsDto convert(MappingContext<PrivateMessage, MessageWithDetailsDto> context) {
         return context.getSource() == null ? null :
-                new MessageDto(
+                new MessageWithDetailsDto(
                         context.getSource().getId(),
                         modelMapper.map(context.getSource().getAuthor(), UserProfileDto.class),
                         context.getSource().getBody(),
                         new Date(context.getSource().getTimeSent()),
-                        modelMapper.map(context.getSource().getPersonalContact(), ContactEntryVo.class)
+                        modelMapper.map(context.getSource().getPersonalContact(), ContactEntryVo.class),
+                        new MessageStatusInfoDto[]{
+                                modelMapper.map(context.getSource().getDelivery(), MessageStatusInfoDto.class)
+                        }
                 );
     }
 }

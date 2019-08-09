@@ -34,6 +34,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Bean
     public SubscribeMessageInterceptor getSubscribeMessageInterceptorBean(){
+
         return new SubscribeMessageInterceptor();
     }
 
