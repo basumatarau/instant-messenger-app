@@ -22,4 +22,4 @@ training project "instant messenger webapplication" implements basic functionali
 ***
 **DB schema:**
 ***
-![](db-schema-03.png)
+![](db-schema-04.png)

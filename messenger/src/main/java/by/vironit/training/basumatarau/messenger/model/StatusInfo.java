@@ -31,7 +31,7 @@ public class StatusInfo {
 
     @ManyToOne
     @JoinColumn(
-            name = "id_contactEntry",
+            name = "id_contact_entry",
             nullable = false)
     private ContactEntry contactEntry;
 

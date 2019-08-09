@@ -14,7 +14,7 @@ public class SubscriptionVo
     public SubscriptionVo(
             @JsonProperty("id") Long id,
             @JsonProperty("owner") UserProfileDto owner,
-            @JsonProperty("chatRoom") ChatRoomDto chatRoom) {
+            @JsonProperty("chat_room") ChatRoomDto chatRoom) {
         super(id, owner);
         this.chatRoom = chatRoom;
     }
