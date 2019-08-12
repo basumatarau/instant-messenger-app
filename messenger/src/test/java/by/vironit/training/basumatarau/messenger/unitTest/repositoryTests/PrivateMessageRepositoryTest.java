@@ -46,8 +46,8 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
         messageSender.getContactEntries().add(personalContact);
         messageReceiver.getContactEntries().add(personalContactCounter);
 
-        userRepository.saveAndFlush(messageSender);
-        userRepository.saveAndFlush(messageReceiver);
+        userRepository.save(messageReceiver);
+        userRepository.save(messageSender);
 
         final PersonalContact contact = personalContactRepository.findContactByOwnerIdAndPersonId(
                 messageSender.getId(), messageReceiver.getId())

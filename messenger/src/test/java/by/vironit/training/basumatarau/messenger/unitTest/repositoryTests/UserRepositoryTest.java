@@ -1,22 +1,16 @@
 package by.vironit.training.basumatarau.messenger.unitTest.repositoryTests;
 
 import by.vironit.training.basumatarau.messenger.model.User;
-import by.vironit.training.basumatarau.messenger.repository.RoleRepository;
 import by.vironit.training.basumatarau.messenger.repository.UserRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 public class UserRepositoryTest extends BaseRepositoryTest {
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private RoleRepository roleRepsitory;
 
     @Test
     public void whenFindUser_thenReturnUserEmail() throws InstantiationException {

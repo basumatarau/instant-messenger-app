@@ -1,17 +1,14 @@
 package by.vironit.training.basumatarau.messenger.model;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
 @DiscriminatorValue(value = ContactEntry.PERSONAL_CONTACT_TYPE)
 public class PersonalContact extends ContactEntry{
+
     @ManyToOne
     @JoinColumn(name = "id_person")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private User person;
 
     @Column(name = "confirmed")

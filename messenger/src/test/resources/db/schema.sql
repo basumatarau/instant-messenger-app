@@ -4,16 +4,6 @@ CREATE SCHEMA if not exists instant_messenger_db_schema AUTHORIZATION postgres;
 
 COMMENT ON SCHEMA instant_messenger_db_schema IS 'instant messenger web application - vironit training project ';
 
--- Drop table
-
--- DROP TABLE instant_messenger_db_schema.roles;
-
-CREATE TABLE if not exists instant_messenger_db_schema.roles (
-	id serial NOT NULL,
-	"name" varchar(150) NOT NULL,
-	CONSTRAINT roles_pk PRIMARY KEY (id)
-);
-
 -- DROP SEQUENCE instant_messenger_db_schema.users_id_seq;
 
 CREATE SEQUENCE if not exists instant_messenger_db_schema.users_id_seq
@@ -30,28 +20,18 @@ CREATE SEQUENCE if not exists instant_messenger_db_schema.users_id_seq
 
 CREATE TABLE if not exists instant_messenger_db_schema.users (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.users_id_seq'),
+	"role" varchar(8) NOT NULL DEFAULT 'USER',
 	firstname varchar(150) NULL,
 	lastname varchar(150) NULL,
 	nickname varchar(60) NOT NULL,
 	email varchar(160) NOT NULL,
 	passwordhash varchar(160) NOT NULL,
 	enabled bool NOT NULL,
-	id_role int4 NOT NULL,
-	CONSTRAINT users_pk PRIMARY KEY (id),
-	CONSTRAINT users_fk1 FOREIGN KEY (id_role) REFERENCES instant_messenger_db_schema.roles(id) ON UPDATE CASCADE
+	CONSTRAINT users_pk PRIMARY KEY (id)
 );
 CREATE UNIQUE INDEX if not exists users_email_idx ON instant_messenger_db_schema.users USING btree (email);
 --ALTER SEQUENCE instant_messenger_db_schema.user_id_seq OWNED BY users.id;
 
--- Drop table
-
--- DROP TABLE instant_messenger_db_schema.chatroom_privileges;
-
-CREATE TABLE if not exists instant_messenger_db_schema.chatroom_privileges (
-	id serial NOT NULL,
-	"name" varchar(100) NOT NULL,
-	CONSTRAINT chatroom_privileges_pk PRIMARY KEY (id)
-);
 
 -- DROP SEQUENCE instant_messenger_db_schema.chatrooms_id_seq;
 
@@ -69,7 +49,7 @@ CREATE SEQUENCE if not exists instant_messenger_db_schema.chatrooms_id_seq
 CREATE TABLE if not exists instant_messenger_db_schema.chatrooms (
 	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.chatrooms_id_seq'),
 	"name" varchar(150) NOT NULL,
-	timecreated timestamp NOT NULL,
+	timecreated bigint NOT NULL,
 	public bool NOT NULL,
 	CONSTRAINT chatrooms_pk PRIMARY KEY (id)
 );
@@ -96,14 +76,13 @@ CREATE TABLE if not exists instant_messenger_db_schema.contact_entries (
 	id_person bigint,
 	confirmed bool DEFAULT false,
 	id_chatroom bigint,
-	enteredchat timestamp,
+	enteredchat bigint,
 	enabled bool,
-	id_userprivilege int4,
+	privilege varchar(10),
 	CONSTRAINT subscriptions_pk PRIMARY KEY (id),
 	CONSTRAINT users_has_chatrooms_fk FOREIGN KEY (id_owner) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT subscriptions_fk_1 FOREIGN KEY (id_person) REFERENCES instant_messenger_db_schema.users(id) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT users_has_chatrooms_fk_1 FOREIGN KEY (id_chatroom) REFERENCES instant_messenger_db_schema.chatrooms(id) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT subscriptions_fk FOREIGN KEY (id_userprivilege) REFERENCES instant_messenger_db_schema.chatroom_privileges(id) ON UPDATE CASCADE
+	CONSTRAINT users_has_chatrooms_fk_1 FOREIGN KEY (id_chatroom) REFERENCES instant_messenger_db_schema.chatrooms(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 CREATE INDEX if not exists contacts_id_owner_idx ON instant_messenger_db_schema.contact_entries USING btree (id_owner);
 CREATE INDEX if not exists contacts_id_person_idx ON instant_messenger_db_schema.contact_entries USING btree (id_person, id_owner);
@@ -183,7 +162,7 @@ CREATE TABLE instant_messenger_db_schema.message_status_info (
 	CONSTRAINT message_status_info_fk FOREIGN KEY (id_message) REFERENCES instant_messenger_db_schema.messages(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT message_status_info_fk_1 FOREIGN KEY (id_contact_entry) REFERENCES instant_messenger_db_schema.contact_entries(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE UNIQUE INDEX message_status_info_id_contact_entry_idx ON instant_messenger_db_schema.message_status_info USING btree (id_contact_entry, id_message);
+CREATE UNIQUE INDEX message_status_info_id_contact_entry_idx ON instant_messenger_db_schema.message_status_info USING btree (id_user, id_message);
 
 --## ALTER SEQUENCE message_status_info_id_seq OWNED BY message_status_info.id;
 

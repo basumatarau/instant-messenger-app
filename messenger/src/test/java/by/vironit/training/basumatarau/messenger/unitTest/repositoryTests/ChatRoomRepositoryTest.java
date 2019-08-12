@@ -1,10 +1,8 @@
 package by.vironit.training.basumatarau.messenger.unitTest.repositoryTests;
 
 import by.vironit.training.basumatarau.messenger.model.ChatRoom;
-import by.vironit.training.basumatarau.messenger.model.ChatRoomPrivilege;
 import by.vironit.training.basumatarau.messenger.model.Subscription;
 import by.vironit.training.basumatarau.messenger.model.User;
-import by.vironit.training.basumatarau.messenger.repository.ChatRoomPrivilegeRepository;
 import by.vironit.training.basumatarau.messenger.repository.ChatRoomRepository;
 import by.vironit.training.basumatarau.messenger.repository.SubscriptionRepository;
 import org.junit.After;
@@ -24,9 +22,6 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
     @Autowired
     protected SubscriptionRepository subscriptionRepository;
 
-    @Autowired
-    protected ChatRoomPrivilegeRepository chatRoomPrivilegeRepository;
-
     protected User admin;
     protected Subscription testedSubscription;
 
@@ -38,9 +33,6 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
 
         users.remove(admin);
 
-        final ChatRoomPrivilege adminPrivilege =
-                chatRoomPrivilegeRepository.findByName("CHATADMIN");
-
         final ChatRoom chatRoom =
                 chatRoomRepository
                         .findAll()
@@ -49,8 +41,8 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
                         .orElseThrow(() -> new RuntimeException("failed to find any chat room..."));
 
         testedSubscription = new Subscription.SubscriptionBuilder()
-                .enteredChat(new Date())
-                .privilege(adminPrivilege)
+                .enteredChat(new Date().getTime())
+                .privilege(Subscription.ChatRoomPrivilege.CHATADMIN)
                 .owner(admin)
                 .enabled(true)
                 .chatRoom(chatRoom)
@@ -63,8 +55,8 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
         for (User user : users) {
             subscriptionRepository.saveAndFlush(
                     new Subscription.SubscriptionBuilder()
-                            .enteredChat(new Date())
-                            .privilege(chatRoomPrivilegeRepository.findByName("COMMONER"))
+                            .enteredChat(new Date().getTime())
+                            .privilege(Subscription.ChatRoomPrivilege.COMMONER)
                             .owner(user)
                             .enabled(true)
                             .chatRoom(chatRoom)

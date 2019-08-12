@@ -1,11 +1,19 @@
 package by.vironit.training.basumatarau.messenger.model;
 
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.*;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
+/*@SQLDelete(
+        sql = "update instant_messenger_db_schema.users set enabled=false where id = ? ",
+        check = ResultCheckStyle.COUNT)
+@Where(clause = "enabled=true ")*/
 @Table(name = "users", schema = "instant_messenger_db_schema")
 public class User {
     @Id
@@ -18,11 +26,9 @@ public class User {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(
-            name = "id_role",
-            nullable = false)
-    private Role role;
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @Column(name = "firstname")
     private String firstName;
@@ -44,7 +50,7 @@ public class User {
 
     @OneToMany(mappedBy = "owner",
             orphanRemoval = true,
-            cascade = {CascadeType.ALL})
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<ContactEntry> contactEntries = new LinkedHashSet<>();
 
     public User() {
@@ -61,15 +67,24 @@ public class User {
         this.contactEntries = builder.contactEntries;
     }
 
+    public enum UserRole{
+        USER, ADMIN
+    }
+
+/*    @PreRemove
+    private void deleteUser(){
+        this.isEnabled = false;
+    }*/
+
     public Long getId() {
         return id;
     }
 
-    public Role getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 
@@ -134,7 +149,7 @@ public class User {
     }
 
     public static class UserBuilder {
-        private Role role;
+        private UserRole role;
         private String firstName;
         private String lastName;
         private String nickName;
@@ -145,7 +160,7 @@ public class User {
 
         public UserBuilder() {}
 
-        public UserBuilder role(Role role) {
+        public UserBuilder role(UserRole role) {
             this.role = role;
             return this;
         }

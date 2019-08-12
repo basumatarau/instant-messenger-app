@@ -1,7 +1,6 @@
 package by.vironit.training.basumatarau.messenger.model;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -14,12 +13,10 @@ public class Subscription extends ContactEntry{
     private ChatRoom chatRoom;
 
     @Column(name = "enteredchat")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date enteredChat;
+    private Long enteredChat;
 
-    @ManyToOne
-    @JoinColumn(name = "id_userprivilege",
-            foreignKey = @ForeignKey)
+    @Column(name = "privilege")
+    @Enumerated(EnumType.STRING)
     private ChatRoomPrivilege privilege;
 
     @Column(name = "enabled")
@@ -35,10 +32,14 @@ public class Subscription extends ContactEntry{
         this.isEnabled = builder.isEnabled;
     }
 
+    public enum ChatRoomPrivilege{
+        CHATADMIN, COMMONER
+    }
+
     public static class SubscriptionBuilder
             extends ContactEntryBuilder<Subscription, SubscriptionBuilder>{
         private ChatRoom chatRoom;
-        private Date enteredChat;
+        private Long enteredChat;
         private ChatRoomPrivilege privilege;
         private Boolean isEnabled;
 
@@ -49,7 +50,7 @@ public class Subscription extends ContactEntry{
             return this;
         }
 
-        public SubscriptionBuilder enteredChat(Date enteredChat){
+        public SubscriptionBuilder enteredChat(Long enteredChat){
             this.enteredChat = enteredChat;
             return this;
         }
@@ -90,11 +91,11 @@ public class Subscription extends ContactEntry{
         this.chatRoom = chatRoom;
     }
 
-    public Date getEnteredChat() {
+    public Long getEnteredChat() {
         return enteredChat;
     }
 
-    public void setEnteredChat(Date enteredChat) {
+    public void setEnteredChat(Long enteredChat) {
         this.enteredChat = enteredChat;
     }
 

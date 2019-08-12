@@ -15,6 +15,7 @@ public class DistributedMessage extends Message {
     @JoinColumn(
             name = "id_chatroom",
             foreignKey = @ForeignKey)
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
     private ChatRoom chatRoom;
 
     @OneToMany(mappedBy = "message",

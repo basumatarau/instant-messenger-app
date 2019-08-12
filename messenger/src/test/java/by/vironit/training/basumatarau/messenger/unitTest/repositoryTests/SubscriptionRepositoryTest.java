@@ -1,10 +1,8 @@
 package by.vironit.training.basumatarau.messenger.unitTest.repositoryTests;
 
 import by.vironit.training.basumatarau.messenger.model.ChatRoom;
-import by.vironit.training.basumatarau.messenger.model.ChatRoomPrivilege;
 import by.vironit.training.basumatarau.messenger.model.Subscription;
 import by.vironit.training.basumatarau.messenger.model.User;
-import by.vironit.training.basumatarau.messenger.repository.ChatRoomPrivilegeRepository;
 import by.vironit.training.basumatarau.messenger.repository.ChatRoomRepository;
 import by.vironit.training.basumatarau.messenger.repository.SubscriptionRepository;
 import by.vironit.training.basumatarau.messenger.repository.UserRepository;
@@ -18,9 +16,6 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 public class SubscriptionRepositoryTest extends BaseRepositoryTest{
     @Autowired
     private ChatRoomRepository chatRoomRepository;
-
-    @Autowired
-    private ChatRoomPrivilegeRepository chatRoomPrivilegeRepository;
 
     @Autowired
     private SubscriptionRepository subscriptionRepository;
@@ -40,13 +35,12 @@ public class SubscriptionRepositoryTest extends BaseRepositoryTest{
                 .findAny()
                 .orElseThrow(() -> new RuntimeException("failed to fetch any user"));
 
-        final ChatRoomPrivilege chatAdminPrivilege = chatRoomPrivilegeRepository.findByName("CHATADMIN");
         final Subscription adminSubscription = new Subscription.SubscriptionBuilder()
                 .chatRoom(anyChatRoom)
                 .owner(anyUser)
                 .enabled(true)
-                .enteredChat(new Date())
-                .privilege(chatAdminPrivilege)
+                .enteredChat(new Date().getTime())
+                .privilege(Subscription.ChatRoomPrivilege.CHATADMIN)
                 .build();
         subscriptionRepository.save(adminSubscription);
 

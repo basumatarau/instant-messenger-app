@@ -2,7 +2,6 @@ package by.vironit.training.basumatarau.messenger.converter;
 
 import by.vironit.training.basumatarau.messenger.dto.UserAccountRegistrationDto;
 import by.vironit.training.basumatarau.messenger.model.User;
-import by.vironit.training.basumatarau.messenger.repository.RoleRepository;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,6 @@ public class UserAccountDtoToUser
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private RoleRepository roleRepository;
-
     @Override
     @Transactional
     public User convert(MappingContext<UserAccountRegistrationDto, User> context) {
@@ -31,7 +27,7 @@ public class UserAccountDtoToUser
                         .lastName(context.getSource().getLastName())
                         .nickName(context.getSource().getNickName())
                         .passwordHash(passwordEncoder.encode(context.getSource().getRawPassword()))
-                        .role(roleRepository.getDefaultUserRole())
+                        .role(User.UserRole.USER)
                         .build();
     }
 }

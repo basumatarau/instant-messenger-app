@@ -1,5 +1,8 @@
 package by.vironit.training.basumatarau.messenger.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -32,7 +35,8 @@ public class StatusInfo {
     @ManyToOne
     @JoinColumn(
             name = "id_contact_entry",
-            nullable = false)
+            nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private ContactEntry contactEntry;
 
     @ManyToOne

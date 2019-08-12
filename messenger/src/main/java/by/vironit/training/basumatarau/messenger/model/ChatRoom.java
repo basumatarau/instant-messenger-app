@@ -1,7 +1,6 @@
 package by.vironit.training.basumatarau.messenger.model;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,8 +22,7 @@ public class ChatRoom {
 
     @Column(name = "timecreated",
             nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date timeCreated;
+    private Long timeCreated;
 
     @OneToMany(mappedBy = "chatRoom",
             orphanRemoval = true)
@@ -44,7 +42,7 @@ public class ChatRoom {
 
     public static class ChatRoomBuilder{
         private String name;
-        private Date timeCreated;
+        private Long timeCreated;
         private Set<Subscription> subscriptions;
         private Boolean isPublic;
 
@@ -55,7 +53,7 @@ public class ChatRoom {
             return this;
         }
 
-        public ChatRoomBuilder timeCreated(Date timeCreated){
+        public ChatRoomBuilder timeCreated(Long timeCreated){
             this.timeCreated = timeCreated;
             return this;
         }
@@ -101,11 +99,11 @@ public class ChatRoom {
         this.name = name;
     }
 
-    public Date getTimeCreated() {
+    public Long getTimeCreated() {
         return timeCreated;
     }
 
-    public void setTimeCreated(Date timeCreated) {
+    public void setTimeCreated(Long timeCreated) {
         this.timeCreated = timeCreated;
     }
 

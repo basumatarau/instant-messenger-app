@@ -18,11 +18,14 @@ public abstract class ContactEntry {
             sequenceName = "contact_entries_id_seq",
             schema = "instant_messenger_db_schema",
             allocationSize = 1)
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "id",
+            updatable = false,
+            nullable = false)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_owner", nullable = false)
+    @JoinColumn(name = "id_owner",
+            nullable = false)
     private User owner;
 
     public ContactEntry(){}

@@ -1,13 +1,9 @@
 package by.vironit.training.basumatarau.messenger.unitTest.repositoryTests;
 
 import by.vironit.training.basumatarau.messenger.model.ChatRoom;
-import by.vironit.training.basumatarau.messenger.model.ChatRoomPrivilege;
-import by.vironit.training.basumatarau.messenger.model.Role;
 import by.vironit.training.basumatarau.messenger.model.User;
 import by.vironit.training.basumatarau.messenger.unitTest.repositoryTests.config.H2TestProfileJPAConfiguration;
-import by.vironit.training.basumatarau.messenger.repository.ChatRoomPrivilegeRepository;
 import by.vironit.training.basumatarau.messenger.repository.ChatRoomRepository;
-import by.vironit.training.basumatarau.messenger.repository.RoleRepository;
 import by.vironit.training.basumatarau.messenger.repository.UserRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -30,28 +26,15 @@ public abstract class BaseRepositoryTest {
     UserRepository userRepository;
 
     @Autowired
-    RoleRepository roleRepository;
-
-    @Autowired
-    ChatRoomPrivilegeRepository chatRoomPrivilegeRepository;
-
-    @Autowired
     ChatRoomRepository chatRoomRepository;
 
     Set<User> users = new HashSet<>();
 
     @Before
     public void initBase() throws InstantiationException {
-        roleRepository.saveAndFlush(new Role.RoleBuilder().name("ADMIN").build());
-        roleRepository.saveAndFlush(new Role.RoleBuilder().name("USER").build());
-
-        chatRoomPrivilegeRepository.saveAndFlush(new ChatRoomPrivilege.ChatRoomPrivilegeBuilder().name("CHATADMIN").build());
-        chatRoomPrivilegeRepository.saveAndFlush(new ChatRoomPrivilege.ChatRoomPrivilegeBuilder().name("COMMONER").build());
-
-        final Role userRole = roleRepository.findByName("USER").orElseThrow(() -> new RuntimeException("failed to fetch USER role"));
 
         users.add(new User.UserBuilder()
-                .role(userRole)
+                .role(User.UserRole.USER)
                 .enabled(true)
                 .firstName("TestFirstName1")
                 .lastName("TestLastName1")
@@ -60,7 +43,7 @@ public abstract class BaseRepositoryTest {
                 .passwordHash("testStub1")
                 .build());
         users.add(new User.UserBuilder()
-                .role(userRole)
+                .role(User.UserRole.USER)
                 .enabled(true)
                 .firstName("TestFirstName2")
                 .lastName("TestLastName2")
@@ -69,7 +52,7 @@ public abstract class BaseRepositoryTest {
                 .passwordHash("testStub2")
                 .build());
         users.add(new User.UserBuilder()
-                .role(userRole)
+                .role(User.UserRole.USER)
                 .enabled(true)
                 .firstName("TestFirstName3")
                 .lastName("TestLastName3")
@@ -85,17 +68,15 @@ public abstract class BaseRepositoryTest {
                 = new ChatRoom.ChatRoomBuilder()
                 .isPublic(true)
                 .name("testChatRoomName")
-                .timeCreated(new Date())
+                .timeCreated(new Date().getTime())
                 .build();
         chatRoomRepository.saveAndFlush(chatRoom);
     }
 
     @After
     public void cleanBase() {
-        userRepository.deleteAll();
-        roleRepository.deleteAll();
-        chatRoomPrivilegeRepository.deleteAll();
         chatRoomRepository.deleteAll();
+        userRepository.deleteAll();
         users.clear();
     }
 

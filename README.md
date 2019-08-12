@@ -18,8 +18,8 @@ training project "instant messenger webapplication" implements basic functionali
 ***
 **UML - entities:**
 ***
-![](uml-diagram-05.bmp)
+![](uml-diagram-06.png)
 ***
 **DB schema:**
 ***
-![](db-schema-04.png)
+![](db-schema-05.png)
