@@ -1,6 +1,5 @@
 package by.vironit.training.basumatarau.messenger.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
