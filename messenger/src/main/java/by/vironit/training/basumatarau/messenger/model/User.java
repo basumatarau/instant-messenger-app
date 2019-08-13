@@ -53,6 +53,11 @@ public class User {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<ContactEntry> contactEntries = new LinkedHashSet<>();
 
+    /*    @PreRemove
+    private void deleteUser(){
+        this.isEnabled = false;
+    }*/
+
     public User() {
     }
 
@@ -70,11 +75,6 @@ public class User {
     public enum UserRole{
         USER, ADMIN
     }
-
-/*    @PreRemove
-    private void deleteUser(){
-        this.isEnabled = false;
-    }*/
 
     public Long getId() {
         return id;

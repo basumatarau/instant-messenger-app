@@ -1,6 +1,6 @@
 package by.vironit.training.basumatarau.messenger.jsonSerializer;
 
-import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
+import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -11,17 +11,17 @@ import org.springframework.data.domain.Sort;
 import java.io.IOException;
 
 @JsonComponent
-public class PageOfContactEntriesSerializer extends JsonSerializer<Page<ContactEntryVo>> {
+public class PageOfUserProfilesSerializer extends JsonSerializer<Page<UserProfileDto>> {
     @Override
-    public void serialize(Page<ContactEntryVo> page,
+    public void serialize(Page<UserProfileDto> page,
                           JsonGenerator jsonGenerator,
                           SerializerProvider serializerProvider)
             throws IOException {
         jsonGenerator.writeStartObject();
 
         jsonGenerator.writeArrayFieldStart("content");
-        for (ContactEntryVo contactEntryVo : page.getContent()) {
-            jsonGenerator.writeObject(contactEntryVo);
+        for (UserProfileDto userProfileDto : page.getContent()) {
+            jsonGenerator.writeObject(userProfileDto);
         }
         jsonGenerator.writeEndArray();
 

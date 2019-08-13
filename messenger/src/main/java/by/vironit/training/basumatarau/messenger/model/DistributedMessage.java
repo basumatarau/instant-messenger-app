@@ -48,6 +48,21 @@ public class DistributedMessage extends Message {
         this.chatRoom = builder.chatRoom;
     }
 
+    @PrePersist
+    private void addMessageInfo(){
+        this.setDeliveries(
+                this.chatRoom.getSubscriptions()
+                        .stream()
+                        .map(subscription -> new StatusInfo.StatusInfoBuilder()
+                                .delivered(false)
+                                .read(false)
+                                .message(this)
+                                .contactEntry(subscription)
+                                .build())
+                        .collect(Collectors.toSet())
+        );
+    }
+
     public static class DistributedMessageBuilder
             extends MessageBuilder<DistributedMessage, DistributedMessageBuilder>{
         public DistributedMessageBuilder() {
@@ -80,21 +95,7 @@ public class DistributedMessage extends Message {
         @Override
         public DistributedMessage build() throws InstantiationException {
             messageBuildIntegrityCheck();
-            final DistributedMessage newDistributedMessage = new DistributedMessage(this);
-
-            final Set<StatusInfo> deliveries = this.chatRoom.getSubscriptions()
-                    .stream()
-                    .map(subscription -> new StatusInfo.StatusInfoBuilder()
-                            .delivered(false)
-                            .read(false)
-                            .message(newDistributedMessage)
-                            .contactEntry(subscription)
-                            .build())
-                    .collect(Collectors.toSet());
-
-            newDistributedMessage.setDeliveries(deliveries);
-
-            return newDistributedMessage;
+            return new DistributedMessage(this);
         }
     }
 

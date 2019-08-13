@@ -47,6 +47,18 @@ public class PrivateMessage extends Message {
         this.personalContact = builder.personalContact;
     }
 
+    @PrePersist
+    private void addMessageInfo(){
+        this.setDelivery(
+                new StatusInfo.StatusInfoBuilder()
+                .contactEntry(this.personalContact)
+                .message(this)
+                .read(false)
+                .delivered(false)
+                .build()
+        );
+    }
+
     public static class PrivateMessageBuilder
             extends MessageBuilder<PrivateMessage, PrivateMessageBuilder> {
 
@@ -72,19 +84,7 @@ public class PrivateMessage extends Message {
         @Override
         public PrivateMessage build() throws InstantiationException {
             messageBuildIntegrityCheck();
-
-            final PrivateMessage newPrivateMessage = new PrivateMessage(this);
-
-            final StatusInfo deliveryStatus = new StatusInfo.StatusInfoBuilder()
-                    .contactEntry(this.personalContact)
-                    .message(newPrivateMessage)
-                    .read(false)
-                    .delivered(false)
-                    .build();
-
-            newPrivateMessage.setDelivery(deliveryStatus);
-
-            return newPrivateMessage;
+            return new PrivateMessage(this);
         }
     }
 

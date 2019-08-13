@@ -5,7 +5,7 @@ import by.vironit.training.basumatarau.messenger.dto.IncomingMessageDto;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
 import by.vironit.training.basumatarau.messenger.service.ContactService;
 import by.vironit.training.basumatarau.messenger.service.UserService;
-import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitor;
+import by.vironit.training.basumatarau.messenger.service.util.MessagingServiceVisitor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;

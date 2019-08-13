@@ -1,6 +1,7 @@
 package by.vironit.training.basumatarau.messenger.api;
 
 import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
+import by.vironit.training.basumatarau.messenger.dto.SearchCriteriaDto;
 import by.vironit.training.basumatarau.messenger.dto.UserAccountRegistrationDto;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
 import by.vironit.training.basumatarau.messenger.exception.NoEntityFound;
@@ -81,18 +82,18 @@ public class UserController {
     @GetMapping(value = "/contacts/search", produces = {"application/json;charset=utf-8"})
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
-    public Page<ContactEntryVo>
-        searchContactEntries(Principal principal,
-                          @Valid
-                          @PageableDefault(page = 0, size = 20)
-                          @SortDefault.SortDefaults({
-                                  @SortDefault(sort = "id", direction = Sort.Direction.ASC)
-                          }) Pageable pageable) {
+    public Page<UserProfileDto>
+        searchUsers(Principal principal,
+                             @Valid
+                             @PageableDefault(page = 0, size = 20)
+                             @SortDefault.SortDefaults({
+                                @SortDefault(sort = "id", direction = Sort.Direction.ASC)
+                             }) Pageable pageable,
+                             @Valid @RequestBody SearchCriteriaDto criteria) {
         final UserProfileDto currentUser =
                 userService.getUserProfileByUserEmail(principal.getName());
 
-        //todo
-        return null;
+        return userService.searchForUsers(pageable, criteria);
     }
 
     @DeleteMapping(value = "/contact{id}")

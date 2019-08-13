@@ -1,7 +1,6 @@
 package by.vironit.training.basumatarau.messenger.dto;
 
-import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitor;
-import by.vironit.training.basumatarau.messenger.util.MessagingServiceVisitorImpl;
+import by.vironit.training.basumatarau.messenger.service.util.MessagingServiceVisitor;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 

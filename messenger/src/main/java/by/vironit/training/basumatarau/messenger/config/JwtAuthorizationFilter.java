@@ -1,6 +1,5 @@
 package by.vironit.training.basumatarau.messenger.config;
 
-
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import org.apache.commons.lang3.StringUtils;

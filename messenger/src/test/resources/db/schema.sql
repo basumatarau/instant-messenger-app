@@ -162,7 +162,7 @@ CREATE TABLE instant_messenger_db_schema.message_status_info (
 	CONSTRAINT message_status_info_fk FOREIGN KEY (id_message) REFERENCES instant_messenger_db_schema.messages(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT message_status_info_fk_1 FOREIGN KEY (id_contact_entry) REFERENCES instant_messenger_db_schema.contact_entries(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
-CREATE UNIQUE INDEX message_status_info_id_contact_entry_idx ON instant_messenger_db_schema.message_status_info USING btree (id_user, id_message);
+CREATE UNIQUE INDEX message_status_info_id_contact_entry_idx ON instant_messenger_db_schema.message_status_info USING btree (id_contact_entry, id_message);
 
 --## ALTER SEQUENCE message_status_info_id_seq OWNED BY message_status_info.id;
 

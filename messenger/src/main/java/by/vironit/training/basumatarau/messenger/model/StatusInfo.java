@@ -173,14 +173,12 @@ public class StatusInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StatusInfo that = (StatusInfo) o;
-        return Objects.equals(delivered, that.delivered) &&
-                Objects.equals(read, that.read) &&
-                Objects.equals(contactEntry, that.contactEntry) &&
+        return  Objects.equals(contactEntry, that.contactEntry) &&
                 Objects.equals(message, that.message);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(delivered, read, contactEntry, message);
+        return Objects.hash(contactEntry, message);
     }
 }

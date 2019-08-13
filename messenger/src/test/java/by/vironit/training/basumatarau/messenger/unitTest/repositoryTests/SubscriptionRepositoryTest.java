@@ -4,7 +4,7 @@ import by.vironit.training.basumatarau.messenger.model.ChatRoom;
 import by.vironit.training.basumatarau.messenger.model.Subscription;
 import by.vironit.training.basumatarau.messenger.model.User;
 import by.vironit.training.basumatarau.messenger.repository.ChatRoomRepository;
-import by.vironit.training.basumatarau.messenger.repository.SubscriptionRepository;
+import by.vironit.training.basumatarau.messenger.repository.ContactEntryRepository;
 import by.vironit.training.basumatarau.messenger.repository.UserRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ public class SubscriptionRepositoryTest extends BaseRepositoryTest{
     private ChatRoomRepository chatRoomRepository;
 
     @Autowired
-    private SubscriptionRepository subscriptionRepository;
+    private ContactEntryRepository contactEntryRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -42,7 +42,7 @@ public class SubscriptionRepositoryTest extends BaseRepositoryTest{
                 .enteredChat(new Date().getTime())
                 .privilege(Subscription.ChatRoomPrivilege.CHATADMIN)
                 .build();
-        subscriptionRepository.save(adminSubscription);
+        contactEntryRepository.save(adminSubscription);
 
         assertThat(userRepository
                 .findUserWithSubscriptionsByEmail(anyUser.getEmail())

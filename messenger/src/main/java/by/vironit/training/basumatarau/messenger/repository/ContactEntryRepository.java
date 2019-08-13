@@ -1,9 +1,6 @@
 package by.vironit.training.basumatarau.messenger.repository;
 
-import by.vironit.training.basumatarau.messenger.model.PersonalContact;
-import by.vironit.training.basumatarau.messenger.model.ContactEntry;
-import by.vironit.training.basumatarau.messenger.model.Subscription;
-import by.vironit.training.basumatarau.messenger.model.User;
+import by.vironit.training.basumatarau.messenger.model.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -54,4 +51,30 @@ public interface ContactEntryRepository
     @Query(value = "select ce from ContactEntry ce " +
             "where ce.id=?1 and type(ce) in (Subscription) ")
     Optional<Subscription> findSubscriptionById(Long id);
+
+    @Query("select c from ContactEntry c " +
+            "where treat(c as PersonalContact).owner.id=:ownerId " +
+            "and " +
+            "treat(c as PersonalContact).person.id=:personId")
+    Optional<PersonalContact> findContactByOwnerIdAndPersonId(
+            @Param("ownerId") Long ownerId,
+            @Param("personId") Long personId);
+
+    @Query(value = "select c from ContactEntry c " +
+            "where treat(c as PersonalContact).id=:id")
+    Optional<PersonalContact> findPersonalContactById(
+            @Param("id") Long id
+    );
+
+    @Query(value = "select con from ContactEntry con " +
+            "where type(con) in (Subscription) " +
+            "and " +
+            "treat(con as Subscription).owner.id=:#{#owner.id} " +
+            "and " +
+            "treat(con as Subscription).chatRoom.id=:#{#chatRoom.id} ")
+    Optional<Subscription> findSubscriptionByChatRoomAndOwner(
+            @Param("chatRoom") ChatRoom chatRoom,
+            @Param("owner") User owner
+    );
+
 }

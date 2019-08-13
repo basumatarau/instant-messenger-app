@@ -1,4 +1,4 @@
-package by.vironit.training.basumatarau.messenger.util;
+package by.vironit.training.basumatarau.messenger.service.util;
 
 import by.vironit.training.basumatarau.messenger.dto.IncomingMessageDto;
 import by.vironit.training.basumatarau.messenger.dto.PersonalContactVo;

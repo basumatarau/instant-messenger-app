@@ -4,7 +4,7 @@ import by.vironit.training.basumatarau.messenger.model.ChatRoom;
 import by.vironit.training.basumatarau.messenger.model.Subscription;
 import by.vironit.training.basumatarau.messenger.model.User;
 import by.vironit.training.basumatarau.messenger.repository.ChatRoomRepository;
-import by.vironit.training.basumatarau.messenger.repository.SubscriptionRepository;
+import by.vironit.training.basumatarau.messenger.repository.ContactEntryRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
     protected ChatRoomRepository chatRoomRepository;
 
     @Autowired
-    protected SubscriptionRepository subscriptionRepository;
+    protected ContactEntryRepository contactEntryRepository;
 
     protected User admin;
     protected Subscription testedSubscription;
@@ -48,12 +48,12 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
                 .chatRoom(chatRoom)
                 .build();
 
-        subscriptionRepository.saveAndFlush(
+        contactEntryRepository.saveAndFlush(
                 testedSubscription
         );
 
         for (User user : users) {
-            subscriptionRepository.saveAndFlush(
+            contactEntryRepository.saveAndFlush(
                     new Subscription.SubscriptionBuilder()
                             .enteredChat(new Date().getTime())
                             .privilege(Subscription.ChatRoomPrivilege.COMMONER)
@@ -67,7 +67,7 @@ public class ChatRoomRepositoryTest extends BaseRepositoryTest {
 
     @After
     public void cleanChatRoomRepoTest() {
-        subscriptionRepository.deleteAll();
+        contactEntryRepository.deleteAll();
     }
 
     @Test

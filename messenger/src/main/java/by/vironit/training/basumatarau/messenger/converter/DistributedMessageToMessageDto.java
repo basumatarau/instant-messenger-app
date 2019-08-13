@@ -4,7 +4,7 @@ import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messenger.dto.MessageDto;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
 import by.vironit.training.basumatarau.messenger.model.*;
-import by.vironit.training.basumatarau.messenger.repository.SubscriptionRepository;
+import by.vironit.training.basumatarau.messenger.repository.ContactEntryRepository;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.spi.MappingContext;
@@ -21,7 +21,7 @@ public class DistributedMessageToMessageDto
     private ModelMapper modelMapper;
 
     @Autowired
-    private SubscriptionRepository subscriptionRepository;
+    private ContactEntryRepository contactEntryRepository;
 
     @Override
     public MessageDto convert(MappingContext<DistributedMessage, MessageDto> context) {
@@ -29,7 +29,7 @@ public class DistributedMessageToMessageDto
         final ChatRoom chatRoom = context.getSource().getChatRoom();
 
         final Subscription subscription =
-                subscriptionRepository.findSubscriptionByChatRoomAndOwner(chatRoom, author)
+                contactEntryRepository.findSubscriptionByChatRoomAndOwner(chatRoom, author)
                 .orElseThrow(() -> new EntityNotFoundException("no sub found"));
 
         return context.getSource() == null ? null :

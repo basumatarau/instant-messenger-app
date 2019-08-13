@@ -1,7 +1,7 @@
 package by.vironit.training.basumatarau.messenger.unitTest.repositoryTests;
 
 import by.vironit.training.basumatarau.messenger.model.*;
-import by.vironit.training.basumatarau.messenger.repository.PersonalContactRepository;
+import by.vironit.training.basumatarau.messenger.repository.ContactEntryRepository;
 import by.vironit.training.basumatarau.messenger.repository.PrivateMessageRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
     private PrivateMessageRepository messageRepository;
 
     @Autowired
-    private PersonalContactRepository personalContactRepository;
+    private ContactEntryRepository contactEntryRepository;
 
     private User messageSender;
     private User messageReceiver;
@@ -49,7 +49,7 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
         userRepository.save(messageReceiver);
         userRepository.save(messageSender);
 
-        final PersonalContact contact = personalContactRepository.findContactByOwnerIdAndPersonId(
+        final PersonalContact contact = contactEntryRepository.findContactByOwnerIdAndPersonId(
                 messageSender.getId(), messageReceiver.getId())
                 .orElseThrow(
                         () -> new InitializationError("test case setup failure"));
