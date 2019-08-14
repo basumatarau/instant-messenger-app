@@ -10,9 +10,9 @@ import org.springframework.data.domain.Sort;
 
 import java.io.IOException;
 
-//todo fix the ambiguous serialization issue
 @JsonComponent
-public class PageOfContactEntriesSerializer extends JsonSerializer<Page<ContactEntryVo>> {
+public class PageOfContactEntriesSerializer
+        extends JsonSerializer<Page<ContactEntryVo>> {
     @Override
     public void serialize(Page<ContactEntryVo> page,
                           JsonGenerator jsonGenerator,

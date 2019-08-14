@@ -4,6 +4,7 @@ import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messenger.dto.SearchCriteriaDto;
 import by.vironit.training.basumatarau.messenger.dto.UserAccountRegistrationDto;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
+import by.vironit.training.basumatarau.messenger.dto.page.PageOfUserProfileDtos;
 import by.vironit.training.basumatarau.messenger.exception.NoEntityFound;
 import by.vironit.training.basumatarau.messenger.exception.UserAccountOccupied;
 import by.vironit.training.basumatarau.messenger.model.ContactEntry;
@@ -52,7 +53,7 @@ public class UserServiceImpl implements UserService {
                         .map(user -> modelMapper.map(user, UserProfileDto.class))
                         .collect(Collectors.toList());
 
-        return new PageImpl<>(content, pageable, users.getTotalElements());
+        return new PageOfUserProfileDtos(content, pageable, users.getTotalElements());
     }
 
     @Override

@@ -99,8 +99,9 @@ public class UserController {
     @DeleteMapping(value = "/contact{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
-    public ResponseEntity<String>
-        deleteContact(Authentication auth, @PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteContact(
+            Authentication auth,
+            @PathVariable("id") Long id) {
 
         final ContactEntry contact =
                 contactEntryService
@@ -120,8 +121,9 @@ public class UserController {
     @PutMapping(value = "/contact{id}/request")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
-    public void
-        sendContactRequest(Principal principal, @PathVariable("id") Long id)
+    public void sendContactRequest(
+            Principal principal,
+            @PathVariable("id") Long id)
             throws InstantiationException {
 
         final String username = principal.getName();
@@ -132,8 +134,9 @@ public class UserController {
 
     @PutMapping(value = "/contact{id}/confirm")
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
-    public ResponseEntity<String>
-        confirmContactRequest(Principal principal, @PathVariable("id") Long id)
+    public ResponseEntity<String> confirmContactRequest(
+            Principal principal,
+            @PathVariable("id") Long id)
             throws InstantiationException {
 
         final PersonalContact personalContact = contactEntryService
@@ -150,8 +153,9 @@ public class UserController {
 
     @DeleteMapping(value = "/contact{id}/decline")
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
-    public ResponseEntity<String>
-        declineContactRequest(Authentication auth, @PathVariable("id") Long id)
+    public ResponseEntity<String> declineContactRequest(
+            Authentication auth,
+            @PathVariable("id") Long id)
             throws InstantiationException {
 
         final PersonalContact personalContact = contactEntryService

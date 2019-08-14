@@ -2,6 +2,7 @@ package by.vironit.training.basumatarau.messenger.service.impl;
 
 import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
 import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
+import by.vironit.training.basumatarau.messenger.dto.page.PageOfContactEntryVos;
 import by.vironit.training.basumatarau.messenger.exception.ContactRequestIsAlreadyPending;
 import by.vironit.training.basumatarau.messenger.exception.NoEntityFound;
 import by.vironit.training.basumatarau.messenger.model.PersonalContact;
@@ -14,7 +15,6 @@ import by.vironit.training.basumatarau.messenger.service.ContactService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,7 +58,7 @@ public class ContactServiceImpl implements ContactService {
                 .map(c -> modelMapper.map(c, ContactEntryVo.class))
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(contacts, pageable, contacts.size());
+        return new PageOfContactEntryVos(contacts, pageable, contacts.size());
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ContactServiceImpl implements ContactService {
                 .map(c -> modelMapper.map(c, ContactEntryVo.class))
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(contacts, pageable, contacts.size());
+        return new PageOfContactEntryVos(contacts, pageable, contacts.size());
     }
 
     @Override
