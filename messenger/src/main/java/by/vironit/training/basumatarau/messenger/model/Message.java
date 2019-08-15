@@ -1,7 +1,12 @@
 package by.vironit.training.basumatarau.messenger.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "messages", schema = "instant_messenger_db_schema")
@@ -34,11 +39,11 @@ public abstract class Message {
     @Column(name = "timesent", nullable = false)
     private Long timeSent;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(
-            name = "id_messageresource",
-            foreignKey = @ForeignKey)
-    private MessageResource resource;
+    @OneToMany(mappedBy = "message",
+            orphanRemoval = true,
+            cascade = CascadeType.PERSIST)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<MessageResource> resources;
 
     public Message(){}
 
@@ -46,7 +51,7 @@ public abstract class Message {
         this.body = builder.body;
         this.author = builder.author;
         this.timeSent =  builder.timeSent;
-        this.resource = builder.messageResource;
+        this.resources = builder.resources;
     }
 
     public static abstract class MessageBuilder
@@ -54,7 +59,7 @@ public abstract class Message {
         private String body;
         private User author;
         private Long timeSent;
-        private MessageResource messageResource;
+        private Set<MessageResource> resources = new LinkedHashSet<>();
 
         protected MessageBuilder(){}
 
@@ -82,8 +87,8 @@ public abstract class Message {
 
         /**see also {@link #body(String)} */
         @SuppressWarnings("unchecked")
-        public B messageSource(MessageResource messageResource){
-            this.messageResource = messageResource;
+        public B messageResources(Set<MessageResource> resources){
+            this.resources = resources;
             return ((B) this);
         }
 
@@ -131,12 +136,12 @@ public abstract class Message {
         this.timeSent = timeSent;
     }
 
-    public MessageResource getResource() {
-        return resource;
+    public Set<MessageResource> getResources() {
+        return resources;
     }
 
-    public void setResource(MessageResource resource) {
-        this.resource = resource;
+    public void setResources(Set<MessageResource> resources) {
+        this.resources = resources;
     }
 
     @Override

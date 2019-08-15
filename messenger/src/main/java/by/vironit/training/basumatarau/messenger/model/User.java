@@ -10,10 +10,10 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-/*@SQLDelete(
+@SQLDelete(
         sql = "update instant_messenger_db_schema.users set enabled=false where id = ? ",
         check = ResultCheckStyle.COUNT)
-@Where(clause = "enabled=true ")*/
+@Where(clause = "enabled=true ")
 @Table(name = "users", schema = "instant_messenger_db_schema")
 public class User {
     @Id
@@ -53,10 +53,10 @@ public class User {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<ContactEntry> contactEntries = new LinkedHashSet<>();
 
-    /*    @PreRemove
+    @PreRemove
     private void deleteUser(){
         this.isEnabled = false;
-    }*/
+    }
 
     public User() {
     }

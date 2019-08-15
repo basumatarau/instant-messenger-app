@@ -1,6 +1,8 @@
 package by.vironit.training.basumatarau.messenger.config;
 
 import by.vironit.training.basumatarau.messenger.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -10,11 +12,11 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 
-import java.security.Principal;
-import java.util.Objects;
 
 @Component
 public class SubscribeMessageInterceptor implements ChannelInterceptor {
+
+    private final Logger log = LoggerFactory.getLogger(SubscribeMessageInterceptor.class);
 
     @Autowired
     private UserService userService;
@@ -24,12 +26,8 @@ public class SubscribeMessageInterceptor implements ChannelInterceptor {
         StompHeaderAccessor accessor =
                 MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        if(StompCommand.SUBSCRIBE.equals(Objects.requireNonNull(accessor).getCommand())){
-            final Principal principal = accessor.getUser();
+        log.warn("in preSend of SubscribeMessageInterceptor" + message.getHeaders().toString());
 
-            //todo: "user online" status update notification can be implemented within the interceptor
-            //postSend ?
-        }
         return message;
     }
 

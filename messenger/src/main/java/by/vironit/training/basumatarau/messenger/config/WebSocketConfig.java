@@ -32,6 +32,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .interceptors(getSubscribeMessageInterceptorBean());
     }
 
+    @Override
+    public void configureClientOutboundChannel(ChannelRegistration registration) {
+        registration
+                .interceptors(getOutboundMessageInterceptor());
+    }
+
+    @Bean
+    public OutboundMessageInterceptor getOutboundMessageInterceptor(){
+        return new OutboundMessageInterceptor();
+    }
+
     @Bean
     public SubscribeMessageInterceptor getSubscribeMessageInterceptorBean(){
 

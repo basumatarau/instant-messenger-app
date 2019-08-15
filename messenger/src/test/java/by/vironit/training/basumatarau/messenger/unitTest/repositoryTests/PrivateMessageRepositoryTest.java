@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
     @Autowired
-    private PrivateMessageRepository messageRepository;
+    protected PrivateMessageRepository messageRepository;
 
     @Autowired
     private ContactEntryRepository contactEntryRepository;

@@ -6,7 +6,9 @@ import by.vironit.training.basumatarau.messenger.unitTest.repositoryTests.config
 import by.vironit.training.basumatarau.messenger.repository.ChatRoomRepository;
 import by.vironit.training.basumatarau.messenger.repository.UserRepository;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -76,8 +78,8 @@ public abstract class BaseRepositoryTest {
     @After
     public void cleanBase() {
         chatRoomRepository.deleteAll();
-        userRepository.deleteAll();
         users.clear();
+        userRepository.deleteAll();
     }
 
 }

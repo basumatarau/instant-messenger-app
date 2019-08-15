@@ -1,13 +1,12 @@
 package by.vironit.training.basumatarau.messenger.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
-@Table(name = "imagemessageresources", schema = "instant_messenger_db_schema")
+@Table(name = "imagemessageresources",
+        schema = "instant_messenger_db_schema")
 public class ImageResource extends MessageResource {
 
     @Column(name = "width", nullable = false)
@@ -16,13 +15,17 @@ public class ImageResource extends MessageResource {
     @Column(name = "height", nullable = false)
     private Integer height;
 
-    @Column(name = "imagebin", nullable = false)
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "imagebin",
+            columnDefinition = "bytea NOT NULL",
+            nullable = false)
     private byte[] imageBin;
 
     public ImageResource(){}
 
     protected ImageResource(ImageResourceBuilder builder){
-        super();
+        super(builder);
         width = builder.width;
         height = builder.height;
         imageBin = builder.imageBin;

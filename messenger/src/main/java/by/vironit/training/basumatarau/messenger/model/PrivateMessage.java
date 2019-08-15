@@ -11,16 +11,14 @@ import java.util.Objects;
 public class PrivateMessage extends Message {
 
     @ManyToOne
-    @JoinColumn(
-            name = "id_contact",
-            foreignKey = @ForeignKey)
+    @JoinColumn(name = "id_contact",
+            nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private PersonalContact personalContact;
 
     @OneToOne(
             mappedBy = "message",
             cascade = {CascadeType.ALL})
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private StatusInfo delivery;
 
     public PersonalContact getPersonalContact() {

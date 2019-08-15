@@ -1,8 +1,5 @@
 package by.vironit.training.basumatarau.messenger.model;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,13 +12,11 @@ public class DistributedMessage extends Message {
     @JoinColumn(
             name = "id_chatroom",
             foreignKey = @ForeignKey)
-    @OnDelete(action = OnDeleteAction.NO_ACTION)
     private ChatRoom chatRoom;
 
     @OneToMany(mappedBy = "message",
             orphanRemoval = true,
             cascade = {CascadeType.ALL})
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<StatusInfo> deliveries = new HashSet<>();
 
     public ChatRoom getChatRoom() {

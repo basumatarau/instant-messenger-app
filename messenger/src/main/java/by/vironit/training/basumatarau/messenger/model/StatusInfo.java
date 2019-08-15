@@ -7,7 +7,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "message_status_info", schema = "instant_messenger_db_schema")
+@Table(name = "message_status_info",
+        schema = "instant_messenger_db_schema")
 public class StatusInfo {
 
     @Id
@@ -35,7 +36,7 @@ public class StatusInfo {
     @ManyToOne
     @JoinColumn(
             name = "id_contact_entry",
-            nullable = true)
+            nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private ContactEntry contactEntry;
 

@@ -26,6 +26,7 @@ public abstract class ContactEntry {
     @ManyToOne
     @JoinColumn(name = "id_owner",
             nullable = false)
+    //@OnDelete(action = OnDeleteAction.CASCADE)
     private User owner;
 
     public ContactEntry(){}

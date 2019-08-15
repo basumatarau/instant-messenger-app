@@ -1,5 +1,8 @@
 package by.vironit.training.basumatarau.messenger.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -19,6 +22,11 @@ public abstract class MessageResource {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "id_message",
+            nullable = false)
+    private Message message;
+
     public Long getId() {
         return id;
     }
@@ -31,15 +39,25 @@ public abstract class MessageResource {
         this.name = name;
     }
 
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
+    }
+
     public MessageResource(){}
 
     protected MessageResource(MessageResourceBuilder builder){
         this.name = builder.name;
+        this.message = builder.message;
     }
 
     public abstract static class MessageResourceBuilder
             <R extends MessageResource, B extends MessageResourceBuilder<R, B>>{
         private String name;
+        private Message message;
 
         public MessageResourceBuilder(){}
 
@@ -51,10 +69,16 @@ public abstract class MessageResource {
             return ((B) this);
         }
 
+        @SuppressWarnings("unchecked")
+        public B message(Message message){
+            this.message = message;
+            return ((B) this);
+        }
+
         public abstract R build() throws InstantiationException;
 
         protected void buildDataIntegrityCheck() throws InstantiationException {
-            if(name == null){
+            if(name == null || message == null){
                 throw new InstantiationException(
                         "invalid or not sufficient data for " +
                                 getClass().getName() +
@@ -68,12 +92,12 @@ public abstract class MessageResource {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MessageResource that = (MessageResource) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(name, that.name);
+        return Objects.equals(name, that.name) &&
+                Objects.equals(message, that.message);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(name, message);
     }
 }
