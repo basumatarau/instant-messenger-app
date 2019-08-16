@@ -29,9 +29,10 @@ CREATE TABLE if not exists instant_messenger_db_schema.users (
 	enabled bool NOT NULL,
 	CONSTRAINT users_pk PRIMARY KEY (id)
 );
-CREATE UNIQUE INDEX if not exists users_email_idx ON instant_messenger_db_schema.users USING btree (email);
---ALTER SEQUENCE instant_messenger_db_schema.user_id_seq OWNED BY users.id;
 
+CREATE UNIQUE INDEX if not exists users_email_idx ON instant_messenger_db_schema.users USING btree (email);
+
+--ALTER SEQUENCE instant_messenger_db_schema.user_id_seq OWNED BY users.id;
 
 -- DROP SEQUENCE instant_messenger_db_schema.chatrooms_id_seq;
 
@@ -88,19 +89,6 @@ CREATE INDEX if not exists contacts_id_owner_idx ON instant_messenger_db_schema.
 CREATE INDEX if not exists contacts_id_person_idx ON instant_messenger_db_schema.contact_entries USING btree (id_person, id_owner);
 
 --## ALTER SEQUENCE contact_entries_id_seq OWNED BY contact_entries.id;
-
--- Drop table
-
--- DROP TABLE instant_messenger_db_schema.imagemessageresources;
-
-CREATE TABLE if not exists instant_messenger_db_schema.imagemessageresources (
-	id bigserial NOT NULL,
-	"name" varchar(150) NOT NULL,
-	imagebin bytea NOT NULL,
-	width int4 NOT NULL,
-	height int4 NOT NULL,
-	CONSTRAINT imagemessageresources_pk PRIMARY KEY (id)
-);
 
 -- DROP SEQUENCE instant_messenger_db_schema.messages_id_seq;
 
@@ -168,7 +156,7 @@ CREATE UNIQUE INDEX message_status_info_id_contact_entry_idx ON instant_messenge
 
 -- DROP SEQUENCE instant_messenger_db_schema.messageresources_id_seq;
 
-CREATE SEQUENCE if not exists instant_messenger_db_schema.messageresources_id_seq
+CREATE SEQUENCE if not exists instant_messenger_db_schema.message_resource_id_seq
 	INCREMENT BY 1
 	MINVALUE 1
 	MAXVALUE 9223372036854775807
@@ -177,17 +165,20 @@ CREATE SEQUENCE if not exists instant_messenger_db_schema.messageresources_id_se
 
 -- Drop table
 
--- DROP TABLE instant_messenger_db_schema.messageresources;
+-- DROP TABLE instant_messenger_db_schema.message_resources;
 
-CREATE TABLE if not exists instant_messenger_db_schema.messageresources (
-	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.messageresources_id_seq'),
+CREATE TABLE if not exists instant_messenger_db_schema.message_resources (
+	id bigint NOT NULL DEFAULT nextval('instant_messenger_db_schema.message_resource_id_seq'),
+    resource_type varchar(10) NOT NULL,
 	id_message bigint NOT NULL,
 	"name" varchar(150) NOT NULL,
-	CONSTRAINT messageresource_pk PRIMARY KEY (id),
-	CONSTRAINT messageresource_fk FOREIGN KEY (id_message) REFERENCES instant_messenger_db_schema.messages(id) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT messageresource_fk1 FOREIGN KEY (id) REFERENCES instant_messenger_db_schema.imagemessageresources(id) ON UPDATE CASCADE ON DELETE CASCADE
+	imagebin bytea,
+	width int4,
+	height int4,
+	CONSTRAINT message_resource_pk PRIMARY KEY (id),
+	CONSTRAINT message_resource_fk FOREIGN KEY (id_message) REFERENCES instant_messenger_db_schema.messages(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
---## ALTER SEQUENCE messageresources_id_seq OWNED BY messageresources.id;
+--## ALTER SEQUENCE message_resource_id_seq OWNED BY message_resources.id;
 
 

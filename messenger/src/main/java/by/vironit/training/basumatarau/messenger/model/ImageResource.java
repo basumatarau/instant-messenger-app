@@ -5,8 +5,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
-@Table(name = "imagemessageresources",
-        schema = "instant_messenger_db_schema")
+@DiscriminatorValue(value = MessageResource.IMAGE_TYPE_RESOURCE)
 public class ImageResource extends MessageResource {
 
     @Column(name = "width", nullable = false)

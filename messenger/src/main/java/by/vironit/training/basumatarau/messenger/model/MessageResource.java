@@ -1,19 +1,21 @@
 package by.vironit.training.basumatarau.messenger.model;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Table(name = "message_resources", schema = "instant_messenger_db_schema")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "resource_type", discriminatorType=DiscriminatorType.STRING)
 public abstract class MessageResource {
+
+    static final String IMAGE_TYPE_RESOURCE = "image";
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "messageresource_identity_generator")
-    @SequenceGenerator(name = "messageresource_identity_generator",
-            sequenceName = "messageresources_id_seq",
+            generator = "message_resource_identity_generator")
+    @SequenceGenerator(name = "message_resource_identity_generator",
+            sequenceName = "message_resource_id_seq",
             schema = "instant_messenger_db_schema",
             allocationSize = 1)
     @Column(name = "id", updatable = false, nullable = false)
