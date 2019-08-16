@@ -32,7 +32,7 @@ public class MessageResourceRepositoryTest extends BaseRepositoryTest{
     private MessageResourceRepository messageResourceRepository;
 
     //todo fix the test...
-    //@Test
+    @Test
     public void whenImagePersisted_thenImageCanBeRetrieved()
             throws IOException, InstantiationException, URISyntaxException {
 
@@ -106,5 +106,15 @@ public class MessageResourceRepositoryTest extends BaseRepositoryTest{
                         imageResource.getImageBin()
                 )
         ).isTrue();
+    }
+
+
+    @Override
+    public void cleanBase() {
+        chatRoomRepository.deleteAll();
+        for (User user : users) {
+            userRepository.delete(user);
+        }
+        messageResourceRepository.deleteAll();
     }
 }

@@ -27,6 +27,7 @@ public class PrivateMessageRepositoryTest extends BaseRepositoryTest {
 
     @Before
     public void pmRepositoryTestInit() throws InitializationError, InstantiationException {
+        users.remove(users.stream().findAny().orElse(null));
         messageSender = users.stream().findAny().orElseThrow(
                 () -> new InitializationError("test case setup failure"));
         users.remove(messageSender);
