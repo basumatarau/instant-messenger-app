@@ -56,6 +56,10 @@ public class DistributedMessage extends Message {
                                 .build())
                         .collect(Collectors.toSet())
         );
+
+        this.getResources().forEach(
+                messageResource -> messageResource.setMessage(this)
+        );
     }
 
     public static class DistributedMessageBuilder

@@ -36,6 +36,7 @@ public class UserController {
 
     @GetMapping(value = {"/login", "/me"})
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
     public UserProfileDto getUserInfo(Principal principal) {
         return userService.getUserProfileByUserEmail(principal.getName());
     }

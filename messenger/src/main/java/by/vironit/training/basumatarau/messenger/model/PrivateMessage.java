@@ -55,6 +55,10 @@ public class PrivateMessage extends Message {
                 .delivered(false)
                 .build()
         );
+
+        this.getResources().forEach(
+                resource -> resource.setMessage(this)
+        );
     }
 
     public static class PrivateMessageBuilder

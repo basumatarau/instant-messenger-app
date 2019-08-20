@@ -12,14 +12,17 @@ public class IncomingMessageDto {
     @Size(max = 500)
     private String body;
 
+    private MessageResourceDto[] resources;
+
     public IncomingMessageDto() {
     }
 
-    public IncomingMessageDto(String body) {
+    public IncomingMessageDto(@NotNull @Size(max = 500) String body) {
         this.body = body;
     }
 
-    public IncomingMessageDto(Long contactEntryId, String body) {
+    public IncomingMessageDto(@NotNull Long contactEntryId,
+                              @NotNull @Size(max = 500) String body) {
         this.contactEntryId = contactEntryId;
         this.body = body;
     }
@@ -38,5 +41,13 @@ public class IncomingMessageDto {
 
     public void setBody(String body) {
         this.body = body;
+    }
+
+    public MessageResourceDto[] getResources() {
+        return resources;
+    }
+
+    public void setResources(MessageResourceDto[] resources) {
+        this.resources = resources;
     }
 }

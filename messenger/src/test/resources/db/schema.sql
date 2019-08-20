@@ -172,7 +172,7 @@ CREATE TABLE if not exists instant_messenger_db_schema.message_resources (
     resource_type varchar(10) NOT NULL,
 	id_message bigint NOT NULL,
 	"name" varchar(150) NOT NULL,
-	imagebin bytea,
+	binData bytea,
 	width int4,
 	height int4,
 	CONSTRAINT message_resource_pk PRIMARY KEY (id),

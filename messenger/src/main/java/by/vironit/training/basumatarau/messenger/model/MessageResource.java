@@ -7,9 +7,11 @@ import java.util.Objects;
 @Table(name = "message_resources", schema = "instant_messenger_db_schema")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "resource_type", discriminatorType=DiscriminatorType.STRING)
-public abstract class MessageResource {
+@DiscriminatorValue(value = MessageResource.PLAIN_FILE_RESOURCE)
+public class MessageResource {
 
-    static final String IMAGE_TYPE_RESOURCE = "image";
+    static final String PLAIN_FILE_RESOURCE = "file";
+    static final String IMAGE_RESOURCE = "image";
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
@@ -23,6 +25,13 @@ public abstract class MessageResource {
 
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "binData",
+            columnDefinition = "bytea NOT NULL",
+            nullable = false)
+    private byte[] binData;
 
     @ManyToOne
     @JoinColumn(name = "id_message",
@@ -49,17 +58,27 @@ public abstract class MessageResource {
         this.message = message;
     }
 
+    public byte[] getBinData() {
+        return binData;
+    }
+
+    public void setBinData(byte[] binData) {
+        this.binData = binData;
+    }
+
     public MessageResource(){}
 
     protected MessageResource(MessageResourceBuilder builder){
         this.name = builder.name;
         this.message = builder.message;
+        this.binData = builder.data;
     }
 
-    public abstract static class MessageResourceBuilder
+    public static class MessageResourceBuilder
             <R extends MessageResource, B extends MessageResourceBuilder<R, B>>{
         private String name;
         private Message message;
+        private byte[] data;
 
         public MessageResourceBuilder(){}
 
@@ -77,10 +96,23 @@ public abstract class MessageResource {
             return ((B) this);
         }
 
-        public abstract R build() throws InstantiationException;
+        @SuppressWarnings("unchecked")
+        public B data(byte[] data){
+            this.data = data;
+            return ((B) this);
+        }
+
+        /**
+         * R is parent type of the returned value;
+         */
+        @SuppressWarnings("unchecked")
+        public R build() throws InstantiationException{
+            buildDataIntegrityCheck();
+            return (R) new MessageResource(this);
+        }
 
         protected void buildDataIntegrityCheck() throws InstantiationException {
-            if(name == null || message == null){
+            if(name == null || message == null || data == null){
                 throw new InstantiationException(
                         "invalid or not sufficient data for " +
                                 getClass().getName() +

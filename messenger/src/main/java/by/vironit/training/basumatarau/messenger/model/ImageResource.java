@@ -1,25 +1,17 @@
 package by.vironit.training.basumatarau.messenger.model;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
-@DiscriminatorValue(value = MessageResource.IMAGE_TYPE_RESOURCE)
+@DiscriminatorValue(value = MessageResource.IMAGE_RESOURCE)
 public class ImageResource extends MessageResource {
 
-    @Column(name = "width", nullable = false)
+    @Column(name = "width")
     private Integer width;
 
-    @Column(name = "height", nullable = false)
+    @Column(name = "height")
     private Integer height;
-
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "imagebin",
-            columnDefinition = "bytea NOT NULL",
-            nullable = false)
-    private byte[] imageBin;
 
     public ImageResource(){}
 
@@ -27,7 +19,6 @@ public class ImageResource extends MessageResource {
         super(builder);
         width = builder.width;
         height = builder.height;
-        imageBin = builder.imageBin;
     }
 
     public static class ImageResourceBuilder
@@ -36,7 +27,6 @@ public class ImageResource extends MessageResource {
 
         private Integer width;
         private Integer height;
-        private byte[] imageBin;
 
         public ImageResourceBuilder width(Integer width){
             this.width = width;
@@ -45,11 +35,6 @@ public class ImageResource extends MessageResource {
 
         public ImageResourceBuilder height(Integer height){
             this.height = height;
-            return this;
-        }
-
-        public ImageResourceBuilder imageBin(byte[] imageBin){
-            this.imageBin = imageBin;
             return this;
         }
 
@@ -62,7 +47,7 @@ public class ImageResource extends MessageResource {
         @Override
         protected void buildDataIntegrityCheck() throws InstantiationException {
             super.buildDataIntegrityCheck();
-            if(width == null || height == null || imageBin == null){
+            if(width == null || height == null){
                 throw new InstantiationException(
                         "invalid or not sufficient data for " +
                                 getClass().getName() +
@@ -87,14 +72,6 @@ public class ImageResource extends MessageResource {
         this.height = height;
     }
 
-    public byte[] getImageBin() {
-        return imageBin;
-    }
-
-    public void setImageBin(byte[] imageBin) {
-        this.imageBin = imageBin;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,14 +79,11 @@ public class ImageResource extends MessageResource {
         if (!super.equals(o)) return false;
         ImageResource that = (ImageResource) o;
         return Objects.equals(width, that.width) &&
-                Objects.equals(height, that.height) &&
-                Arrays.equals(imageBin, that.imageBin);
+                Objects.equals(height, that.height);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(super.hashCode(), width, height);
-        result = 31 * result + Arrays.hashCode(imageBin);
-        return result;
+        return Objects.hash(super.hashCode(), width, height);
     }
 }

@@ -30,7 +30,7 @@ public class MessageController {
     @MessageMapping("/hello")
     @SendTo("/topic/greetings")
     public IncomingMessageDto handleSimpleGreeting(IncomingMessageDto greeting){
-        return new IncomingMessageDto(greeting.getBody());
+        return greeting;
     }
 
     @MessageMapping("/messaging")

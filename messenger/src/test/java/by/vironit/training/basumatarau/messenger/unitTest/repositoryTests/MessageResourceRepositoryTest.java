@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -16,10 +18,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@Profile("image-persistence-test")
 public class MessageResourceRepositoryTest extends BaseRepositoryTest{
 
     @Autowired
@@ -31,33 +33,17 @@ public class MessageResourceRepositoryTest extends BaseRepositoryTest{
     @Autowired
     private MessageResourceRepository messageResourceRepository;
 
-    //todo fix the test...
-    @Test
-    public void whenImagePersisted_thenImageCanBeRetrieved()
-            throws IOException, InstantiationException, URISyntaxException {
 
-        final URI uri
-                = getClass()
-                .getResource("/test-image.jpg")
-                .toURI();
+    private User sender;
+    private User receiver;
 
-        final BufferedImage image =
-                ImageIO.read(
-                        new File(
-                                uri
-                        )
-                );
+    @Override
+    public void initBase() throws InstantiationException {
+        super.initBase();
 
-        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ImageIO.write(image, "jpg", byteArrayOutputStream);
-        byteArrayOutputStream.flush();
-
-
-
-
-        final User sender = users.stream().findAny().orElseThrow(() -> new RuntimeException("failed to find a user"));
+        sender = users.stream().findAny().orElseThrow(() -> new RuntimeException("failed to find a user"));
         users.remove(sender);
-        final User receiver = users.stream().findAny().orElseThrow(() -> new RuntimeException("failed to find a user"));
+        receiver = users.stream().findAny().orElseThrow(() -> new RuntimeException("failed to find a user"));
 
         final PersonalContact personalContact = new PersonalContact.ContactBuilder()
                 .confirmed(true)
@@ -74,6 +60,30 @@ public class MessageResourceRepositoryTest extends BaseRepositoryTest{
         receiver.getContactEntries().add(personalContactTwo);
         userRepository.saveAndFlush(sender);
         userRepository.saveAndFlush(receiver);
+    }
+
+    @Test
+    public void whenImagePersisted_thenImageCanBeRetrieved()
+            throws IOException, InstantiationException, URISyntaxException {
+
+        final URI uri
+                = getClass()
+                .getResource("/test-image.jpg")
+                .toURI();
+
+        final File imageFile = new File(uri);
+        final BufferedImage image = ImageIO.read(imageFile);
+
+        final ImageInputStream imageInputStream = ImageIO.createImageInputStream(imageFile);
+        final Iterator<ImageReader> imageReaders = ImageIO.getImageReaders(imageInputStream);
+        if(!imageReaders.hasNext()){
+            throw new RuntimeException("no imageReaders found");
+        }
+        final ImageReader imageReader = imageReaders.next();
+
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ImageIO.write(image, imageReader.getFormatName(), byteArrayOutputStream);
+        byteArrayOutputStream.flush();
 
         final PrivateMessage message = new PrivateMessage.PrivateMessageBuilder()
                 .author(userRepository.findByEmail(sender.getEmail()).orElseThrow())
@@ -90,10 +100,19 @@ public class MessageResourceRepositoryTest extends BaseRepositoryTest{
                 .name("test-pic.jpg")
                 .height(image.getHeight())
                 .width(image.getWidth())
-                .imageBin(byteArrayOutputStream.toByteArray())
+                .data(byteArrayOutputStream.toByteArray())
                 .message(message)
                 .build();
+
+        final MessageResource anotherResource
+                = new MessageResource.MessageResourceBuilder()
+                .name("test-pic.jpg")
+                .data(byteArrayOutputStream.toByteArray())
+                .message(message)
+                .build();
+
         message.getResources().add(imageResource);
+        message.getResources().add(anotherResource);
 
         messageRepository.saveAndFlush(message);
 
@@ -102,8 +121,8 @@ public class MessageResourceRepositoryTest extends BaseRepositoryTest{
 
         assertThat(
                 Arrays.equals(
-                        ((ImageResource) retrievedImage).getImageBin(),
-                        imageResource.getImageBin()
+                        ((ImageResource) retrievedImage).getBinData(),
+                        imageResource.getBinData()
                 )
         ).isTrue();
     }

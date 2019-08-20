@@ -12,6 +12,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.Date;
 
 @Service
@@ -47,6 +48,12 @@ public class MessagingServiceImpl implements MessagingService {
                         .timeSent(new Date().getTime())
                         .build();
 
+        if(messageDto.getResources() != null) {
+            for (MessageResourceDto resource : messageDto.getResources()) {
+                newPrivateMessage.getResources().add(modelMapper.map(resource, MessageResource.class));
+            }
+        }
+
         privateMessageRepository.save(newPrivateMessage);
 
         simpMessagingTemplate.convertAndSendToUser(
@@ -79,6 +86,14 @@ public class MessagingServiceImpl implements MessagingService {
                         .body(messageDto.getBody())
                         .timeSent(new Date().getTime())
                         .build();
+
+        if(messageDto.getResources() != null) {
+            for (MessageResourceDto resource : messageDto.getResources()) {
+                newDistributedMessage
+                        .getResources()
+                        .add(modelMapper.map(resource, MessageResource.class));
+            }
+        }
 
         distributedMessageRepository.save(newDistributedMessage);
 

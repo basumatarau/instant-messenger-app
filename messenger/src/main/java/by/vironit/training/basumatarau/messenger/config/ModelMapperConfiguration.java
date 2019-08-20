@@ -29,6 +29,7 @@ public class ModelMapperConfiguration {
         modelMapper.addConverter(getDistributedMessageToMessageWithDetailsDtoConverter());
         modelMapper.addConverter(getPrivateMessageToMessageWithDetailsDtoConverter());
         modelMapper.addConverter(new SearchCriteriaDtoToUserSearchSpec());
+        modelMapper.addConverter(new MessageResourceDtoToMessageResource());
         return modelMapper;
     }
 

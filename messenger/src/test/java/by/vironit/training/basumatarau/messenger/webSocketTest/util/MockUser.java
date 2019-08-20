@@ -9,6 +9,8 @@ import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
 import org.springframework.web.socket.sockjs.client.WebSocketTransport;
 
+import javax.websocket.ContainerProvider;
+import javax.websocket.WebSocketContainer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +24,14 @@ public class MockUser {
 
         port = connectionPort;
 
+        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        container.setDefaultMaxBinaryMessageBufferSize(32768);
+        container.setDefaultMaxTextMessageBufferSize(32768);
+
         List<Transport> transports = new ArrayList<>();
-        transports.add(new WebSocketTransport(new StandardWebSocketClient()));
+        transports.add(new WebSocketTransport(new StandardWebSocketClient(container)));
 
         this.sockJsClient = new SockJsClient(transports);
-
         this.stompClient = new WebSocketStompClient(this.sockJsClient);
         this.stompClient.setMessageConverter(messageConverter);
     }
