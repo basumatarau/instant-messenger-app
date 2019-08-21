@@ -1,14 +1,15 @@
 package by.vironit.training.basumatarau.messenger.api;
 
-import by.vironit.training.basumatarau.messenger.dto.ContactEntryVo;
-import by.vironit.training.basumatarau.messenger.dto.SearchCriteriaDto;
-import by.vironit.training.basumatarau.messenger.dto.UserAccountRegistrationDto;
-import by.vironit.training.basumatarau.messenger.dto.UserProfileDto;
+import by.vironit.training.basumatarau.messenger.dto.*;
 import by.vironit.training.basumatarau.messenger.exception.NoEntityFound;
 import by.vironit.training.basumatarau.messenger.model.PersonalContact;
 import by.vironit.training.basumatarau.messenger.model.ContactEntry;
 import by.vironit.training.basumatarau.messenger.service.ContactService;
 import by.vironit.training.basumatarau.messenger.service.UserService;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ResponseHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +35,14 @@ public class UserController {
     @Autowired
     private ContactService contactEntryService;
 
+    @ApiImplicitParams(value = {
+            @ApiImplicitParam(paramType = "header", name = "username", required = true),
+            @ApiImplicitParam(paramType = "header", name = "password", required = true)
+    })
+    @ApiResponse(
+            code = 200,
+            message = "api access token (JWT)",
+            responseHeaders = {@ResponseHeader(name = "Authorization")})
     @GetMapping(value = {"/login", "/me"})
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
@@ -95,6 +104,17 @@ public class UserController {
                 userService.getUserProfileByUserEmail(principal.getName());
 
         return userService.searchForUsers(pageable, criteria);
+    }
+
+    @PutMapping("/chatRoom")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
+    public void createNewChatRoom(@Valid @RequestBody NewChatRoomDto newChatRoom,
+                                  Principal principal){
+
+        userService.createNewChatRoom(
+                userService.getUserProfileByUserEmail(principal.getName()),
+                newChatRoom);
     }
 
     @DeleteMapping(value = "/contact{id}")
@@ -170,6 +190,8 @@ public class UserController {
         contactEntryService.declineContactRequest(personalContact);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 
 }
 

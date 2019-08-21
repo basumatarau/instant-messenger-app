@@ -27,9 +27,22 @@
         <io.jsonwebtoken.jjwt-api>0.10.6</io.jsonwebtoken.jjwt-api>
         <io.jsonwebtoken.jjwt-impl>0.10.6</io.jsonwebtoken.jjwt-impl>
         <io.jsonwebtoken.jjwt-jackson>0.10.6</io.jsonwebtoken.jjwt-jackson>
+        <io.springfox.springfox-swagger2.version>2.9.2</io.springfox.springfox-swagger2.version>
+        <io.springfox.springfox-swagger-ui.veresion>2.9.2</io.springfox.springfox-swagger-ui.veresion>
     </properties>
 
     <dependencies>
+        <!--api documentation tools-->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${io.springfox.springfox-swagger2.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${io.springfox.springfox-swagger-ui.veresion}</version>
+        </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>

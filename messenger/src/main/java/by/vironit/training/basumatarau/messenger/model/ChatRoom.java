@@ -1,6 +1,7 @@
 package by.vironit.training.basumatarau.messenger.model;
 
 import javax.persistence.*;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -25,8 +26,9 @@ public class ChatRoom {
     private Long timeCreated;
 
     @OneToMany(mappedBy = "chatRoom",
+            cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private Set<Subscription> subscriptions;
+    private Set<Subscription> subscriptions = new LinkedHashSet<>();
 
     @Column(name = "public", nullable = false)
     private Boolean isPublic;
@@ -43,7 +45,7 @@ public class ChatRoom {
     public static class ChatRoomBuilder{
         private String name;
         private Long timeCreated;
-        private Set<Subscription> subscriptions;
+        private Set<Subscription> subscriptions = new LinkedHashSet<>();
         private Boolean isPublic;
 
         public ChatRoomBuilder(){}
