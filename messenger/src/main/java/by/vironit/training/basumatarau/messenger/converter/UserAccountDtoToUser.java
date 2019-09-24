@@ -23,6 +23,7 @@ public class UserAccountDtoToUser
                 new User.UserBuilder()
                         .email(context.getSource().getEmail())
                         .enabled(true)
+                        .authProvider(User.AuthProvider.local)
                         .firstName(context.getSource().getFirstName())
                         .lastName(context.getSource().getLastName())
                         .nickName(context.getSource().getNickName())

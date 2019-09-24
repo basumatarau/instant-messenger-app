@@ -23,12 +23,14 @@ public class OutboundMessageInterceptor implements ChannelInterceptor {
                 MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         log.warn("############ in preSend " + message.getHeaders().toString());
 
-/*        if(StompCommand.SUBSCRIBE.equals(Objects.requireNonNull(accessor).getCommand())){
+        /*
+            if(StompCommand.SUBSCRIBE.equals(Objects.requireNonNull(accessor).getCommand())){
             final Principal principal = accessor.getUser();
 
             //todo: "user online" status update notification can be implemented within the interceptor
             //postSend ?
         }*/
+
         return message;
     }
 
@@ -37,7 +39,7 @@ public class OutboundMessageInterceptor implements ChannelInterceptor {
                                     MessageChannel channel,
                                     boolean sent,
                                     Exception ex) {
-        log.warn("############ in afterSendCompletion " + message.getHeaders().toString());
 
+        log.warn("############ in afterSendCompletion " + message.getHeaders().toString());
     }
 }

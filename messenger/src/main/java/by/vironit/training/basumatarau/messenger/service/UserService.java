@@ -1,6 +1,8 @@
 package by.vironit.training.basumatarau.messenger.service;
 
 import by.vironit.training.basumatarau.messenger.dto.*;
+import by.vironit.training.basumatarau.messenger.security.CustomUserDetails;
+import by.vironit.training.basumatarau.messenger.security.oauth2.user.OAuth2UserInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,4 +16,5 @@ public interface UserService {
     Set<ContactEntryVo> getUserContactEntriesByUserEmail(String email);
     void createNewChatRoom(UserProfileDto userProfile, NewChatRoomDto chatRoomDto);
     Page<UserProfileDto> searchForUsers(Pageable pageable, SearchCriteriaDto criteriaDto);
+
 }

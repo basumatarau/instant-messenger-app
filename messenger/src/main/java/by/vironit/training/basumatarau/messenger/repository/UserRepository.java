@@ -15,6 +15,8 @@ public interface UserRepository
 
     Optional<User> findByEmail(String email);
 
+    Optional<User> findUserById(Long id);
+
     @Query("select u from User u left join fetch u.contactEntries where u.email=?1 ")
     Optional<User> findUserWithContactEntriesByEmail(String email);
 

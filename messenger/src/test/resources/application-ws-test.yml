@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/testDB
     username: postgres
-    password: password
+    password: root
     driver-class-name: org.postgresql.Driver
     schema: classpath:db/schema.sql
     data: classpath:db/data.sql
@@ -19,7 +19,9 @@ spring:
           use_jdbc_metadata_defaults: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+security:
+  require-ssl: false
 server:
-#  port: 8080
-  servlet:
-    context-path: /
+  port: 0
+  ssl:
+    enabled: false

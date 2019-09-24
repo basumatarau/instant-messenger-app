@@ -1,5 +1,6 @@
 package by.vironit.training.basumatarau.messenger.model;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.ResultCheckStyle;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -15,6 +16,7 @@ import java.util.Set;
         check = ResultCheckStyle.COUNT)
 @Where(clause = "enabled=true ")
 @Table(name = "users", schema = "instant_messenger_db_schema")
+@DynamicUpdate
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,
@@ -26,7 +28,7 @@ public class User {
     @Column(name = "id", nullable = false, updatable = false)
     private Long id;
 
-    @Column(name = "role")
+    @Column(name = "role", updatable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
@@ -39,7 +41,7 @@ public class User {
     @Column(name = "nickname", nullable = false)
     private String nickName;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, updatable = false)
     private String email;
 
     @Column(name = "passwordhash", nullable = false)
@@ -48,10 +50,20 @@ public class User {
     @Column(name = "enabled", nullable = false)
     private Boolean isEnabled;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "authprovider", nullable = false, updatable = false)
+    private AuthProvider authProvider;
+
     @OneToMany(mappedBy = "owner",
             orphanRemoval = true,
             cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<ContactEntry> contactEntries = new LinkedHashSet<>();
+
+    @Column(name = "provider_id")
+    private String providerId;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @PreRemove
     private void deleteUser(){
@@ -70,10 +82,17 @@ public class User {
         this.passwordHash = builder.passwordHash;
         this.isEnabled = builder.isEnabled;
         this.contactEntries = builder.contactEntries;
+        this.providerId = builder.providerId;
+        this.imageUrl = builder.imageUrl;
+        this.authProvider = builder.authProvider;
     }
 
     public enum UserRole{
         USER, ADMIN
+    }
+
+    public enum AuthProvider{
+        local, google, github
     }
 
     public Long getId() {
@@ -148,17 +167,51 @@ public class User {
         isEnabled = enabled;
     }
 
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
+    }
+
+    public AuthProvider getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(AuthProvider authProvider) {
+        this.authProvider = authProvider;
+    }
+
     public static class UserBuilder {
         private UserRole role;
+        private AuthProvider authProvider;
+        private String imageUrl;
         private String firstName;
         private String lastName;
         private String nickName;
         private String email;
         private String passwordHash;
+        private String providerId;
         private Boolean isEnabled;
         private Set<ContactEntry> contactEntries = new LinkedHashSet<>();
 
         public UserBuilder() {}
+
+        public UserBuilder authProvider(AuthProvider authProvider){
+            this.authProvider = authProvider;
+            return this;
+        }
+
+        public UserBuilder imageUrl(String imageUrl){
+            this.imageUrl = imageUrl;
+            return this;
+        }
+
+        public UserBuilder providerId(String providerId){
+            this.providerId = providerId;
+            return this;
+        }
 
         public UserBuilder role(UserRole role) {
             this.role = role;
@@ -208,7 +261,7 @@ public class User {
 
         private void buildDataIntegrityCheck(){
             if (this.email == null
-                    || this.passwordHash == null
+                    || this.authProvider == null
                     || this.nickName == null
                     || this.role == null
                     || this.isEnabled == null
@@ -232,11 +285,12 @@ public class User {
                 Objects.equals(lastName, user.lastName) &&
                 Objects.equals(nickName, user.nickName) &&
                 Objects.equals(email, user.email) &&
+                Objects.equals(authProvider, user.authProvider) &&
                 Objects.equals(passwordHash, user.passwordHash);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(role, firstName, lastName, nickName, email, passwordHash);
+        return Objects.hash(role, firstName, lastName, nickName, email, passwordHash, authProvider);
     }
 }

@@ -8,6 +8,8 @@ import by.vironit.training.basumatarau.messenger.model.*;
 import by.vironit.training.basumatarau.messenger.repository.ChatRoomRepository;
 import by.vironit.training.basumatarau.messenger.repository.ContactEntryRepository;
 import by.vironit.training.basumatarau.messenger.repository.UserRepository;
+import by.vironit.training.basumatarau.messenger.security.CustomUserDetails;
+import by.vironit.training.basumatarau.messenger.security.oauth2.user.OAuth2UserInfo;
 import by.vironit.training.basumatarau.messenger.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;

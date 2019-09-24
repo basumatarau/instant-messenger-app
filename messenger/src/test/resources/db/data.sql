@@ -1,14 +1,14 @@
 INSERT INTO instant_messenger_db_schema.users
-(firstname, lastname, nickname, email, passwordhash, enabled)
-VALUES('Vladimir', 'Putin', 'Vlad', 'bad@mail.ru', '$2a$10$0A1cuMZR0FpyaDoKOla1tufb9V7d/WVrbXhPqt08QNDSlJeCwXefm', true);
+(firstname, lastname, nickname, email, passwordhash, enabled, authprovider, provider_id, image_url)
+VALUES('Vladimir', 'Putin', 'Vlad', 'bad@mail.ru', '$2a$10$0A1cuMZR0FpyaDoKOla1tufb9V7d/WVrbXhPqt08QNDSlJeCwXefm', true, 'local', null, null);
 
 INSERT INTO instant_messenger_db_schema.users
-(firstname, lastname, nickname, email, passwordhash, enabled)
-VALUES('Barak', 'Obama', 'African-american', 'black@mail.gov', '$2a$10$0A1cuMZR0FpyaDoKOla1tufb9V7d/WVrbXhPqt08QNDSlJeCwXefm', true);
+(firstname, lastname, nickname, email, passwordhash, enabled, authprovider, provider_id, image_url)
+VALUES('Barak', 'Obama', 'African-american', 'black@mail.gov', '$2a$10$0A1cuMZR0FpyaDoKOla1tufb9V7d/WVrbXhPqt08QNDSlJeCwXefm', true, 'local', null, null);
 
 INSERT INTO instant_messenger_db_schema.users
-(firstname, lastname, nickname, email, passwordhash, enabled)
-VALUES('John', 'Doe', 'Billy', 'doe@mail.com', '$2a$10$0A1cuMZR0FpyaDoKOla1tufb9V7d/WVrbXhPqt08QNDSlJeCwXefm', true);
+(firstname, lastname, nickname, email, passwordhash, enabled, authprovider, provider_id, image_url)
+VALUES('John', 'Doe', 'Billy', 'doe@mail.com', '$2a$10$0A1cuMZR0FpyaDoKOla1tufb9V7d/WVrbXhPqt08QNDSlJeCwXefm', true, 'local', null, null);
 
 INSERT INTO instant_messenger_db_schema.chatrooms
 ("name", timecreated, public)

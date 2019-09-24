@@ -1,7 +1,9 @@
 package by.vironit.training.basumatarau.messenger.integrationTest;
 
-import by.vironit.training.basumatarau.messenger.MessengerApp;
+import by.vironit.training.basumatarau.messenger.dto.AuthResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,15 +13,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import javax.servlet.Filter;
+
+import java.util.Collection;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -28,7 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("integration-test")
-@SpringBootTest(classes = {MessengerApp.class})
+@SpringBootTest
+@WebAppConfiguration
 public class RestApiSecurityTest {
 
     @Autowired
@@ -77,24 +85,33 @@ public class RestApiSecurityTest {
 
     @Before
     public void init(){
-        this.mockMvc = MockMvcBuilders
-                .webAppContextSetup(this.webAppContext)
-                .addFilter(this.springSecurityFilterChainProxy)
-                .build();
+//        this.mockMvc = MockMvcBuilders
+//                .webAppContextSetup(this.webAppContext)
+//                .addFilter(this.springSecurityFilterChainProxy)
+//                .build();
+
+        Collection<Filter> filterCollection = webAppContext.getBeansOfType(Filter.class).values();
+        Filter[] filters = filterCollection.toArray(new Filter[filterCollection.size()]);
+        mockMvc = MockMvcBuilders.webAppContextSetup(webAppContext).addFilters(filters).build();
     }
 
     private String obtainAccessToken(String username, String password) throws Exception {
-        final HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("username", username);
-        httpHeaders.add("password", password);
+
+        JsonObject req = new JsonObject();
+        req.addProperty("login", username);
+        req.addProperty("password", password);
 
         final ResultActions authResponse = mockMvc.perform(
-                get("/api/user/login")
-                        .headers(httpHeaders))
+                post("/api/user/login")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(req.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8));
 
-        return authResponse.andReturn().getResponse().getHeader("Authorization");
+        String respBody = authResponse.andReturn().getResponse().getContentAsString();
+        AuthResponseDto authResponseDto = new Gson().fromJson(respBody, AuthResponseDto.class);
+
+        return authResponseDto.getTokenType() + " " + authResponseDto.getAccessToken();
     }
 
     @Test

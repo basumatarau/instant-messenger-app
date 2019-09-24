@@ -1,38 +1,27 @@
-package by.vironit.training.basumatarau.messenger.config;
+package by.vironit.training.basumatarau.messenger.security;
 
-import by.vironit.training.basumatarau.messenger.security.CustomUserDetails;
-import by.vironit.training.basumatarau.messenger.security.CustomUserDetailsService;
-import by.vironit.training.basumatarau.messenger.security.JwtTokenProvider;
 import by.vironit.training.basumatarau.messenger.security.util.TokenExtractor;
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.SignatureException;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.simp.stomp.StompCommand;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.messaging.support.ChannelInterceptor;
-import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
-@Component
-public class ConnectMessageInterceptor implements ChannelInterceptor {
-    private static final Logger log = LoggerFactory.getLogger(ConnectMessageInterceptor.class);
+public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
-    @Value("{app.auth.headerName:Authorization}")
+    @Value("${app.auth.headerName:Authorization}")
     private String jwtTokenHeaderName;
 
     @Autowired
@@ -44,14 +33,18 @@ public class ConnectMessageInterceptor implements ChannelInterceptor {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    private Logger logger = LoggerFactory.getLogger(JwtTokenAuthenticationFilter.class);
+
     @Override
-    public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        StompHeaderAccessor accessor =
-                MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+    protected void doFilterInternal(HttpServletRequest httpServletRequest,
+                                    HttpServletResponse httpServletResponse,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        if(StompCommand.CONNECT.equals(Objects.requireNonNull(accessor).getCommand())){
+        String authHeader = httpServletRequest.getHeader(jwtTokenHeaderName);
 
-            String rawToken = tokenExtractor.extract(((String) message.getHeaders().get(jwtTokenHeaderName)));
+        if(!StringUtils.isEmpty(authHeader)){
+            String rawToken = tokenExtractor.extract(authHeader);
 
             if(jwtTokenProvider.validate(rawToken)){
                 Long userId = jwtTokenProvider.getUserIdFromToken(rawToken);
@@ -67,11 +60,11 @@ public class ConnectMessageInterceptor implements ChannelInterceptor {
                                 null, customUserDetails.getAuthorities()
                         );
 
+                auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
 
-        return message;
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
-
 }

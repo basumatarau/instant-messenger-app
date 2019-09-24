@@ -12,7 +12,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/im-db-training-project
     username: postgres
-    password: password
+    password: root
     driver-class-name: org.postgresql.Driver
     testWhileIdle: true
     validationQuery: SELECT 1
@@ -37,7 +37,42 @@ spring:
         ddl-auto: validate
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 392651176733-p67spnao83vss18olunu7lrtt2tu6b41.apps.googleusercontent.com
+            clientSecret: du8rFUa3I0lCGE2hOgo8qxAQ
+            redirectUriTemplate: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - profile
+          github:
+            clientId: df1b33a69c154de92b5f
+            clientSecret: 04ef2d474fac163df698018548b90b38c31d609a
+            redirectUriTemplate: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - user:email
+              - read:user
 server:
-  port: 8080
-  servlet:
-    context-path: /im-webapp
+  port: 8443
+  ssl:
+    enabled: true
+    # The format used for the keystore. It could be set to JKS in case it is a JKS file
+    keyStoreType: PKCS12
+    # The path to the keystore containing the certificate (filename: keystore.p12)
+    key-store: classpath:keystore.p12
+    # The password used to generate the certificate
+    key-store-password: password
+    # The alias mapped to the certificate
+    keyAlias: jsutforlulz-tomcat
+security:
+  require-ssl: true
+app:
+  auth:
+    tokenExpirationMsec: 864000000
+  oauth2:
+    authorizedRedirectUris:
+      - https://justforlulz.tk
+      - https://localhost:8443

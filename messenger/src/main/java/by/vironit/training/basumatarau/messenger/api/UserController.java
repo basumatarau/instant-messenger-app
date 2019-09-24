@@ -4,6 +4,7 @@ import by.vironit.training.basumatarau.messenger.dto.*;
 import by.vironit.training.basumatarau.messenger.exception.NoEntityFound;
 import by.vironit.training.basumatarau.messenger.model.PersonalContact;
 import by.vironit.training.basumatarau.messenger.model.ContactEntry;
+import by.vironit.training.basumatarau.messenger.security.JwtTokenProvider;
 import by.vironit.training.basumatarau.messenger.service.ContactService;
 import by.vironit.training.basumatarau.messenger.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ResponseHeader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,7 +21,10 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
@@ -35,25 +40,34 @@ public class UserController {
     @Autowired
     private ContactService contactEntryService;
 
-    @ApiImplicitParams(value = {
-            @ApiImplicitParam(paramType = "header", name = "username", required = true),
-            @ApiImplicitParam(paramType = "header", name = "password", required = true)
-    })
-    @ApiResponse(
-            code = 200,
-            message = "api access token (JWT)",
-            responseHeaders = {@ResponseHeader(name = "Authorization")})
-    @GetMapping(value = {"/login", "/me"})
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenProvider tokenProvider;
+
+    @PostMapping(value = {"/login"})
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('USER') || hasAuthority('ADMIN')")
-    public UserProfileDto getUserInfo(Principal principal) {
-        return userService.getUserProfileByUserEmail(principal.getName());
+    public ResponseEntity<?> getUserInfo(@Valid @RequestBody LocalAuthDto auth) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        auth.getLogin(),
+                        auth.getPassword()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String token = tokenProvider.createToken(authentication);
+        return ResponseEntity.ok(new AuthResponseDto(token));
     }
 
     @PostMapping(value = "/signup", consumes = {"application/json;charset=utf-8"})
     @ResponseStatus(HttpStatus.OK)
     public void signUp(@Valid @RequestBody UserAccountRegistrationDto newAccount,
             Principal principal) {
+
         userService.registerNewUserAccount(newAccount);
     }
 

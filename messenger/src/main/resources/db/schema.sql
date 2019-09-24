@@ -27,6 +27,9 @@ CREATE TABLE if not exists instant_messenger_db_schema.users (
 	email varchar(160) NOT NULL,
 	passwordhash varchar(160) NOT NULL,
 	enabled bool NOT NULL,
+    authprovider varchar(80) NOT NULL,
+    provider_id varchar(120) NULL,
+    image_url varchar(160) NULL,
 	CONSTRAINT users_pk PRIMARY KEY (id)
 );
 CREATE UNIQUE INDEX if not exists users_email_idx ON instant_messenger_db_schema.users USING btree (email);
