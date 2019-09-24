@@ -175,6 +175,14 @@ public class User {
         this.providerId = providerId;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     public AuthProvider getAuthProvider() {
         return authProvider;
     }

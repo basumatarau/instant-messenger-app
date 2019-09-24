@@ -25,7 +25,7 @@ CREATE TABLE if not exists instant_messenger_db_schema.users (
 	lastname varchar(150) NULL,
 	nickname varchar(60) NOT NULL,
 	email varchar(160) NOT NULL,
-	passwordhash varchar(160) NOT NULL,
+	passwordhash varchar(160),
 	enabled bool NOT NULL,
     authprovider varchar(80) NOT NULL,
     provider_id varchar(120) NULL,

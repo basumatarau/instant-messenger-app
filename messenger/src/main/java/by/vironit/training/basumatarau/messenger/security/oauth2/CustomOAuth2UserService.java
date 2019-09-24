@@ -1,5 +1,6 @@
 package by.vironit.training.basumatarau.messenger.security.oauth2;
 
+import by.vironit.training.basumatarau.messenger.exception.NoEntityFound;
 import by.vironit.training.basumatarau.messenger.exception.Oauth2AuthenticationProcessingException;
 import by.vironit.training.basumatarau.messenger.model.User;
 import by.vironit.training.basumatarau.messenger.repository.UserRepository;
@@ -65,18 +66,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         .loadUserByEmail(oAuth2UserInfo.getEmail())
                         .map(
                                 customUserDetails -> {
-                                    if(customUserDetails.getRegistrationId().equals(authProviderIdFromRequest.toString())){
+                                    if(!customUserDetails.getRegistrationId().equals(authProviderIdFromRequest.toString())){
                                         throw new Oauth2AuthenticationProcessingException("Looks like you're signed up with " +
                                                 authProviderIdFromRequest.toString() + " account. Please use your " +
-                                                customUserDetails.getRegistrationId());
+                                                customUserDetails.getRegistrationId() + " to sign in.");
                                     }
 
-                                    User userUpdateInfo = new User.UserBuilder()
-                                            .nickName(oAuth2UserInfo.getName())
-                                            .imageUrl(oAuth2UserInfo.getImageUrl())
-                                            .build();
+                                    User user = userRepository.findByEmail(customUserDetails.getEmail())
+                                            .orElseThrow(() -> new NoEntityFound("no user found with email: " + customUserDetails.getEmail()));
 
-                                    userRepository.save(userUpdateInfo);
+                                    user.setNickName(oAuth2UserInfo.getName());
+                                    user.setImageUrl(oAuth2UserInfo.getImageUrl());
+
+                                    userRepository.save(user);
 
                                     return customUserDetails;
                                 }
