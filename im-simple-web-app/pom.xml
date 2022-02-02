@@ -23,7 +23,7 @@
         <javax.websocket-api.version>1.1</javax.websocket-api.version>
         <jstl.version>1.2</jstl.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
-        <postgresql.version>42.2.5</postgresql.version>
+        <postgresql.version>42.2.25</postgresql.version>
         <ibatis-sqlmap.version>3.0-beta-10</ibatis-sqlmap.version>
         <commons-codec.version>1.12</commons-codec.version>
         <slf4j-api.version>1.7.26</slf4j-api.version>
